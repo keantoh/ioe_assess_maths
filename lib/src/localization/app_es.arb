@@ -1,0 +1,14 @@
+{
+  "appTitle": "math_assessment_es",
+  "@appTitle": {
+    "description": "El título de la aplicación"
+  },
+  "question1": "¿Cuánto es 2 + 2?",
+  "question2": "¿Cuánto es 3 * 3?",
+  "@question1": {
+    "description": "Pregunta de matemáticas 1"
+  },
+  "@question2": {
+    "description": "Pregunta de matemáticas 2"
+  }
+}
