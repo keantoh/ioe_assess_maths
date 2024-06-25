@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/user_state.dart';
 import 'package:math_assessment/src/services/auth_services.dart';
-import 'package:math_assessment/src/views/home_view.dart';
+import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
 
 final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState>(
@@ -23,7 +23,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
       state = state.copyWith(userDetails: userDetails, isLoading: false);
       if (userDetails != null) {
         if (!context.mounted) return;
-        Navigator.pushReplacementNamed(context, HomeView.routeName);
+        Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
       }
     } catch (e) {
       state = state.copyWith(isLoading: false);
