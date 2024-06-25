@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
+import 'package:math_assessment/src/views/child_add_view.dart';
 
-import '../settings/settings_view.dart';
-
-/// Displays a list of SampleItems.
 class ChildSelectView extends ConsumerWidget {
   const ChildSelectView({super.key});
 
@@ -185,7 +183,9 @@ class AddChild extends ConsumerWidget {
           ),
           backgroundColor: Theme.of(context).colorScheme.primaryFixed,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.restorablePushNamed(context, ChildAddView.routeName);
+        },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
