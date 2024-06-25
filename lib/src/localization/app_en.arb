@@ -1,34 +1,20 @@
 {
-  "appTitle": "math_assessment",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
+  "appTitle": "Math Assessment",
   "emailAddress": "Email Address",
   "password": "Password",
-  "confirmPassword": "Confirm Password",
+  "forgotPassword": "Forgot Password",
+  "signUp": "Sign Up",
+  "logIn": "Log In",
   "firstName": "First Name",
   "lastName": "Last Name",
   "country": "Country",
-  "forgotPassword": "Forgot Password",
-  "@forgotPassword": {
-    "description": "Link to reset user's password"
-  },
-  "signup": "Sign Up",
-  "@signup": {
-    "description": "Button sign up for an account"
-  },
-  "login": "Login",
-  "@login": {
-    "description": "Button to log in to the application"
-  },
+  "confirmPassword": "Confirm Password",
+  "selectChild": "Select Child",
+  "logOut": "Log Out",
+  "editDetails": "Edit Details",
+  "next": "Next",
   "question1": "What is 2 + 2?",
-  "@question1": {
-    "description": "Math question 1"
-  },
   "question2": "What is 3 * 3?",
-  "@question2": {
-    "description": "Math question 2"
-  },
   "emptyField": "Field is empty",
   "invalidEmail": "Email address is invalid",
   "weakPassword": "Password needs at least 6 characters",
