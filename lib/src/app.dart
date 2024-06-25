@@ -3,6 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
+import 'package:math_assessment/src/views/child_add_view.dart';
+import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
@@ -64,11 +66,15 @@ class MyApp extends ConsumerWidget {
                 return const SampleItemDetailsView();
               case SampleItemListView.routeName:
               case LoginView.routeName:
-                return const LoginView();
+                return LoginView();
               case SignUpView.routeName:
                 return SignUpView();
               case HomeView.routeName:
                 return const HomeView();
+              case ChildSelectView.routeName:
+                return const ChildSelectView();
+              case ChildAddView.routeName:
+                return ChildAddView();
               default:
                 return const SampleItemListView();
             }
