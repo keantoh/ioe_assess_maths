@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
-
-enum ColorSeed {
-  blue('Blue', Colors.blue),
-  teal('Teal', Colors.teal),
-  green('Green', Colors.green),
-  red('Red', Colors.red),
-  pink('Pink', Colors.pink),
-  purple('Purple', Colors.deepPurple);
-
-  final String label;
-  final Color color;
-
-  const ColorSeed(this.label, this.color);
-}
+import 'package:math_assessment/src/data/models/color_seed.dart';
 
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
