@@ -18,6 +18,10 @@ dependencies:
   shared_preferences: ^2.2.3
   riverpod_annotation: ^3.0.0-dev.3
   email_validator: '^3.0.0'
+  http: ^1.2.1
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  flutter_secure_storage: ^9.2.2
 
 dev_dependencies:
   flutter_test:
