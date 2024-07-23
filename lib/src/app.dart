@@ -8,6 +8,7 @@ import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
+import 'package:math_assessment/src/views/splash_view.dart';
 
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
@@ -55,6 +56,7 @@ class MyApp extends ConsumerWidget {
 
       // Define a function to handle named routes in order to support
       // Flutter web url navigation and deep linking.
+      home: SplashView(),
       onGenerateRoute: (RouteSettings routeSettings) {
         return MaterialPageRoute<void>(
           settings: routeSettings,
