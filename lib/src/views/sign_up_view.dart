@@ -2,12 +2,18 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/data/models/country_key.dart';
+import 'package:math_assessment/src/data/models/user_models.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 
 import '../settings/settings_view.dart';
 
-class SignUpView extends StatelessWidget {
+final isSigningUpProvider = StateProvider<bool>(
+  (ref) => false,
+);
+
+class SignUpView extends ConsumerWidget {
   SignUpView({super.key});
 
   static const routeName = '/signup';
@@ -15,22 +21,60 @@ class SignUpView extends StatelessWidget {
   final fieldMargin = const EdgeInsets.symmetric(horizontal: 20, vertical: 4);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     List<CountryKey> countries = CountryKey.getAllCountries(context);
     CountryKey? selectedCountry;
+    final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    final firstNameController = TextEditingController();
+    final lastNameController = TextEditingController();
 
-    void submitForm() {
-      if (selectedCountry == null) {
-        HelperFunctions.showSnackBar(
-            context, 2000, 'Please select your country.');
-        return;
+    void submitForm() async {
+      ref.read(isSigningUpProvider.notifier).state = true;
+      var newUser = UserCreate(
+          email: emailController.text,
+          password: passwordController.text,
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          country: selectedCountry!.countryKeyCode,
+          isAdmin: false);
+      final result = await signUpUser(newUser);
+      final status = result['status'];
+
+      ref.read(isSigningUpProvider.notifier).state = false;
+      if (context.mounted) {
+        switch (status) {
+          case 201:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.signUpSuccess);
+            Navigator.pop(context);
+            break;
+          case 400:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.badRequest);
+            break;
+          case 408:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.connectionTimeout);
+            break;
+          case 409:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.emailExists);
+            break;
+          case 500:
+            HelperFunctions.showSnackBar(context, 2000,
+                AppLocalizations.of(context)!.serverConnectionError);
+            break;
+          case 503:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.dbUnavailable);
+            break;
+          default:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.unknownError);
+            break;
+        }
       }
-
-      // Form validation successful, update global state
-      // context.read(formSubmitProvider).state = email;
-
-      HelperFunctions.showSnackBar(context, 2000, 'Form submitted');
     }
 
     return Scaffold(
@@ -67,6 +111,7 @@ class SignUpView extends StatelessWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                controller: firstNameController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText:
@@ -85,6 +130,7 @@ class SignUpView extends StatelessWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                controller: emailController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText: AppLocalizations.of(context)!
@@ -112,6 +158,7 @@ class SignUpView extends StatelessWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                controller: lastNameController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText:
@@ -131,6 +178,7 @@ class SignUpView extends StatelessWidget {
                               margin: fieldMargin,
                               child: TextFormField(
                                 controller: passwordController,
+                                obscureText: true,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText:
@@ -157,21 +205,23 @@ class SignUpView extends StatelessWidget {
                             Expanded(
                               child: Container(
                                 margin: fieldMargin,
-                                child: DropdownMenu<CountryKey>(
-                                  initialSelection: selectedCountry,
-                                  expandedInsets: const EdgeInsets.all(0),
-                                  requestFocusOnTap: true,
-                                  label: Text(
-                                      AppLocalizations.of(context)!.country),
-                                  onSelected: (CountryKey? country) {
+                                child: DropdownButtonFormField(
+                                  decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    labelText:
+                                        AppLocalizations.of(context)!.country,
+                                  ),
+                                  validator: (value) =>
+                                      value == null ? 'Field is empty' : null,
+                                  onChanged: (CountryKey? country) {
                                     selectedCountry = country;
                                   },
-                                  dropdownMenuEntries: countries
-                                      .map<DropdownMenuEntry<CountryKey>>(
+                                  items: countries
+                                      .map<DropdownMenuItem<CountryKey>>(
                                           (CountryKey country) {
-                                    return DropdownMenuEntry<CountryKey>(
+                                    return DropdownMenuItem<CountryKey>(
                                         value: country,
-                                        label: country.translation);
+                                        child: Text(country.translation));
                                   }).toList(),
                                 ),
                               ),
@@ -180,6 +230,7 @@ class SignUpView extends StatelessWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                obscureText: true,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText: AppLocalizations.of(context)!
@@ -202,49 +253,51 @@ class SignUpView extends StatelessWidget {
                         ),
                         const Spacer(),
                         // BUTTONS
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 60),
-                              child: Consumer(builder: (context, ref, _) {
-                                return OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 40),
-                                        child: Text(
-                                            AppLocalizations.of(context)!
-                                                .logIn)));
-                              }),
-                            ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 60),
-                              child: Consumer(builder: (context, ref, _) {
-                                bool isLoading = false;
-                                return isLoading
-                                    ? const CircularProgressIndicator()
-                                    : FilledButton(
-                                        onPressed: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            submitForm();
-                                          }
-                                        },
-                                        child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 40),
-                                            child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .signUp)));
-                              }),
-                            )
-                          ],
-                        ),
+                        Consumer(builder: (context, ref, _) {
+                          return ref.watch(isSigningUpProvider)
+                              ? const CircularProgressIndicator()
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 60),
+                                      child:
+                                          Consumer(builder: (context, ref, _) {
+                                        return OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 40),
+                                                child: Text(AppLocalizations.of(
+                                                        context)!
+                                                    .logIn)));
+                                      }),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 60),
+                                      child: FilledButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              submitForm();
+                                            }
+                                          },
+                                          child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 40),
+                                              child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .signUp))),
+                                    )
+                                  ],
+                                );
+                        }),
                       ],
                     ),
                   ),
