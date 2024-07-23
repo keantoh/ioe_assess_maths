@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/data/models/user_state.dart';
+import 'package:math_assessment/src/data/models/user_models.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
+import 'package:math_assessment/src/api/user_api.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../settings/settings_view.dart';
+
+final isLoggingInProvider = StateProvider<bool>(
+  (ref) => false,
+);
 
 class LoginView extends StatelessWidget {
   LoginView({super.key});
@@ -19,12 +25,38 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    const storage = FlutterSecureStorage();
 
-    void submitForm(WidgetRef ref) {
-      HelperFunctions.showSnackBar(context, 2000, 'Form submitted');
-      ref
-          .read(userStateProvider.notifier)
-          .login(email: 'default.com', password: 'password', context: context);
+    Future<void> submitForm(WidgetRef ref) async {
+      ref.read(isLoggingInProvider.notifier).state = true;
+      var newUser = UserLogin(
+          email: emailController.text, password: passwordController.text);
+      final result = await loginUser(newUser);
+      final status = result['status'];
+
+      ref.read(isLoggingInProvider.notifier).state = false;
+      if (context.mounted) {
+        switch (status) {
+          case 200:
+            ref.read(userStateProvider.notifier).setUserLoginState(
+                UserLoginState.fromJson(result['response']), context);
+            await storage.write(
+                key: 'token', value: result['response']['token']);
+            break;
+          case 404:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.invalidEmail);
+            break;
+          case 503:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.dbUnavailable);
+            break;
+          default:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.unknownError);
+            break;
+        }
+      }
     }
 
     return Scaffold(
@@ -97,35 +129,36 @@ class LoginView extends StatelessWidget {
                             onPressed: () {},
                           ),
                         ),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 60, vertical: 12),
-                                child: Consumer(builder: (context, ref, _) {
-                                  return OutlinedButton(
-                                      onPressed: () {
-                                        Navigator.restorablePushNamed(
-                                            context, SignUpView.routeName);
-                                      },
-                                      child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 40),
-                                          child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .signUp)));
-                                }),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 60, vertical: 12),
-                                child: Consumer(builder: (context, ref, _) {
-                                  bool isLoading = false;
-                                  return isLoading
-                                      ? const CircularProgressIndicator()
-                                      : FilledButton(
+                        Center(child: Consumer(builder: (context, ref, _) {
+                          return ref.watch(isLoggingInProvider)
+                              ? const CircularProgressIndicator()
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 60, vertical: 12),
+                                      child:
+                                          Consumer(builder: (context, ref, _) {
+                                        return OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.restorablePushNamed(
+                                                  context,
+                                                  SignUpView.routeName);
+                                            },
+                                            child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 40),
+                                                child: Text(AppLocalizations.of(
+                                                        context)!
+                                                    .signUp)));
+                                      }),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 60, vertical: 12),
+                                      child: FilledButton(
                                           onPressed: () {
                                             submitForm(ref);
                                             if (_formKey.currentState!
@@ -137,12 +170,11 @@ class LoginView extends StatelessWidget {
                                                       horizontal: 40),
                                               child: Text(
                                                   AppLocalizations.of(context)!
-                                                      .logIn)));
-                                }),
-                              )
-                            ],
-                          ),
-                        ),
+                                                      .logIn))),
+                                    )
+                                  ],
+                                );
+                        })),
                         const Center(
                             child: Text(
                                 "By continuing, you agree to our terms of service and privacy policy.")),
@@ -158,30 +190,3 @@ class LoginView extends StatelessWidget {
     );
   }
 }
-
-// class LoginButton extends ConsumerWidget {
-//   const LoginButton({super.key});
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final userState = ref.watch(userStateProvider);
-//     return Container(
-//       margin: const EdgeInsets.symmetric(horizontal: 40),
-//       child: Consumer(builder: (context, ref, _) {
-//         bool isLoading = userState.isLoading;
-//         return isLoading
-//             ? const CircularProgressIndicator()
-//             : FilledButton(
-//                 onPressed: () {
-//                   ref.read(userStateProvider.notifier).login(
-//                       email: 'default.com',
-//                       password: 'password',
-//                       context: context);
-//                 },
-//                 child: Container(
-//                     padding: const EdgeInsets.symmetric(horizontal: 40),
-//                     child: Text(AppLocalizations.of(context)!.logIn)));
-//       }),
-//     );
-//   }
-// }
