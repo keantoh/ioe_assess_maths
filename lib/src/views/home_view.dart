@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
+import 'package:math_assessment/src/views/login_view.dart';
 
 import '../settings/settings_view.dart';
 
@@ -43,7 +44,11 @@ class HomeView extends ConsumerWidget {
             Text("HomeView"),
             ElevatedButton(
                 onPressed: () {
-                  ref.read(userStateProvider.notifier).logout(context: context);
+                  ref.read(userStateProvider.notifier).logout();
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                    ModalRoute.withName('/'),
+                  );
                 },
                 child: Text('Logout'))
           ],

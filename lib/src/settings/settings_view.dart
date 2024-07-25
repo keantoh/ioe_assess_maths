@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
-import 'package:math_assessment/src/data/models/color_seed.dart';
+import 'package:math_assessment/src/data/models/avatar_color.dart';
 
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
