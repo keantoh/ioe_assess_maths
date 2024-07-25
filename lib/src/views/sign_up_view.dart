@@ -51,27 +51,23 @@ class SignUpView extends ConsumerWidget {
             break;
           case 400:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.badRequest);
+                context, 2000, AppLocalizations.of(context)!.error400);
             break;
           case 408:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.connectionTimeout);
+                context, 2000, AppLocalizations.of(context)!.error408);
             break;
           case 409:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.emailExists);
-            break;
-          case 500:
-            HelperFunctions.showSnackBar(context, 2000,
-                AppLocalizations.of(context)!.serverConnectionError);
+                context, 2000, AppLocalizations.of(context)!.error409_signup);
             break;
           case 503:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.dbUnavailable);
+                context, 2000, AppLocalizations.of(context)!.error503);
             break;
           default:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.unknownError);
+                context, 2000, AppLocalizations.of(context)!.error500);
             break;
         }
       }
