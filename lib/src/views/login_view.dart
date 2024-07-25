@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/user_models.dart';
+import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
+import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
 import 'package:math_assessment/src/api/user_api.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../settings/settings_view.dart';
 
@@ -25,7 +26,6 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-    const storage = FlutterSecureStorage();
 
     Future<void> submitForm(WidgetRef ref) async {
       ref.read(isLoggingInProvider.notifier).state = true;
@@ -38,22 +38,32 @@ class LoginView extends StatelessWidget {
       if (context.mounted) {
         switch (status) {
           case 200:
-            ref.read(userStateProvider.notifier).setUserLoginState(
-                UserLoginState.fromJson(result['response']), context);
-            await storage.write(
-                key: 'token', value: result['response']['token']);
+            ref
+                .read(userStateProvider.notifier)
+                .setUserLoginState(UserLoginState.fromJson(result['response']));
+            Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
+            final tokenManager = ref.read(tokenManagerProvider);
+            await tokenManager.saveToken(result['response']['token']);
+            break;
+          case 400:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error400);
             break;
           case 404:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.invalidEmail);
+                context, 2000, AppLocalizations.of(context)!.error404_login);
+            break;
+          case 408:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error408);
             break;
           case 503:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.dbUnavailable);
+                context, 2000, AppLocalizations.of(context)!.error503);
             break;
           default:
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.unknownError);
+                context, 2000, AppLocalizations.of(context)!.error500);
             break;
         }
       }
@@ -160,9 +170,10 @@ class LoginView extends StatelessWidget {
                                           horizontal: 60, vertical: 12),
                                       child: FilledButton(
                                           onPressed: () {
-                                            submitForm(ref);
                                             if (_formKey.currentState!
-                                                .validate()) {}
+                                                .validate()) {
+                                              submitForm(ref);
+                                            }
                                           },
                                           child: Container(
                                               padding:
