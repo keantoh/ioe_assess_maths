@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/data/models/avatar.dart';
+import 'package:intl/intl.dart';
+import 'package:math_assessment/src/api/child_api.dart';
+import 'package:math_assessment/src/data/models/avatar_animal.dart';
+import 'package:math_assessment/src/data/models/child_models.dart';
 import 'package:math_assessment/src/data/models/gender.dart';
-import 'package:math_assessment/src/data/models/color_seed.dart';
+import 'package:math_assessment/src/data/models/avatar_color.dart';
+import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
+import 'package:math_assessment/src/utils/helper_functions.dart';
 
 import '../settings/settings_view.dart';
 
-final avatarProvider = StateProvider<Avatar>(
-  (ref) => Avatar.values[0],
+final isAddingChildProvider = StateProvider<bool>(
+  (ref) => false,
 );
 
-final colorSeedProvider = StateProvider<ColorSeed>(
+final animalProvider = StateProvider<AvatarAnimal>(
+  (ref) => AvatarAnimal.values[0],
+);
+
+final colorProvider = StateProvider<ColorSeed>(
   (ref) => ColorSeed.values[0],
 );
 
-Avatar selectedAvatar = Avatar.values.first;
+AvatarAnimal selectedAnimal = AvatarAnimal.values.first;
 
 class ChildAddView extends StatefulWidget {
   const ChildAddView({super.key});
@@ -32,9 +41,59 @@ class _ChildAddViewState extends State<ChildAddView> {
   final fieldMargin = const EdgeInsets.symmetric(horizontal: 20, vertical: 4);
 
   Gender? selectedGender;
+  DateTime? selectedDob;
 
   @override
   Widget build(BuildContext context) {
+    final nameController = TextEditingController();
+    final dobController = TextEditingController();
+    final localeName = AppLocalizations.of(context)?.localeName ?? 'en';
+
+    Future<void> submitForm(WidgetRef ref) async {
+      ref.read(isAddingChildProvider.notifier).state = true;
+      var newChild = ChildCreate(
+          parentId: ref.read(userStateProvider)!.userId,
+          name: nameController.text,
+          gender: selectedGender!.name,
+          dob: selectedDob!,
+          favColour: ref.read(colorProvider.notifier).state.id,
+          favAnimal: ref.read(animalProvider.notifier).state.id);
+
+      final result = await addChild(newChild);
+      final status = result['status'];
+
+      ref.read(isAddingChildProvider.notifier).state = false;
+      if (context.mounted) {
+        switch (status) {
+          case 201:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.childAddSuccess);
+            Navigator.pop(context);
+            break;
+          case 400:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error400);
+            break;
+          case 404:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error404_login);
+            break;
+          case 408:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error408);
+            break;
+          case 503:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error503);
+            break;
+          default:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error500);
+            break;
+        }
+      }
+    }
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.settings),
@@ -71,6 +130,9 @@ class _ChildAddViewState extends State<ChildAddView> {
                                   Container(
                                     margin: fieldMargin,
                                     child: TextFormField(
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      controller: nameController,
                                       decoration: InputDecoration(
                                         border: const OutlineInputBorder(),
                                         labelText:
@@ -87,28 +149,48 @@ class _ChildAddViewState extends State<ChildAddView> {
                                   ),
                                   Container(
                                     margin: fieldMargin,
-                                    child: DropdownMenu<Gender>(
-                                      initialSelection: selectedGender,
-                                      expandedInsets: const EdgeInsets.all(0),
-                                      requestFocusOnTap: true,
-                                      label: Text(
-                                          AppLocalizations.of(context)!.gender),
-                                      onSelected: (Gender? gender) {
+                                    child: DropdownButtonFormField(
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(),
+                                        labelText: AppLocalizations.of(context)!
+                                            .gender,
+                                      ),
+                                      validator: (value) => value == null
+                                          ? 'Field is empty'
+                                          : null,
+                                      onChanged: (Gender? gender) {
                                         selectedGender = gender;
                                       },
-                                      dropdownMenuEntries: Gender.values
-                                          .map<DropdownMenuEntry<Gender>>(
+                                      items: Gender.values
+                                          .map<DropdownMenuItem<Gender>>(
                                               (Gender gender) {
-                                        return DropdownMenuEntry<Gender>(
+                                        return DropdownMenuItem<Gender>(
                                             value: gender,
-                                            label:
-                                                getGenderName(gender, context));
+                                            child: Text(getGenderName(
+                                                gender, context)));
                                       }).toList(),
                                     ),
                                   ),
                                   Container(
                                     margin: fieldMargin,
                                     child: TextFormField(
+                                      controller: dobController,
+                                      onTap: () async {
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                        final date = await showDatePicker(
+                                            context: context,
+                                            initialDate: selectedDob,
+                                            firstDate: DateTime(
+                                                DateTime.now().year - 20),
+                                            lastDate: DateTime.now());
+                                        if (date != null) {
+                                          selectedDob = date;
+                                          dobController.text =
+                                              DateFormat.yMMMMd(localeName)
+                                                  .format(date);
+                                        }
+                                      },
                                       decoration: InputDecoration(
                                         border: const OutlineInputBorder(),
                                         labelText:
@@ -118,10 +200,6 @@ class _ChildAddViewState extends State<ChildAddView> {
                                         if (text == null || text.isEmpty) {
                                           return AppLocalizations.of(context)!
                                               .emptyField;
-                                        }
-                                        if (text.length < 6) {
-                                          return AppLocalizations.of(context)!
-                                              .weakPassword;
                                         }
                                         return null;
                                       },
@@ -139,49 +217,51 @@ class _ChildAddViewState extends State<ChildAddView> {
                           ],
                         ),
                         const Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 60),
-                              child: Consumer(builder: (context, ref, _) {
-                                return OutlinedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 40),
-                                        child: Text(
-                                            AppLocalizations.of(context)!
-                                                .back)));
-                              }),
-                            ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 60),
-                              child: Consumer(builder: (context, ref, _) {
-                                bool isLoading = false;
-                                return isLoading
-                                    ? const CircularProgressIndicator()
-                                    : FilledButton(
-                                        onPressed: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            // submitForm();
-                                          }
-                                        },
-                                        child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 40),
-                                            child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .addChild)));
-                              }),
-                            )
-                          ],
-                        ),
+                        Consumer(builder: (context, ref, _) {
+                          return ref.watch(isAddingChildProvider)
+                              ? const CircularProgressIndicator()
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 60),
+                                      child:
+                                          Consumer(builder: (context, ref, _) {
+                                        return OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 40),
+                                                child: Text(AppLocalizations.of(
+                                                        context)!
+                                                    .back)));
+                                      }),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 60),
+                                      child: FilledButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              submitForm(ref);
+                                            }
+                                          },
+                                          child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 40),
+                                              child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .addChild))),
+                                    )
+                                  ],
+                                );
+                        }),
                       ],
                     ),
                   ),
@@ -200,8 +280,8 @@ class ProfileAvatar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedAvatar = ref.watch(avatarProvider);
-    final selectedColorSeed = ref.watch(colorSeedProvider);
+    final selectedAnimal = ref.watch(animalProvider);
+    final selectedColorSeed = ref.watch(colorProvider);
     return Container(
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -237,8 +317,7 @@ class ProfileAvatar extends ConsumerWidget {
                     radius: 48,
                     // backgroundColor:
                     //     Theme.of(context).colorScheme.primaryFixedDim,
-                    backgroundImage:
-                        AssetImage(getAvatarImagePath(selectedAvatar)),
+                    backgroundImage: AssetImage(selectedAnimal.imagePath),
                   ),
                 ),
                 Positioned.fill(
@@ -267,7 +346,7 @@ class ProfileAvatar extends ConsumerWidget {
           return MenuItemButton(
             leadingIcon: Icon(Icons.circle, color: itemColorSeed.color),
             onPressed: () {
-              ref.read(colorSeedProvider.notifier).state = itemColorSeed;
+              ref.read(colorProvider.notifier).state = itemColorSeed;
             },
             child: Text(itemColorSeed.label),
           );
@@ -282,7 +361,7 @@ class AvatarDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedAvatar = ref.watch(avatarProvider);
+    final selectedAnimal = ref.watch(animalProvider);
     return Dialog(
         child: Padding(
       padding: const EdgeInsets.all(16),
@@ -300,11 +379,11 @@ class AvatarDialog extends ConsumerWidget {
             height: 140,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: Avatar.values.map((Avatar avatar) {
+              children: AvatarAnimal.values.map((AvatarAnimal avatar) {
                 return Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: selectedAvatar == avatar
+                  decoration: selectedAnimal == avatar
                       ? BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -314,15 +393,15 @@ class AvatarDialog extends ConsumerWidget {
                         )
                       : null,
                   child: CircleAvatar(
-                      radius: selectedAvatar == avatar ? 60 : 48,
-                      backgroundImage: AssetImage(getAvatarImagePath(avatar)),
+                      radius: selectedAnimal == avatar ? 60 : 48,
+                      backgroundImage: AssetImage(avatar.imagePath),
                       child: Material(
                         shape: CircleBorder(),
                         clipBehavior: Clip.hardEdge,
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () => {
-                            ref.read(avatarProvider.notifier).state = avatar
+                            ref.read(animalProvider.notifier).state = avatar
                           },
                         ),
                       )),
