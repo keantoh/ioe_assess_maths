@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
+import 'package:math_assessment/src/views/login_view.dart';
 
-class ChildSelectView extends ConsumerWidget {
+class ChildSelectView extends ConsumerStatefulWidget {
   const ChildSelectView({super.key});
 
   static const routeName = '/childselect';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ChildSelectViewState createState() => ChildSelectViewState();
+}
+
+class ChildSelectViewState extends ConsumerState<ChildSelectView> {
+  @override
+  void initState() {
+    super.initState();
+    final userId = ref.read(userStateProvider)?.userId ?? '';
+    if (userId.isNotEmpty) {
+      ref.read(childrenStateProvider.notifier).fetchChildren(userId);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final children = ref.watch(childrenStateProvider);
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
@@ -37,9 +54,13 @@ class ChildSelectView extends ConsumerWidget {
                               ),
                             ),
                             OutlinedButton(
-                              onPressed: () => ref
-                                  .read(userStateProvider.notifier)
-                                  .logout(context: context),
+                              onPressed: () {
+                                ref.read(userStateProvider.notifier).logout();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginView()),
+                                    ModalRoute.withName('/'));
+                              },
                               child: Text(
                                 AppLocalizations.of(context)!.logOut,
                               ),
@@ -47,19 +68,20 @@ class ChildSelectView extends ConsumerWidget {
                           ],
                         ),
                         const Spacer(),
-                        SizedBox(
-                          height: 140,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: const [
-                              ChildProfile(),
-                              ChildProfile(),
-                              ChildProfile(),
-                              ChildProfile(),
-                              AddChild(),
-                            ],
-                          ),
-                        ),
+                        children == null
+                            ? const Center(child: CircularProgressIndicator())
+                            : SizedBox(
+                                height: 140,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: const [
+                                    ChildProfile(),
+                                    ChildProfile(),
+                                    ChildProfile(),
+                                    ChildProfile(),
+                                    AddChild(),
+                                  ],
+                                )),
                         const Spacer(),
                         //ref.widget ? null :
                         Container(
