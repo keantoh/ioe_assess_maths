@@ -14,8 +14,6 @@
   "editDetails": "Edit Details",
   "next": "Next",
   "back": "Back",
-  "question1": "What is 2 + 2?",
-  "question2": "What is 3 * 3?",
   "emptyField": "Field is empty",
   "invalidEmail": "Email address is invalid",
   "weakPassword": "Password needs at least 6 characters",
@@ -29,6 +27,9 @@
   "dob": "Date of Birth",
   "editAvatar": "Edit Avatar",
   "ok": "Ok",
+  "hi": "Hi {name}!",
+  "readyForChallenge": "Ready For A Challenge?",
+  "start": "Start",
   "error400": "Client error. Please check your connection.",
   "error404_login": "Invalid credentials.",
   "error408": "Request timeout. Please try again in a moment.",
@@ -280,5 +281,13 @@
   "country_ESH": "Western Sahara",
   "country_YEM": "Yemen",
   "country_ZMB": "Zambia",
-  "country_ZWE": "Zimbabwe"
+  "country_ZWE": "Zimbabwe",
+  "color_blue": "Blue",
+  "color_teal": "Teal",
+  "color_green": "Green",
+  "color_red": "Red",
+  "color_pink": "Pink",
+  "color_purple": "Purple",
+  "question1": "Tap the side that has two dots",
+  "question2": "Tap the side that has five dots"
 }

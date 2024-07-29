@@ -36,8 +36,10 @@ class ChildrenStateNotifier extends StateNotifier<List<Child>?> {
   }
 
   void fetchChildren(userId) async {
-    final children = await getChildren(userId);
-    setChildren(children);
+    if (userId != null) {
+      final children = await getChildren(userId);
+      setChildren(children);
+    }
   }
 }
 
