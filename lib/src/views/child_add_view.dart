@@ -7,6 +7,7 @@ import 'package:math_assessment/src/data/models/avatar_animal.dart';
 import 'package:math_assessment/src/data/models/child_models.dart';
 import 'package:math_assessment/src/data/models/gender.dart';
 import 'package:math_assessment/src/data/models/avatar_color.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 
@@ -66,6 +67,8 @@ class _ChildAddViewState extends State<ChildAddView> {
       if (context.mounted) {
         switch (status) {
           case 201:
+            final newChild = Child.fromJson(result['response']);
+            ref.read(childrenStateProvider.notifier).addChild(newChild);
             HelperFunctions.showSnackBar(
                 context, 2000, AppLocalizations.of(context)!.childAddSuccess);
             Navigator.pop(context);
@@ -156,7 +159,8 @@ class _ChildAddViewState extends State<ChildAddView> {
                                             .gender,
                                       ),
                                       validator: (value) => value == null
-                                          ? 'Field is empty'
+                                          ? AppLocalizations.of(context)!
+                                              .emptyField
                                           : null,
                                       onChanged: (Gender? gender) {
                                         selectedGender = gender;
@@ -166,8 +170,8 @@ class _ChildAddViewState extends State<ChildAddView> {
                                               (Gender gender) {
                                         return DropdownMenuItem<Gender>(
                                             value: gender,
-                                            child: Text(getGenderName(
-                                                gender, context)));
+                                            child: Text(
+                                                gender.getGenderName(context)));
                                       }).toList(),
                                     ),
                                   ),
@@ -315,8 +319,6 @@ class ProfileAvatar extends ConsumerWidget {
                   height: 96,
                   child: CircleAvatar(
                     radius: 48,
-                    // backgroundColor:
-                    //     Theme.of(context).colorScheme.primaryFixedDim,
                     backgroundImage: AssetImage(selectedAnimal.imagePath),
                   ),
                 ),
@@ -348,7 +350,7 @@ class ProfileAvatar extends ConsumerWidget {
             onPressed: () {
               ref.read(colorProvider.notifier).state = itemColorSeed;
             },
-            child: Text(itemColorSeed.label),
+            child: Text(itemColorSeed.getColorName(context)),
           );
         }),
       ),
@@ -396,7 +398,7 @@ class AvatarDialog extends ConsumerWidget {
                       radius: selectedAnimal == avatar ? 60 : 48,
                       backgroundImage: AssetImage(avatar.imagePath),
                       child: Material(
-                        shape: CircleBorder(),
+                        shape: const CircleBorder(),
                         clipBehavior: Clip.hardEdge,
                         color: Colors.transparent,
                         child: InkWell(

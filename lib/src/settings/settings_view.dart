@@ -92,7 +92,7 @@ class SettingsView extends ConsumerWidget {
                           .read(themeNotifierProvider.notifier)
                           .updateThemeColor(itemColor);
                     },
-                    child: Text(ColorSeed.values[index].label),
+                    child: Text(ColorSeed.values[index].getColorName(context)),
                   );
                 }),
               ),

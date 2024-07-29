@@ -91,8 +91,7 @@ class LoginView extends StatelessWidget {
                         Expanded(
                           child: Center(
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .appTitle, // Replace with your localized string
+                              AppLocalizations.of(context)!.appTitle,
                               style: Theme.of(context).textTheme.headlineMedium,
                             ),
                           ),

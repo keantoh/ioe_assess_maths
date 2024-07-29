@@ -207,8 +207,9 @@ class SignUpView extends ConsumerWidget {
                                     labelText:
                                         AppLocalizations.of(context)!.country,
                                   ),
-                                  validator: (value) =>
-                                      value == null ? 'Field is empty' : null,
+                                  validator: (value) => value == null
+                                      ? AppLocalizations.of(context)!.emptyField
+                                      : null,
                                   onChanged: (CountryKey? country) {
                                     selectedCountry = country;
                                   },
