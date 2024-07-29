@@ -10,4 +10,9 @@ enum AvatarAnimal {
   final String imagePath;
 
   const AvatarAnimal(this.id, this.imagePath);
+
+  static AvatarAnimal fromId(int id) {
+    return AvatarAnimal.values
+        .firstWhere((avatar) => avatar.id == id, orElse: () => dog);
+  }
 }
