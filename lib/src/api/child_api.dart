@@ -19,7 +19,7 @@ Future<Map<String, dynamic>> addChild(ChildCreate child) async {
         .timeout(const Duration(seconds: 10));
     final responseBody = json.decode(response.body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return {
         'status': response.statusCode,
         'response': responseBody,

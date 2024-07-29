@@ -1,5 +1,5 @@
 class Child {
-  final String childId;
+  final int childId;
   final String name;
   final String gender;
   final DateTime dob;
@@ -16,7 +16,7 @@ class Child {
   });
 
   Child copyWith({
-    String? childId,
+    int? childId,
     String? name,
     String? gender,
     DateTime? dob,
@@ -35,7 +35,7 @@ class Child {
 
   factory Child.fromJson(Map<String, dynamic> json) {
     return Child(
-      childId: json['childId'] as String,
+      childId: json['childId'] as int,
       name: json['name'] as String,
       gender: json['gender'] as String,
       dob: DateTime.parse(json['dob'] as String),
