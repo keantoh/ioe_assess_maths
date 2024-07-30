@@ -5,13 +5,14 @@ class DotsPainter extends CustomPainter {
   final List<DotPaint> dots;
   final double canvasWidth;
   final double canvasHeight;
+  final Color color;
 
-  DotsPainter(this.dots, this.canvasWidth, this.canvasHeight);
+  DotsPainter(this.dots, this.canvasWidth, this.canvasHeight, this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black
+      ..color = color
       ..style = PaintingStyle.fill;
 
     for (DotPaint dot in dots) {

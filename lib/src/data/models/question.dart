@@ -15,7 +15,7 @@ abstract class Question {
   // Factory method to create questions based on category
   factory Question.fromJson(Map<String, dynamic> json) {
     switch (json['category']) {
-      case 1:
+      case 5:
         return SubitisingQuestion(
           json['id'],
           json['category'],
@@ -29,12 +29,18 @@ abstract class Question {
 
   String getQuestionInstruction(BuildContext context) {
     switch (id) {
-      case 1:
-        return AppLocalizations.of(context)!.question1;
-      case 2:
-        return AppLocalizations.of(context)!.question2;
+      case 26:
+        return AppLocalizations.of(context)!.question26;
+      case 27:
+        return AppLocalizations.of(context)!.question27;
+      case 28:
+        return AppLocalizations.of(context)!.question28;
+      case 29:
+        return AppLocalizations.of(context)!.question29;
+      case 30:
+        return AppLocalizations.of(context)!.question30;
       default:
-        return AppLocalizations.of(context)!.question1;
+        return AppLocalizations.of(context)!.question26;
     }
   }
 }

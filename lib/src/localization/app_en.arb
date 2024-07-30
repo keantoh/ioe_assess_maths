@@ -30,6 +30,7 @@
   "hi": "Hi {name}!",
   "readyForChallenge": "Ready For A Challenge?",
   "start": "Start",
+  "errorLoadingQuestions": "Error Loading Questions",
   "error400": "Client error. Please check your connection.",
   "error404_login": "Invalid credentials.",
   "error408": "Request timeout. Please try again in a moment.",
@@ -288,6 +289,10 @@
   "color_red": "Red",
   "color_pink": "Pink",
   "color_purple": "Purple",
-  "question1": "Tap the side that has two dots",
-  "question2": "Tap the side that has five dots"
+  "question26": "Tap the side that has two dots",
+  "question27": "Tap the side that has four dots",
+  "question28": "Tap the side that has three dots",
+  "question29": "Tap the side that has five dots",
+  "question30": "Tap the side that has six dots"
+
 }
