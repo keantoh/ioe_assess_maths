@@ -8,11 +8,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/dot_paint.dart';
 import 'package:math_assessment/src/data/models/question.dart';
+import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/utils/dot_painter.dart';
+import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
+import 'package:math_assessment/src/widgets/subitising_options_widget.dart';
 
 class QuestionView extends ConsumerStatefulWidget {
   const QuestionView({super.key});
-
   static const routeName = '/question';
 
   @override
@@ -30,15 +32,23 @@ final questionListProvider = FutureProvider<List<Question>>((ref) async {
   return questions;
 });
 
-final currentQuestionIndexProvider = StateProvider<int>((ref) => 0);
-
 class QuestionViewState extends ConsumerState<QuestionView> {
   final AudioPlayer audioPlayer = AudioPlayer();
+  late final DateTime sessionStartTime;
 
   Future<void> _playAudio(String localeName, int id) async {
     await audioPlayer.stop();
+    if (id >= 1 && id <= 5) {
+      id = 1;
+    }
     final audioPath = 'audios/$localeName/$id.mp3';
     await audioPlayer.play(AssetSource(audioPath));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    sessionStartTime = DateTime.now().toUtc();
   }
 
   @override
@@ -90,7 +100,9 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                                 ),
                               ),
                               IconButton(
-                                onPressed: () => Navigator.of(context).pop(),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                                 icon: Icon(Icons.close,
                                     color: Theme.of(context)
                                         .colorScheme
@@ -122,46 +134,12 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                             ],
                           ),
                           const Spacer(),
-                          (currentQuestion is SubitisingQuestion)
-                              ? Row(
-                                  children: currentQuestion.options
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                  int index = entry.key;
-                                  return Expanded(
-                                    flex: 1,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: LayoutBuilder(
-                                          builder: (context, constraints) {
-                                        return InkWell(
-                                          onTap: () {
-                                            if (currentQuestionIndex <
-                                                questions.length - 1) {
-                                              ref
-                                                  .watch(
-                                                      currentQuestionIndexProvider
-                                                          .notifier)
-                                                  .state += 1;
-                                            }
-                                          },
-                                          child: Container(
-                                            width: constraints.maxWidth,
-                                            height: height * 0.5,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.black),
-                                            ),
-                                            child: subitisingOptions(
-                                                width, height, entry.value),
-                                          ),
-                                        );
-                                      }),
-                                    ),
-                                  );
-                                }).toList())
-                              : Container(),
+                          buildQuestionOptions(
+                              currentQuestion,
+                              questions.length,
+                              width,
+                              height,
+                              sessionStartTime),
                           const Spacer(),
                           progressStars(
                               width, currentQuestionIndex, questions.length)
@@ -199,6 +177,19 @@ class QuestionViewState extends ConsumerState<QuestionView> {
         }),
       ),
     );
+  }
+
+  Widget buildQuestionOptions(Question currentQuestion, int totalQuestions,
+      double width, double height, DateTime sessionStartTime) {
+    if (currentQuestion is SubitisingQuestion) {
+      return SubitisingOptionsWidget(
+          currentQuestion, totalQuestions, width, height, sessionStartTime);
+    } else if (currentQuestion is NonSymbolicQuestion) {
+      return NonSymbolicOptionsWidget(
+          currentQuestion, totalQuestions, width, height, sessionStartTime);
+    }
+    // Add more cases for other question types here
+    return Center(child: Text("Unknown question type"));
   }
 
   Widget subitisingOptions(
