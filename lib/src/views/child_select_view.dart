@@ -5,7 +5,7 @@ import 'package:math_assessment/src/data/models/avatar_animal.dart';
 import 'package:math_assessment/src/data/models/avatar_color.dart';
 import 'package:math_assessment/src/data/models/child_models.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/selected_child_provider.dart';
+import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/views/assessment_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';

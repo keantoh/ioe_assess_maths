@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/notifiers/selected_child_provider.dart';
+import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/views/question_view.dart';
 
 import '../settings/settings_view.dart';
@@ -74,6 +74,9 @@ class AssessmentView extends ConsumerWidget {
                           horizontal: 60, vertical: 12),
                       child: FilledButton(
                           onPressed: () {
+                            ref
+                                .read(currentQuestionIndexProvider.notifier)
+                                .state = 0;
                             Navigator.restorablePushNamed(
                                 context, QuestionView.routeName);
                           },

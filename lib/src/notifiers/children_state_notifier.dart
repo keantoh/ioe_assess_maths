@@ -17,7 +17,7 @@ class ChildrenStateNotifier extends StateNotifier<List<Child>?> {
     }
   }
 
-  void removeChild(String id) {
+  void removeChild(int id) {
     if (state != null) {
       state = state!.where((child) => child.childId != id).toList();
     }
