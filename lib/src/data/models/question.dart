@@ -9,12 +9,17 @@ abstract class Question {
 
   Question(this.id, this.category, this.correctOption);
 
-  // Abstract method for parsing options
   void parseOptions(List<dynamic> options);
 
-  // Factory method to create questions based on category
   factory Question.fromJson(Map<String, dynamic> json) {
     switch (json['category']) {
+      case 1:
+        return NonSymbolicQuestion(
+          json['id'],
+          json['category'],
+          json['correct_option'],
+          json['options'] as List<dynamic>,
+        );
       case 5:
         return SubitisingQuestion(
           json['id'],
@@ -29,6 +34,12 @@ abstract class Question {
 
   String getQuestionInstruction(BuildContext context) {
     switch (id) {
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+        return AppLocalizations.of(context)!.question1;
       case 26:
         return AppLocalizations.of(context)!.question26;
       case 27:
@@ -42,6 +53,32 @@ abstract class Question {
       default:
         return AppLocalizations.of(context)!.question26;
     }
+  }
+}
+
+class NonSymbolicQuestion extends Question {
+  List<List<DotPaint>> options = [];
+
+  NonSymbolicQuestion(
+      super.id, super.category, super.correctOption, List<dynamic> options) {
+    parseOptions(options);
+  }
+
+  @override
+  void parseOptions(List<dynamic> options) {
+    this.options = options.map((optionList) {
+      if (optionList is List<dynamic>) {
+        return optionList.map((dot) {
+          if (dot is Map<String, dynamic>) {
+            return DotPaint.fromJson(dot);
+          } else {
+            throw const FormatException('Invalid dot format');
+          }
+        }).toList();
+      } else {
+        throw const FormatException('Invalid option list format');
+      }
+    }).toList();
   }
 }
 
@@ -68,10 +105,5 @@ class SubitisingQuestion extends Question {
         throw const FormatException('Invalid option list format');
       }
     }).toList();
-  }
-
-  // Method to display question or handle specific logic
-  void displayQuestion() {
-    // Custom display logic for multiple choice questions
   }
 }
