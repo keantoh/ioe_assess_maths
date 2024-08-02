@@ -6,10 +6,11 @@ import 'package:math_assessment/src/data/models/avatar_color.dart';
 import 'package:math_assessment/src/data/models/child_models.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/notifiers/theme_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
+import 'package:math_assessment/src/views/account_view.dart';
 import 'package:math_assessment/src/views/assessment_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
-import 'package:math_assessment/src/views/login_view.dart';
 
 class ChildSelectView extends ConsumerStatefulWidget {
   const ChildSelectView({super.key});
@@ -32,6 +33,13 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
   @override
   Widget build(BuildContext context) {
     final children = ref.watch(childrenStateProvider);
+    ref.listen<Child?>(selectedChildProvider, (previousChild, currentChild) {
+      final newColor = currentChild == null
+          ? Colors.blue
+          : ColorSeed.fromId(currentChild.favColour).color;
+      ref.read(themeNotifierProvider.notifier).updateThemeColor(newColor);
+    });
+
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
@@ -51,18 +59,11 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                           ),
                         ),
                       ),
-                      OutlinedButton(
-                        onPressed: () {
-                          ref.read(userStateProvider.notifier).logout();
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => LoginView()),
-                              ModalRoute.withName('/'));
-                        },
-                        child: Text(
-                          AppLocalizations.of(context)!.logOut,
-                        ),
-                      ),
+                      IconButton(
+                          onPressed: () => Navigator.restorablePushNamed(
+                              context, AccountView.routeName),
+                          iconSize: 40,
+                          icon: const Icon(Icons.account_circle))
                     ],
                   ),
                   const Spacer(),
@@ -148,7 +149,7 @@ class ChildProfile extends ConsumerWidget {
               borderRadius: BorderRadius.circular(16),
               border: isSelected
                   ? Border.all(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: Theme.of(context).colorScheme.primaryFixed,
                       width: 4.0)
                   : null),
           child: FilledButton(
@@ -162,7 +163,7 @@ class ChildProfile extends ConsumerWidget {
               ref.read(selectedChildProvider.notifier).state = child;
             },
             child: CircleAvatar(
-              radius: 40,
+              radius: isSelected ? 48 : 40,
               backgroundImage: AssetImage(avatarAnimal.imagePath),
             ),
           ),
