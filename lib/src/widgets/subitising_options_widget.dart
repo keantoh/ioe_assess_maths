@@ -25,59 +25,79 @@ class SubitisingOptionsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final startTime = DateTime.now().toUtc();
-    return Row(
-      children: currentQuestion.options.asMap().entries.map((entry) {
-        int index = entry.key;
-        return Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return InkWell(
-                  onTap: () async {
-                    final selectedChild = ref.read(selectedChildProvider);
-                    if (selectedChild == null) return;
+    return Row(children: buildOptionWidgets(context, ref, startTime, height));
+  }
 
-                    final newResult = ResultCreate(
-                      childId: selectedChild.childId,
-                      sessionStartTime: sessionStartTime,
-                      questionId: currentQuestion.id,
-                      correctAnswer: currentQuestion.correctOption,
-                      selectedAnswer: index,
-                      timeTaken: DateTime.now()
-                          .toUtc()
-                          .difference(startTime)
-                          .inMilliseconds,
-                    );
+  List<Widget> buildOptionWidgets(
+      BuildContext context, WidgetRef ref, DateTime startTime, double height) {
+    final options = currentQuestion.options.asMap().entries.toList();
+    List<Widget> widgets = [];
 
-                    final response = await addResult(newResult);
-                    if (ref.read(currentQuestionIndexProvider) <
-                            totalQuestions - 1 &&
-                        response['status'] == 201) {
-                      ref.read(currentQuestionIndexProvider.notifier).state +=
-                          1;
-                    }
-                  },
-                  child: Container(
+    for (int i = 0; i < options.length; i++) {
+      final optionWidget = Expanded(
+        flex: 1,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return InkWell(
+                onTap: () async {
+                  final selectedChild = ref.read(selectedChildProvider);
+                  if (selectedChild == null) return;
+
+                  final newResult = ResultCreate(
+                    childId: selectedChild.childId,
+                    sessionStartTime: sessionStartTime,
+                    questionId: currentQuestion.id,
+                    correctAnswer: currentQuestion.correctOption,
+                    selectedAnswer: options[i].key,
+                    timeTaken: DateTime.now()
+                        .toUtc()
+                        .difference(startTime)
+                        .inMilliseconds,
+                  );
+
+                  final response = await addResult(newResult);
+                  if (ref.read(currentQuestionIndexProvider) <
+                          totalQuestions - 1 &&
+                      response['status'] == 201) {
+                    ref.read(currentQuestionIndexProvider.notifier).state += 1;
+                  }
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: Theme.of(context).colorScheme.surfaceContainer,
+                  ),
+                  child: SizedBox(
                       width: constraints.maxWidth,
                       height: height * 0.5,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
                       child: CustomPaint(
                         painter: DotsPainter(
-                            entry.value,
+                            options[i].value,
                             width * 0.45,
                             height * 0.45,
                             Theme.of(context).colorScheme.primary),
                       )),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
-        );
-      }).toList(),
-    );
+        ),
+      );
+
+      widgets.add(optionWidget);
+
+      if (i % 2 == 0) {
+        widgets.add(Container(
+          width: 3.0,
+          height: height * 0.5,
+          color: Theme.of(context).colorScheme.secondary,
+        ));
+      }
+    }
+
+    return widgets;
   }
 }
