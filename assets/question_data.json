@@ -341,6 +341,46 @@
       "correct_option": 1
     },
     {
+      "id": 6,
+      "category": 2,
+      "options": [
+        1,2
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 7,
+      "category": 2,
+      "options": [
+        4,5
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 8,
+      "category": 2,
+      "options": [
+        7,6
+      ],
+      "correct_option": 0
+    },
+    {
+      "id": 9,
+      "category": 2,
+      "options": [
+        7, 9
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 10,
+      "category": 2,
+      "options": [
+        9, 8
+      ],
+      "correct_option": 0
+    },
+    {
       "id": 26,
       "category": 5,
       "options": [

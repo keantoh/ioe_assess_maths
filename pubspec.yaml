@@ -43,5 +43,5 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/audios/
+    - assets/audios/en/
     - assets/question_data.json

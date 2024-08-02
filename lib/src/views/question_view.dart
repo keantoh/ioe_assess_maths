@@ -6,12 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/data/models/dot_paint.dart';
 import 'package:math_assessment/src/data/models/question.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
-import 'package:math_assessment/src/utils/dot_painter.dart';
 import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
 import 'package:math_assessment/src/widgets/subitising_options_widget.dart';
+import 'package:math_assessment/src/widgets/symbolic_options_widget.dart';
 
 class QuestionView extends ConsumerStatefulWidget {
   const QuestionView({super.key});
@@ -40,6 +39,8 @@ class QuestionViewState extends ConsumerState<QuestionView> {
     await audioPlayer.stop();
     if (id >= 1 && id <= 5) {
       id = 1;
+    } else if (id >= 6 && id <= 10) {
+      id = 6;
     }
     final audioPath = 'audios/$localeName/$id.mp3';
     await audioPlayer.play(AssetSource(audioPath));
@@ -93,8 +94,9 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                               Expanded(
                                 child: LinearProgressIndicator(
                                   minHeight: 12,
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainer,
                                   value:
                                       (currentQuestionIndex) / questions.length,
                                 ),
@@ -158,7 +160,7 @@ class QuestionViewState extends ConsumerState<QuestionView> {
     final double sectionWidth = width / totalQuestions;
     final double starSize = min(sectionWidth, 16);
     return Container(
-      color: Colors.black,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Row(
         children: List.generate(totalQuestions, (index) {
           bool isCompleted = index < completedQuestions;
@@ -171,6 +173,11 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                     Icons.star,
                     color: Colors.amber,
                     size: starSize,
+                    shadows: <Shadow>[
+                      Shadow(
+                          color: Theme.of(context).colorScheme.shadow,
+                          blurRadius: 4.0)
+                    ],
                   )
                 : Container(height: 12),
           );
@@ -187,15 +194,12 @@ class QuestionViewState extends ConsumerState<QuestionView> {
     } else if (currentQuestion is NonSymbolicQuestion) {
       return NonSymbolicOptionsWidget(
           currentQuestion, totalQuestions, width, height, sessionStartTime);
+    } else if (currentQuestion is SymbolicQuestion) {
+      return SymbolicOptionsWidget(
+          currentQuestion, totalQuestions, width, height, sessionStartTime);
     }
     // Add more cases for other question types here
-    return Center(child: Text("Unknown question type"));
-  }
-
-  Widget subitisingOptions(
-      double rowWidth, double rowHeight, List<DotPaint> option) {
-    return CustomPaint(
-        painter: DotsPainter(option, rowWidth * 0.45, rowHeight * 0.45,
-            Theme.of(context).colorScheme.primary));
+    return Center(
+        child: Text(AppLocalizations.of(context)!.unknownQuestionType));
   }
 }

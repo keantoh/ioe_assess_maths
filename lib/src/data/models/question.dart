@@ -20,6 +20,13 @@ abstract class Question {
           json['correct_option'],
           json['options'] as List<dynamic>,
         );
+      case 2:
+        return SymbolicQuestion(
+          json['id'],
+          json['category'],
+          json['correct_option'],
+          json['options'] as List<dynamic>,
+        );
       case 5:
         return SubitisingQuestion(
           json['id'],
@@ -40,6 +47,12 @@ abstract class Question {
       case 4:
       case 5:
         return AppLocalizations.of(context)!.question1;
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+      case 10:
+        return AppLocalizations.of(context)!.question6;
       case 26:
         return AppLocalizations.of(context)!.question26;
       case 27:
@@ -77,6 +90,26 @@ class NonSymbolicQuestion extends Question {
         }).toList();
       } else {
         throw const FormatException('Invalid option list format');
+      }
+    }).toList();
+  }
+}
+
+class SymbolicQuestion extends Question {
+  List<int> options = [];
+
+  SymbolicQuestion(
+      super.id, super.category, super.correctOption, List<dynamic> options) {
+    parseOptions(options);
+  }
+
+  @override
+  void parseOptions(List<dynamic> options) {
+    this.options = options.map((option) {
+      try {
+        return int.parse(option.toString());
+      } catch (e) {
+        throw FormatException('Error parsing option: $option');
       }
     }).toList();
   }
