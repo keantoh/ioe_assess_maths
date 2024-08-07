@@ -120,3 +120,69 @@ Future<Map<String, dynamic>> validateToken(String token) async {
     };
   }
 }
+
+Future<Map<String, dynamic>> updateUserDetails(
+    String userId, UserUpdate user) async {
+  final String apiUrl = 'http://localhost:8000/update_user_details/$userId';
+
+  try {
+    final response = await http
+        .put(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(user.toJson()),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    return {
+      'status': response.statusCode,
+      'message': responseBody,
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
+
+Future<Map<String, dynamic>> changeUserPassword(
+    String userId, UserPasswordUpdate user) async {
+  final String apiUrl = 'http://localhost:8000/change_user_password/$userId';
+
+  try {
+    final response = await http
+        .put(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(user.toJson()),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    return {
+      'status': response.statusCode,
+      'message': responseBody,
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}

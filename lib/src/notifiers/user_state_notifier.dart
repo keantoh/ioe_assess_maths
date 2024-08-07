@@ -11,6 +11,17 @@ class UserStateNotifier extends StateNotifier<UserLoginState?> {
   void logout() {
     state = null;
   }
+
+  void updateUserDetails(UserUpdate updatedDetails) {
+    if (state != null) {
+      state = state!.copyWith(
+        email: updatedDetails.email,
+        firstName: updatedDetails.firstName,
+        lastName: updatedDetails.lastName,
+        country: updatedDetails.country,
+      );
+    }
+  }
 }
 
 final userStateProvider =
