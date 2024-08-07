@@ -117,6 +117,7 @@ class LoginView extends StatelessWidget {
                           margin: fieldMargin,
                           child: TextFormField(
                             controller: passwordController,
+                            obscureText: true,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
                               labelText: AppLocalizations.of(context)!.password,
@@ -140,7 +141,9 @@ class LoginView extends StatelessWidget {
                         ),
                         Center(child: Consumer(builder: (context, ref, _) {
                           return ref.watch(isLoggingInProvider)
-                              ? const CircularProgressIndicator()
+                              ? const Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: CircularProgressIndicator())
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -185,9 +188,9 @@ class LoginView extends StatelessWidget {
                                   ],
                                 );
                         })),
-                        const Center(
-                            child: Text(
-                                "By continuing, you agree to our terms of service and privacy policy.")),
+                        Center(
+                            child: Text(AppLocalizations.of(context)!
+                                .privacyPolicyStatement)),
                       ],
                     ),
                   ),
