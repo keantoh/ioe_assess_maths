@@ -38,7 +38,7 @@ class ThemeNotifier extends StateNotifier<ThemeSettings> {
 
   void updateThemeColor(Color newThemeColor) {
     state = state.copyWith(themeColor: newThemeColor);
-    _saveSettings();
+    // _saveSettings();
   }
 
   void updateFontScale(double? newFontScale) {
