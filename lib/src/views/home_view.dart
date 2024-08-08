@@ -1,85 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/views/login_view.dart';
+import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/views/question_view.dart';
 
-import '../settings/settings_view.dart';
-
-/// Displays a list of SampleItems.
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   static const routeName = '/home';
+  final fieldMargin = const EdgeInsets.symmetric(horizontal: 32, vertical: 8);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedChild = ref.read(selectedChildProvider);
+    if (selectedChild == null) {
+      Future.microtask(() {
+        Navigator.of(context).pop();
+      });
+      return const SizedBox.shrink();
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        // title: const Text('Sample Items'),
-        title: Text(AppLocalizations.of(context)!.appTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Navigate to the settings page. If the user leaves and returns
-              // to the app after it has been killed while running in the
-              // background, the navigation stack is restored.
-              Navigator.restorablePushNamed(context, SettingsView.routeName);
-            },
-          ),
-        ],
+      body: SafeArea(
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.hi(selectedChild.name),
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.readyForChallenge,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 60, vertical: 12),
+                      child: Consumer(builder: (context, ref, _) {
+                        return OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 40),
+                                child:
+                                    Text(AppLocalizations.of(context)!.back)));
+                      }),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 60, vertical: 12),
+                      child: FilledButton(
+                          onPressed: () {
+                            ref
+                                .read(currentQuestionIndexProvider.notifier)
+                                .state = 0;
+                            Navigator.restorablePushNamed(
+                                context, QuestionView.routeName);
+                          },
+                          child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 40),
+                              child:
+                                  Text(AppLocalizations.of(context)!.start))),
+                    )
+                  ],
+                )
+              ],
+            ),
+          );
+        }),
       ),
-
-      // To work with lists that may contain a large number of items, it’s best
-      // to use the ListView.builder constructor.
-      //
-      // In contrast to the default ListView constructor, which requires
-      // building all Widgets up front, the ListView.builder constructor lazily
-      // builds Widgets as they’re scrolled into view.
-      body: Padding(
-        padding: EdgeInsets.all(18),
-        child: Column(
-          children: [
-            Text("HomeView"),
-            ElevatedButton(
-                onPressed: () {
-                  ref.read(userStateProvider.notifier).logout();
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginView()),
-                    ModalRoute.withName('/'),
-                  );
-                },
-                child: Text('Logout'))
-          ],
-        ),
-      ),
-
-      // ListView.builder(
-      //   // Providing a restorationId allows the ListView to restore the
-      //   // scroll position when a user leaves and returns to the app after it
-      //   // has been killed while running in the background.
-      //   restorationId: 'HomeView',
-      //   itemBuilder: (BuildContext context, int index) {
-      //     final item = items[index];
-
-      //     return ListTile(
-      //         title: Text('SampleItem ${item.id}'),
-      //         leading: const CircleAvatar(
-      //           // Display the Flutter Logo image asset.
-      //           foregroundImage: AssetImage('assets/images/flutter_logo.png'),
-      //         ),
-      //         onTap: () {
-      //           // Navigate to the details page. If the user leaves and returns to
-      //           // the app after it has been killed while running in the
-      //           // background, the navigation stack is restored.
-      //           Navigator.restorablePushNamed(
-      //             context,
-      //             SampleItemDetailsView.routeName,
-      //           );
-      //         });
-      //   },
-      // ),
     );
   }
 }
