@@ -10,8 +10,10 @@ import 'package:math_assessment/src/data/models/user_models.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
+import 'package:math_assessment/src/notifiers/user_update_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/change_password_dialog.dart';
+import 'package:math_assessment/src/views/delete_account_dialog.dart';
 import 'package:math_assessment/src/views/login_view.dart';
 
 final isUpdatingProvider = StateProvider<bool>(
@@ -25,7 +27,7 @@ class AccountView extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final fieldMargin = const EdgeInsets.symmetric(horizontal: 20, vertical: 4);
 
-  void _showChangePasswordModal(BuildContext context) {
+  void _showChangePasswordDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -34,94 +36,34 @@ class AccountView extends HookConsumerWidget {
     );
   }
 
+  void _showDeleteAccountDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteAccountDialog();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userState = ref.watch(userStateProvider);
+    final userUpdateNotifier = ref.watch(userUpdateProvider.notifier);
+    final userUpdateDetails = ref.watch(userUpdateProvider);
 
     final List<CountryKey> countries =
         useMemoized(() => CountryKey.getAllCountries(context));
-    CountryKey? selectedCountry = countries.firstWhereOrNull(
-        (country) => country.countryKeyCode == userState?.country);
-    final emailController = useTextEditingController(text: userState?.email);
+    final emailController =
+        useTextEditingController(text: userUpdateDetails.email);
     final firstNameController =
-        useTextEditingController(text: userState?.firstName);
+        useTextEditingController(text: userUpdateDetails.firstName);
     final lastNameController =
-        useTextEditingController(text: userState?.lastName);
+        useTextEditingController(text: userUpdateDetails.lastName);
 
-    final hasChanged = useState<bool>(false);
+    Future<void> handleUpdate(BuildContext context, WidgetRef ref) async {
+      if (_formKey.currentState!.validate()) {
+        final newDetails = userUpdateDetails;
 
-    useEffect(() {
-      void onTextChanged() {
-        hasChanged.value = emailController.text != userState?.email ||
-            firstNameController.text != userState?.firstName ||
-            lastNameController.text != userState?.lastName ||
-            selectedCountry?.countryKeyCode != userState?.country;
-      }
-
-      emailController.addListener(onTextChanged);
-      firstNameController.addListener(onTextChanged);
-      lastNameController.addListener(onTextChanged);
-
-      return () {
-        emailController.removeListener(onTextChanged);
-        firstNameController.removeListener(onTextChanged);
-        lastNameController.removeListener(onTextChanged);
-      };
-    }, [
-      emailController.text,
-      firstNameController.text,
-      lastNameController.text,
-      selectedCountry
-    ]);
-
-    void updateDetails() async {
-      final newDetails = UserUpdate(
-          email: emailController.text,
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
-          country: selectedCountry!.countryKeyCode);
-      final userId = ref.read(userStateProvider)?.userId;
-      if (userId == null) {
-        HelperFunctions.showSnackBar(
-            context, 2000, AppLocalizations.of(context)!.userIdNull);
-        return;
-      }
-      ref.read(isUpdatingProvider.notifier).state = true;
-
-      final result = await updateUserDetails(userId, newDetails);
-      final status = result['status'];
-
-      ref.read(isUpdatingProvider.notifier).state = false;
-      if (context.mounted) {
-        switch (status) {
-          case 200:
-            HelperFunctions.showSnackBar(context, 2000,
-                AppLocalizations.of(context)!.updateDetailsSuccess);
-            ref.read(userStateProvider.notifier).updateUserDetails(newDetails);
-            hasChanged.value = false;
-
-            break;
-          case 400:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error400);
-            break;
-          case 408:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error408);
-            break;
-          case 409:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error409_signup);
-            break;
-          case 503:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error503);
-            break;
-          default:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error500);
-            break;
-        }
+        await submitUpdate(context, ref, newDetails);
       }
     }
 
@@ -166,13 +108,17 @@ class AccountView extends HookConsumerWidget {
                                   }
                                   return null;
                                 },
+                                onChanged: (value) =>
+                                    userUpdateNotifier.updateFirstName(value),
                               ),
                             )),
                             Flexible(
                               child: Container(
                                 margin: fieldMargin,
                                 child: DropdownButtonFormField(
-                                  value: selectedCountry,
+                                  value: countries.firstWhereOrNull((country) =>
+                                      country.countryKeyCode ==
+                                      userUpdateDetails.country),
                                   decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
                                     labelText:
@@ -182,7 +128,10 @@ class AccountView extends HookConsumerWidget {
                                       ? AppLocalizations.of(context)!.emptyField
                                       : null,
                                   onChanged: (CountryKey? country) {
-                                    selectedCountry = country;
+                                    if (country != null) {
+                                      userUpdateNotifier.updateCountry(
+                                          country.countryKeyCode);
+                                    }
                                   },
                                   items: countries
                                       .map<DropdownMenuItem<CountryKey>>(
@@ -216,6 +165,8 @@ class AccountView extends HookConsumerWidget {
                                   }
                                   return null;
                                 },
+                                onChanged: (value) =>
+                                    userUpdateNotifier.updateLastName(value),
                               ),
                             )),
                             Flexible(
@@ -239,6 +190,8 @@ class AccountView extends HookConsumerWidget {
                                   }
                                   return null;
                                 },
+                                onChanged: (value) =>
+                                    userUpdateNotifier.updateEmail(value),
                               ),
                             )),
                           ],
@@ -259,7 +212,7 @@ class AccountView extends HookConsumerWidget {
                                           horizontal: 64, vertical: 4),
                                       child: OutlinedButton(
                                           onPressed: () {
-                                            _showChangePasswordModal(context);
+                                            _showChangePasswordDialog(context);
                                           },
                                           child: Container(
                                               padding:
@@ -275,12 +228,10 @@ class AccountView extends HookConsumerWidget {
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 64, vertical: 4),
                                       child: FilledButton(
-                                          onPressed: hasChanged.value
+                                          onPressed: userUpdateNotifier
+                                                  .hasChanges
                                               ? () {
-                                                  if (_formKey.currentState!
-                                                      .validate()) {
-                                                    updateDetails();
-                                                  }
+                                                  handleUpdate(context, ref);
                                                 }
                                               : null,
                                           child: Container(
@@ -348,7 +299,7 @@ class AccountView extends HookConsumerWidget {
                                           horizontal: 20, vertical: 4),
                                       child: FilledButton(
                                           onPressed: () =>
-                                              Navigator.pop(context),
+                                              _showDeleteAccountDialog(context),
                                           style: ButtonStyle(
                                             backgroundColor:
                                                 WidgetStatePropertyAll(
@@ -374,5 +325,51 @@ class AccountView extends HookConsumerWidget {
         }),
       ),
     );
+  }
+
+  Future<void> submitUpdate(
+      BuildContext context, WidgetRef ref, UserUpdate newDetails) async {
+    final userId = ref.read(userStateProvider)?.userId;
+    if (userId == null) {
+      HelperFunctions.showSnackBar(
+          context, 2000, AppLocalizations.of(context)!.userIdNull);
+      return;
+    }
+    ref.read(isUpdatingProvider.notifier).state = true;
+
+    final result = await updateUserDetails(userId, newDetails);
+    final status = result['status'];
+
+    ref.read(isUpdatingProvider.notifier).state = false;
+    if (context.mounted) {
+      switch (status) {
+        case 200:
+          HelperFunctions.showSnackBar(context, 2000,
+              AppLocalizations.of(context)!.updateDetailsSuccess);
+          ref.read(userStateProvider.notifier).updateUserDetails(newDetails);
+
+          break;
+        case 400:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 408:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error408);
+          break;
+        case 409:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error409_signup);
+          break;
+        case 503:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error503);
+          break;
+        default:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error500);
+          break;
+      }
+    }
   }
 }
