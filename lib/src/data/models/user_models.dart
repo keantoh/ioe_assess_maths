@@ -53,6 +53,13 @@ class UserUpdate {
     required this.country,
   });
 
+  bool hasChanges(UserUpdate other) {
+    return email != other.email ||
+        firstName != other.firstName ||
+        lastName != other.lastName ||
+        country != other.country;
+  }
+
   Map<String, dynamic> toJson() => {
         'email': email,
         'firstName': firstName,
@@ -73,6 +80,21 @@ class UserPasswordUpdate {
   Map<String, dynamic> toJson() => {
         'password': password,
         'newPassword': newPassword,
+      };
+}
+
+class UserAccountDelete {
+  final String userId;
+  final String password;
+
+  UserAccountDelete({
+    required this.userId,
+    required this.password,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'password': password,
       };
 }
 
