@@ -15,6 +15,15 @@ class Child {
     required this.favAnimal,
   });
 
+  bool hasChanges(Child other) {
+    return childId != other.childId ||
+        name != other.name ||
+        gender != other.gender ||
+        dob != other.dob ||
+        favColour != other.favColour ||
+        favAnimal != other.favAnimal;
+  }
+
   Child copyWith({
     int? childId,
     String? name,
@@ -31,6 +40,17 @@ class Child {
       favColour: favColour ?? this.favColour,
       favAnimal: favAnimal ?? this.favAnimal,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'childId': childId,
+      'name': name,
+      'gender': gender,
+      'dob': dob.toIso8601String().split('T').first,
+      'favColour': favColour,
+      'favAnimal': favAnimal,
+    };
   }
 
   factory Child.fromJson(Map<String, dynamic> json) {
