@@ -78,3 +78,99 @@ Future<List<Child>> getChildren(String userId) async {
     throw Exception('An unexpected error occurred: $e');
   }
 }
+
+Future<Map<String, dynamic>> updateChild(int childId, Child child) async {
+  final String apiUrl = 'http://localhost:8000/update_child/$childId';
+
+  try {
+    final response = await http
+        .put(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(child.toJson()),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      return {
+        'status': response.statusCode,
+        'response': responseBody,
+      };
+    } else {
+      return {
+        'status': response.statusCode,
+        'message': responseBody['detail'] ?? 'Server error occurred',
+      };
+    }
+  } on http.ClientException catch (e) {
+    return {
+      'status': 400,
+      'message': 'Client error: ${e.message}',
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on SocketException catch (e) {
+    return {
+      'status': 503,
+      'message': 'Client error: ${e.message}. Please check your connection.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
+
+Future<Map<String, dynamic>> deleteChild(int childId) async {
+  final String apiUrl = 'http://localhost:8000/delete_child/$childId';
+
+  try {
+    final response = await http.delete(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).timeout(const Duration(seconds: 10));
+
+    final responseBody = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      return {
+        'status': response.statusCode,
+        'response': responseBody,
+      };
+    } else {
+      return {
+        'status': response.statusCode,
+        'message': responseBody['detail'] ?? 'Server error occurred',
+      };
+    }
+  } on http.ClientException catch (e) {
+    return {
+      'status': 400,
+      'message': 'Client error: ${e.message}',
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on SocketException catch (e) {
+    return {
+      'status': 503,
+      'message': 'Client error: ${e.message}. Please check your connection.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
