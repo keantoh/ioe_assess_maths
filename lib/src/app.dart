@@ -4,8 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
 import 'package:math_assessment/src/views/account_view.dart';
-import 'package:math_assessment/src/views/assessment_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
+import 'package:math_assessment/src/views/child_edit_view.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
@@ -80,10 +80,10 @@ class MyApp extends ConsumerWidget {
                 return const ChildSelectView();
               case ChildAddView.routeName:
                 return ChildAddView();
+              case ChildEditView.routeName:
+                return ChildEditView();
               case AccountView.routeName:
                 return AccountView();
-              case AssessmentView.routeName:
-                return AssessmentView();
               case QuestionView.routeName:
                 return QuestionView();
               default:

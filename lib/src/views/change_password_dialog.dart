@@ -72,10 +72,11 @@ class ChangePasswordDialog extends HookConsumerWidget {
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ScaffoldMessenger(
         child: Builder(builder: (context) {
           return Scaffold(
+            backgroundColor: Colors.transparent,
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(32),

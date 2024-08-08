@@ -4,12 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/avatar_animal.dart';
 import 'package:math_assessment/src/data/models/avatar_color.dart';
 import 'package:math_assessment/src/data/models/child_models.dart';
+import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
+import 'package:math_assessment/src/settings/settings_view.dart';
 import 'package:math_assessment/src/views/account_view.dart';
-import 'package:math_assessment/src/views/assessment_view.dart';
+import 'package:math_assessment/src/views/child_edit_view.dart';
+import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
 
 class ChildSelectView extends ConsumerStatefulWidget {
@@ -41,6 +44,12 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
     });
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.settings),
+        onPressed: () {
+          Navigator.restorablePushNamed(context, SettingsView.routeName);
+        },
+      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -70,7 +79,7 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                   children == null
                       ? const Center(child: CircularProgressIndicator())
                       : SizedBox(
-                          height: 140,
+                          height: 150,
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -87,10 +96,17 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                         Expanded(
                           child: Center(
                             child: OutlinedButton(
-                                onPressed:
-                                    ref.watch(selectedChildProvider) == null
-                                        ? null
-                                        : () {},
+                                onPressed: ref.watch(selectedChildProvider) ==
+                                        null
+                                    ? null
+                                    : () {
+                                        ref
+                                            .read(childUpdateProvider.notifier)
+                                            .syncWithSelectedChild(ref
+                                                .read(selectedChildProvider)!);
+                                        Navigator.restorablePushNamed(
+                                            context, ChildEditView.routeName);
+                                      },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 24),
@@ -102,13 +118,13 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                         Expanded(
                           child: Center(
                             child: FilledButton(
-                                onPressed: ref.watch(selectedChildProvider) ==
-                                        null
-                                    ? null
-                                    : () {
-                                        Navigator.restorablePushNamed(
-                                            context, AssessmentView.routeName);
-                                      },
+                                onPressed:
+                                    ref.watch(selectedChildProvider) == null
+                                        ? null
+                                        : () {
+                                            Navigator.restorablePushNamed(
+                                                context, HomeView.routeName);
+                                          },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 36),
@@ -149,8 +165,8 @@ class ChildProfile extends ConsumerWidget {
               borderRadius: BorderRadius.circular(16),
               border: isSelected
                   ? Border.all(
-                      color: Theme.of(context).colorScheme.primaryFixed,
-                      width: 4.0)
+                      color: Theme.of(context).colorScheme.onSurface,
+                      width: 3.0)
                   : null),
           child: FilledButton(
             style: FilledButton.styleFrom(
@@ -163,13 +179,13 @@ class ChildProfile extends ConsumerWidget {
               ref.read(selectedChildProvider.notifier).state = child;
             },
             child: CircleAvatar(
-              radius: isSelected ? 48 : 40,
+              radius: isSelected ? 48 : 32,
               backgroundImage: AssetImage(avatarAnimal.imagePath),
             ),
           ),
         ),
         SizedBox(
-          height: 20,
+          height: 30,
           width: 120,
           child: Padding(
               padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
@@ -195,7 +211,7 @@ class AddChild extends ConsumerWidget {
     return Container(
       height: 120,
       width: 120,
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.primaryFixedDim,

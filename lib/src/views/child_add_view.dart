@@ -389,7 +389,7 @@ class AvatarDialog extends ConsumerWidget {
                       ? BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Theme.of(context).colorScheme.tertiary,
+                            color: Theme.of(context).colorScheme.primary,
                             width: 2.5,
                           ),
                         )
