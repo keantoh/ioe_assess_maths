@@ -16,4 +16,15 @@ enum Gender {
         return AppLocalizations.of(context)!.other;
     }
   }
+
+  static Gender fromString(String? genderString) {
+    switch (genderString) {
+      case 'male':
+        return Gender.male;
+      case 'female':
+        return Gender.female;
+      default:
+        return Gender.other;
+    }
+  }
 }
