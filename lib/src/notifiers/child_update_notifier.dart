@@ -92,8 +92,8 @@ final childUpdateProvider = StateNotifierProvider<ChildUpdateNotifier, Child>(
             name: '',
             gender: '',
             dob: DateTime.now(),
-            favAnimal: 0,
-            favColour: 0,
+            favAnimal: 1,
+            favColour: 1,
           );
     final notifier = ChildUpdateNotifier(initialDetails);
     notifier.setOriginalDetails(initialDetails);
