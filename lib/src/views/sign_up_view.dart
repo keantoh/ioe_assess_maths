@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/api/user_api.dart';
@@ -120,6 +121,9 @@ class SignUpView extends ConsumerWidget {
                                   }
                                   return null;
                                 },
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(20)
+                                ],
                               ),
                             )),
                             Flexible(
@@ -167,6 +171,9 @@ class SignUpView extends ConsumerWidget {
                                   }
                                   return null;
                                 },
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(20)
+                                ],
                               ),
                             )),
                             Flexible(
