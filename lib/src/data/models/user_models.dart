@@ -146,3 +146,37 @@ class UserLoginState {
     );
   }
 }
+
+class UserSearch {
+  final String userId;
+  final String email;
+  final String firstName;
+  final String lastName;
+  final String country;
+  final bool isAdmin;
+  final bool isActive;
+  final DateTime createdAt;
+
+  UserSearch(
+      {required this.userId,
+      required this.email,
+      required this.firstName,
+      required this.lastName,
+      required this.country,
+      required this.isAdmin,
+      required this.isActive,
+      required this.createdAt});
+
+  factory UserSearch.fromJson(Map<String, dynamic> json) {
+    return UserSearch(
+      userId: json['userId'] as String,
+      email: json['email'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      country: json['country'] as String,
+      isAdmin: json['isAdmin'] as bool,
+      isActive: json['isActive'] as bool,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+  }
+}
