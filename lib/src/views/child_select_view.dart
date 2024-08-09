@@ -8,12 +8,14 @@ import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
+import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/settings/settings_view.dart';
 import 'package:math_assessment/src/views/account_view.dart';
 import 'package:math_assessment/src/views/child_edit_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
+import 'package:math_assessment/src/views/user_search_view.dart';
 
 class ChildSelectView extends ConsumerStatefulWidget {
   const ChildSelectView({super.key});
@@ -68,11 +70,29 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                           ),
                         ),
                       ),
-                      IconButton(
-                          onPressed: () => Navigator.restorablePushNamed(
-                              context, AccountView.routeName),
-                          iconSize: 40,
-                          icon: const Icon(Icons.account_circle))
+                      ref.read(userStateProvider)!.isAdmin
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: IconButton(
+                                  onPressed: () {
+                                    ref
+                                        .read(userSearchProvider.notifier)
+                                        .setDefault();
+                                    Navigator.restorablePushNamed(
+                                        context, UserSearchView.routeName);
+                                  },
+                                  iconSize: 40,
+                                  icon: const Icon(Icons.manage_accounts)),
+                            )
+                          : const SizedBox.shrink(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: IconButton(
+                            onPressed: () => Navigator.restorablePushNamed(
+                                context, AccountView.routeName),
+                            iconSize: 40,
+                            icon: const Icon(Icons.account_circle)),
+                      )
                     ],
                   ),
                   const Spacer(),
