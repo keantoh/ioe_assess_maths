@@ -218,3 +218,67 @@ Future<Map<String, dynamic>> deleteUserAccount(UserAccountDelete user) async {
     };
   }
 }
+
+Future<Map<String, dynamic>> searchUsers(String searchQuery) async {
+  final String apiUrl = 'http://localhost:8000/search_users';
+
+  try {
+    final response = await http
+        .post(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({'query': searchQuery}),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    return {
+      'status': response.statusCode,
+      'message': responseBody,
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
+
+Future<Map<String, dynamic>> deleteUser(String userId) async {
+  final String apiUrl = 'http://localhost:8000/delete_user';
+
+  try {
+    final response = await http
+        .post(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({'userId': userId}),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    return {
+      'status': response.statusCode,
+      'message': responseBody,
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
