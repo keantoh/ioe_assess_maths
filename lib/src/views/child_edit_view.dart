@@ -34,6 +34,12 @@ class ChildEditView extends HookConsumerWidget {
 
   ChildEditView({super.key});
 
+  Future<void> handleUpdate(BuildContext context, WidgetRef ref) async {
+    if (_formKey.currentState!.validate()) {
+      await submitUpdate(ref, context);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localeName = AppLocalizations.of(context)?.localeName ?? 'en';
@@ -44,12 +50,6 @@ class ChildEditView extends HookConsumerWidget {
         useTextEditingController(text: childUpdateDetails.name);
     final dobController = useTextEditingController(
         text: DateFormat.yMMMMd(localeName).format(childUpdateDetails.dob));
-
-    Future<void> handleUpdate(BuildContext context, WidgetRef ref) async {
-      if (_formKey.currentState!.validate()) {
-        await submitUpdate(ref, context, childUpdateDetails);
-      }
-    }
 
     return Scaffold(
       body: SafeArea(
@@ -296,10 +296,9 @@ class ChildEditView extends HookConsumerWidget {
     );
   }
 
-  Future<void> submitUpdate(
-      WidgetRef ref, BuildContext context, Child updatedChild) async {
+  Future<void> submitUpdate(WidgetRef ref, BuildContext context) async {
     ref.read(isEditingChildProvider.notifier).state = true;
-
+    final updatedChild = ref.read(childUpdateProvider);
     final result = await updateChild(updatedChild.childId, updatedChild);
     final status = result['status'];
 
