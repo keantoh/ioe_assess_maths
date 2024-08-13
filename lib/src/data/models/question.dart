@@ -50,6 +50,14 @@ abstract class Question {
             json['correct_option'],
             json['options'] as List<dynamic>,
             json['equation']);
+      case 8:
+      case 9:
+        return SingleDigitOpsQuestion(
+            json['id'],
+            json['category'],
+            json['correct_option'],
+            json['options'] as List<dynamic>,
+            json['equation']);
       default:
         throw ArgumentError('Unknown category: ${json['category']}');
     }
@@ -96,6 +104,26 @@ abstract class Question {
       case 34:
       case 35:
         return AppLocalizations.of(context)!.question32;
+      case 36:
+        return AppLocalizations.of(context)!.question36;
+      case 37:
+        return AppLocalizations.of(context)!.question37;
+      case 38:
+        return AppLocalizations.of(context)!.question38;
+      case 39:
+        return AppLocalizations.of(context)!.question39;
+      case 40:
+        return AppLocalizations.of(context)!.question40;
+      case 41:
+        return AppLocalizations.of(context)!.question41;
+      case 42:
+        return AppLocalizations.of(context)!.question42;
+      case 43:
+        return AppLocalizations.of(context)!.question43;
+      case 44:
+        return AppLocalizations.of(context)!.question44;
+      case 45:
+        return AppLocalizations.of(context)!.question45;
       default:
         return AppLocalizations.of(context)!.question26;
     }
@@ -179,6 +207,27 @@ class MissingNoQuestion extends Question {
   List<int> options = [];
 
   MissingNoQuestion(super.id, super.category, super.correctOption,
+      List<dynamic> options, this.equation) {
+    parseOptions(options);
+  }
+
+  @override
+  void parseOptions(List<dynamic> options) {
+    this.options = options.map((option) {
+      try {
+        return int.parse(option.toString());
+      } catch (e) {
+        throw FormatException('Error parsing option: $option');
+      }
+    }).toList();
+  }
+}
+
+class SingleDigitOpsQuestion extends Question {
+  String equation;
+  List<int> options = [];
+
+  SingleDigitOpsQuestion(super.id, super.category, super.correctOption,
       List<dynamic> options, this.equation) {
     parseOptions(options);
   }

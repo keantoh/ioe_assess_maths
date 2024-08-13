@@ -335,5 +335,15 @@
   "question29": "Tap the number 9",
   "question30": "Tap the number 12",
   "question31": "Tap the number that comes next. 1, 2, 3...",
-  "question32": "Tap the missing number"
+  "question32": "Tap the missing number",
+  "question36": "Tap the number that is one more than 2",
+  "question37": "Tap the number that is one more than 4",
+  "question38": "1 add 2 equals... Tap the number",
+  "question39": "2 add 3 equals... Tap the number",
+  "question40": "4 add 5 equals... Tap the number",
+  "question41": "Tap the number that is one less than 3",
+  "question42": "Tap the number that is one less than 5",
+  "question43": "2 take away 1 equals... Tap the number",
+  "question44": "4 take away 2 equals... Tap the number",
+  "question45": "7 take away 3 equals... Tap the number"
 }

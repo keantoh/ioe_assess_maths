@@ -10,6 +10,7 @@ import 'package:math_assessment/src/data/models/question.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
 import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
+import 'package:math_assessment/src/widgets/single_digit_ops_options_widget.dart';
 import 'package:math_assessment/src/widgets/subitising_options_widget.dart';
 import 'package:math_assessment/src/widgets/symbolic_options_widget.dart';
 
@@ -202,6 +203,9 @@ class QuestionViewState extends ConsumerState<QuestionView> {
           screenWidth, screenHeight, sessionStartTime);
     } else if (currentQuestion is MissingNoQuestion) {
       return MissingNoOptionsWidget(currentQuestion, totalQuestions,
+          screenWidth, screenHeight, sessionStartTime);
+    } else if (currentQuestion is SingleDigitOpsQuestion) {
+      return SingleDigitsOpsOptionsWidget(currentQuestion, totalQuestions,
           screenWidth, screenHeight, sessionStartTime);
     }
     // Add more cases for other question types here
