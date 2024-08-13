@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_assessment/src/data/models/avatar_animal.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/views/question_view.dart';
 
@@ -22,33 +23,40 @@ class HomeView extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: LayoutBuilder(builder: (context, constraints) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.hi(selectedChild.name),
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.hi(selectedChild.name),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.readyForChallenge,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
+              ),
+              CircleAvatar(
+                radius: 48,
+                backgroundImage: AssetImage(
+                    AvatarAnimal.fromId(selectedChild.favAnimal).imagePath),
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.readyForChallenge,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ),
-                Row(
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 60, vertical: 12),
+                      margin: const EdgeInsets.symmetric(horizontal: 60),
                       child: Consumer(builder: (context, ref, _) {
                         return OutlinedButton(
                             onPressed: () {
@@ -62,8 +70,7 @@ class HomeView extends ConsumerWidget {
                       }),
                     ),
                     Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 60, vertical: 12),
+                      margin: const EdgeInsets.symmetric(horizontal: 60),
                       child: FilledButton(
                           onPressed: () {
                             ref
@@ -79,11 +86,11 @@ class HomeView extends ConsumerWidget {
                                   Text(AppLocalizations.of(context)!.start))),
                     )
                   ],
-                )
-              ],
-            ),
-          );
-        }),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
