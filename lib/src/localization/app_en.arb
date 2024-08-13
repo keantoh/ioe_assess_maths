@@ -324,10 +324,16 @@
   "color_purple": "Purple",
   "question1": "Tap the side that has more",
   "question6": "Tap which one is more",
-  "question26": "Tap the side that has two dots",
-  "question27": "Tap the side that has four dots",
-  "question28": "Tap the side that has three dots",
-  "question29": "Tap the side that has five dots",
-  "question30": "Tap the side that has six dots"
-
+  "question21": "Tap the side that has two dots",
+  "question22": "Tap the side that has four dots",
+  "question23": "Tap the side that has three dots",
+  "question24": "Tap the side that has five dots",
+  "question25": "Tap the side that has six dots",
+  "question26": "Tap the number 2",
+  "question27": "Tap the number 5",
+  "question28": "Tap the number 6",
+  "question29": "Tap the number 9",
+  "question30": "Tap the number 12",
+  "question31": "Tap the number that comes next. 1, 2, 3...",
+  "question32": "Tap the missing number"
 }

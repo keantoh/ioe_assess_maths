@@ -381,7 +381,7 @@
       "correct_option": 0
     },
     {
-      "id": 26,
+      "id": 21,
       "category": 5,
       "options": [
         [
@@ -417,7 +417,7 @@
       "correct_option": 1
     },
     {
-      "id": 27,
+      "id": 22,
       "category": 5,
       "options": [
         [
@@ -458,7 +458,7 @@
       "correct_option": 0
     },
     {
-      "id": 28,
+      "id": 23,
       "category": 5,
       "options": [
         [
@@ -504,7 +504,7 @@
       "correct_option": 1
     },
     {
-      "id": 29,
+      "id": 24,
       "category": 5,
       "options": [
         [
@@ -555,7 +555,7 @@
       "correct_option": 1
     },
     {
-      "id": 30,
+      "id": 25,
       "category": 5,
       "options": [
         [
@@ -614,6 +614,92 @@
         ]
       ],
       "correct_option": 1
+    },
+    {
+      "id": 26,
+      "category": 6,
+      "options": [
+        2,1
+      ],
+      "correct_option": 0
+    },
+    {
+      "id": 27,
+      "category": 6,
+      "options": [
+        5,4
+      ],
+      "correct_option": 0
+    },
+    {
+      "id": 28,
+      "category": 6,
+      "options": [
+        3,6
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 29,
+      "category": 6,
+      "options": [
+        9,8
+      ],
+      "correct_option": 0
+    },
+    {
+      "id": 30,
+      "category": 6,
+      "options": [
+        12,11
+      ],
+      "correct_option": 0
+    },
+    {
+      "id": 31,
+      "category": 7,
+      "equation": "1 2 3 _",
+      "options": [
+        5,7,6,4
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 32,
+      "category": 7,
+      "equation": "1 2 _ 4",
+      "options": [
+        4,7,6,3
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 33,
+      "category": 7,
+      "equation": "1 2 3 4 _ 6 7",
+      "options": [
+        10,5,8,9
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 34,
+      "category": 7,
+      "equation": "1 2 3 4 5 6 _",
+      "options": [
+        10,8,7,9
+      ],
+      "correct_option": 2
+    },
+
+    {
+      "id": 35,
+      "category": 7,
+      "equation": "5 6 7 8 _",
+      "options": [
+        9,4,2,1
+      ],
+      "correct_option": 0
     }
   ]
 }

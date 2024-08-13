@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:math_assessment/src/data/models/dot_paint.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:math_assessment/src/data/models/dot_paint.dart';
 
 abstract class Question {
   final int id;
@@ -28,12 +28,28 @@ abstract class Question {
           json['options'] as List<dynamic>,
         );
       case 5:
+        // CURRENTLY SAME AS NONSYMBOLIC QUESTION
         return SubitisingQuestion(
           json['id'],
           json['category'],
           json['correct_option'],
           json['options'] as List<dynamic>,
         );
+      case 6:
+        // Recognition same as SymbolicQuestion layout
+        return SymbolicQuestion(
+          json['id'],
+          json['category'],
+          json['correct_option'],
+          json['options'] as List<dynamic>,
+        );
+      case 7:
+        return MissingNoQuestion(
+            json['id'],
+            json['category'],
+            json['correct_option'],
+            json['options'] as List<dynamic>,
+            json['equation']);
       default:
         throw ArgumentError('Unknown category: ${json['category']}');
     }
@@ -53,6 +69,16 @@ abstract class Question {
       case 9:
       case 10:
         return AppLocalizations.of(context)!.question6;
+      case 21:
+        return AppLocalizations.of(context)!.question21;
+      case 22:
+        return AppLocalizations.of(context)!.question22;
+      case 23:
+        return AppLocalizations.of(context)!.question23;
+      case 24:
+        return AppLocalizations.of(context)!.question24;
+      case 25:
+        return AppLocalizations.of(context)!.question25;
       case 26:
         return AppLocalizations.of(context)!.question26;
       case 27:
@@ -63,6 +89,13 @@ abstract class Question {
         return AppLocalizations.of(context)!.question29;
       case 30:
         return AppLocalizations.of(context)!.question30;
+      case 31:
+        return AppLocalizations.of(context)!.question31;
+      case 32:
+      case 33:
+      case 34:
+      case 35:
+        return AppLocalizations.of(context)!.question32;
       default:
         return AppLocalizations.of(context)!.question26;
     }
@@ -136,6 +169,27 @@ class SubitisingQuestion extends Question {
         }).toList();
       } else {
         throw const FormatException('Invalid option list format');
+      }
+    }).toList();
+  }
+}
+
+class MissingNoQuestion extends Question {
+  String equation;
+  List<int> options = [];
+
+  MissingNoQuestion(super.id, super.category, super.correctOption,
+      List<dynamic> options, this.equation) {
+    parseOptions(options);
+  }
+
+  @override
+  void parseOptions(List<dynamic> options) {
+    this.options = options.map((option) {
+      try {
+        return int.parse(option.toString());
+      } catch (e) {
+        throw FormatException('Error parsing option: $option');
       }
     }).toList();
   }

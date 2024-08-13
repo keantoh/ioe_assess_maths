@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/question.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
 import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
 import 'package:math_assessment/src/widgets/subitising_options_widget.dart';
 import 'package:math_assessment/src/widgets/symbolic_options_widget.dart';
@@ -41,6 +42,8 @@ class QuestionViewState extends ConsumerState<QuestionView> {
       id = 1;
     } else if (id >= 6 && id <= 10) {
       id = 6;
+    } else if (id >= 32 && id <= 35) {
+      id = 32;
     }
     final audioPath = 'audios/$localeName/$id.mp3';
     await audioPlayer.play(AssetSource(audioPath));
@@ -187,16 +190,19 @@ class QuestionViewState extends ConsumerState<QuestionView> {
   }
 
   Widget buildQuestionOptions(Question currentQuestion, int totalQuestions,
-      double width, double height, DateTime sessionStartTime) {
-    if (currentQuestion is SubitisingQuestion) {
-      return SubitisingOptionsWidget(
-          currentQuestion, totalQuestions, width, height, sessionStartTime);
-    } else if (currentQuestion is NonSymbolicQuestion) {
-      return NonSymbolicOptionsWidget(
-          currentQuestion, totalQuestions, width, height, sessionStartTime);
+      double screenWidth, double screenHeight, DateTime sessionStartTime) {
+    if (currentQuestion is NonSymbolicQuestion) {
+      return NonSymbolicOptionsWidget(currentQuestion, totalQuestions,
+          screenWidth, screenHeight, sessionStartTime);
     } else if (currentQuestion is SymbolicQuestion) {
-      return SymbolicOptionsWidget(
-          currentQuestion, totalQuestions, width, height, sessionStartTime);
+      return SymbolicOptionsWidget(currentQuestion, totalQuestions, screenWidth,
+          screenHeight, sessionStartTime);
+    } else if (currentQuestion is SubitisingQuestion) {
+      return SubitisingOptionsWidget(currentQuestion, totalQuestions,
+          screenWidth, screenHeight, sessionStartTime);
+    } else if (currentQuestion is MissingNoQuestion) {
+      return MissingNoOptionsWidget(currentQuestion, totalQuestions,
+          screenWidth, screenHeight, sessionStartTime);
     }
     // Add more cases for other question types here
     return Center(
