@@ -55,14 +55,14 @@ class MissingNoOptionsWidget extends ConsumerWidget {
               height: height * 0.5,
               child: Row(
                 children: [
-                  optionWidget(context, ref, 3),
+                  optionWidget(context, ref, 1),
                   Column(
                     children: [
                       optionWidget(context, ref, 0),
-                      optionWidget(context, ref, 2),
+                      optionWidget(context, ref, 3),
                     ],
                   ),
-                  optionWidget(context, ref, 1),
+                  optionWidget(context, ref, 2),
                 ],
               ),
             ),
