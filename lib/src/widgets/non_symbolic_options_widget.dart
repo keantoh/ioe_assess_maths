@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/api/result_api.dart';
 import 'package:math_assessment/src/data/models/question.dart';
 import 'package:math_assessment/src/data/models/result_models.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/utils/dot_painter.dart';
+import 'package:math_assessment/src/utils/helper_functions.dart';
 
 class NonSymbolicOptionsWidget extends ConsumerWidget {
   final NonSymbolicQuestion currentQuestion;
@@ -12,24 +12,24 @@ class NonSymbolicOptionsWidget extends ConsumerWidget {
   final double width;
   final double height;
   final DateTime sessionStartTime;
+  final DateTime startTime;
 
-  const NonSymbolicOptionsWidget(
+  NonSymbolicOptionsWidget(
     this.currentQuestion,
     this.totalQuestions,
     this.width,
     this.height,
     this.sessionStartTime, {
     super.key,
-  });
+  }) : startTime = DateTime.now().toUtc();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final startTime = DateTime.now().toUtc();
-    return Row(children: buildOptionWidgets(context, ref, startTime, height));
+    return Row(children: buildOptionWidgets(context, ref, height));
   }
 
   List<Widget> buildOptionWidgets(
-      BuildContext context, WidgetRef ref, DateTime startTime, double height) {
+      BuildContext context, WidgetRef ref, double height) {
     final options = currentQuestion.options.asMap().entries.toList();
     List<Widget> widgets = [];
 
@@ -41,29 +41,7 @@ class NonSymbolicOptionsWidget extends ConsumerWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               return InkWell(
-                onTap: () async {
-                  final selectedChild = ref.read(selectedChildProvider);
-                  if (selectedChild == null) return;
-
-                  final newResult = ResultCreate(
-                    childId: selectedChild.childId,
-                    sessionStartTime: sessionStartTime,
-                    questionId: currentQuestion.id,
-                    correctAnswer: currentQuestion.correctOption,
-                    selectedAnswer: options[i].key,
-                    timeTaken: DateTime.now()
-                        .toUtc()
-                        .difference(startTime)
-                        .inMilliseconds,
-                  );
-
-                  final response = await addResult(newResult);
-                  if (ref.read(currentQuestionIndexProvider) <
-                          totalQuestions - 1 &&
-                      response['status'] == 201) {
-                    ref.read(currentQuestionIndexProvider.notifier).state += 1;
-                  }
-                },
+                onTap: () => submitAnswer(context, ref, options[i].key),
                 borderRadius: BorderRadius.circular(12),
                 child: Ink(
                   decoration: BoxDecoration(
@@ -99,5 +77,22 @@ class NonSymbolicOptionsWidget extends ConsumerWidget {
     }
 
     return widgets;
+  }
+
+  Future<void> submitAnswer(
+      BuildContext context, WidgetRef ref, int selectedAnswer) async {
+    final selectedChild = ref.read(selectedChildProvider);
+    if (selectedChild == null) return;
+
+    final newResult = ResultCreate(
+      childId: selectedChild.childId,
+      sessionStartTime: sessionStartTime,
+      questionId: currentQuestion.id,
+      correctAnswer: currentQuestion.correctOption,
+      selectedAnswer: selectedAnswer,
+      timeTaken: DateTime.now().toUtc().difference(startTime).inMilliseconds,
+    );
+
+    HelperFunctions.submitResult(context, ref, newResult);
   }
 }
