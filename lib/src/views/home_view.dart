@@ -76,6 +76,11 @@ class HomeView extends ConsumerWidget {
                             ref
                                 .read(currentQuestionIndexProvider.notifier)
                                 .state = 0;
+                            ref
+                                .read(completedQuestionsProvider.notifier)
+                                .state = 0;
+                            ref.read(showResultsProvider.notifier).state =
+                                false;
                             Navigator.restorablePushNamed(
                                 context, QuestionView.routeName);
                           },
