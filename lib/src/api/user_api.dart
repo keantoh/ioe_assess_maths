@@ -19,10 +19,17 @@ Future<Map<String, dynamic>> signUpUser(UserCreate user) async {
         .timeout(const Duration(seconds: 10));
     final responseBody = json.decode(response.body);
 
-    return {
-      'status': response.statusCode,
-      'message': responseBody,
-    };
+    if (response.statusCode == 201) {
+      return {
+        'status': response.statusCode,
+        'response': responseBody,
+      };
+    } else {
+      return {
+        'status': response.statusCode,
+        'message': responseBody['detail'] ?? 'Server error occurred',
+      };
+    }
   } on TimeoutException catch (_) {
     return {
       'status': 408,
