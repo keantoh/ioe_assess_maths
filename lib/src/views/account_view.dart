@@ -199,6 +199,9 @@ class AccountView extends HookConsumerWidget {
                                 },
                                 onChanged: (value) =>
                                     userUpdateNotifier.updateEmail(value),
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(50)
+                                ],
                               ),
                             )),
                           ],

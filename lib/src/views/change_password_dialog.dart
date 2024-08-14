@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -101,6 +102,9 @@ class ChangePasswordDialog extends HookConsumerWidget {
                             }
                             return null;
                           },
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(50)
+                          ],
                         ),
                       ),
                       Container(
@@ -122,6 +126,9 @@ class ChangePasswordDialog extends HookConsumerWidget {
                             }
                             return null;
                           },
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(50)
+                          ],
                         ),
                       ),
                       Container(
@@ -144,6 +151,9 @@ class ChangePasswordDialog extends HookConsumerWidget {
                             }
                             return null;
                           },
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(50)
+                          ],
                         ),
                       ),
                       ref.watch(isChangingProvider)

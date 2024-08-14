@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/user_models.dart';
@@ -6,6 +7,7 @@ import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
+import 'package:math_assessment/src/views/forgot_password_view.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
 import 'package:math_assessment/src/api/user_api.dart';
 
@@ -111,6 +113,9 @@ class LoginView extends StatelessWidget {
                               }
                               return null;
                             },
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(50)
+                            ],
                           ),
                         ),
                         Container(
@@ -128,6 +133,9 @@ class LoginView extends StatelessWidget {
                               }
                               return null;
                             },
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(50)
+                            ],
                           ),
                         ),
                         Container(
@@ -136,7 +144,8 @@ class LoginView extends StatelessWidget {
                           child: TextButton(
                             child: Text(
                                 AppLocalizations.of(context)!.forgotPassword),
-                            onPressed: () {},
+                            onPressed: () => Navigator.restorablePushNamed(
+                                context, ForgotPasswordView.routeName),
                           ),
                         ),
                         Center(child: Consumer(builder: (context, ref, _) {
