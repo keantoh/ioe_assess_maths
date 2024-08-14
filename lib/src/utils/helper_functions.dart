@@ -18,6 +18,9 @@ class HelperFunctions {
       BuildContext context, WidgetRef ref, ResultCreate newResult) async {
     final response = await addResult(newResult);
     final status = response['status'];
+    const encouragementWindow = 10;
+    final currQuestionNo = ref.read(currentQuestionIndexProvider) + 1;
+    ref.read(completedQuestionsProvider.notifier).state += 1;
 
     if (context.mounted) {
       switch (status) {
@@ -25,17 +28,15 @@ class HelperFunctions {
           final questionList = ref.read(questionListProvider).value;
           if (questionList == null) {
             HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error400);
+                context, 2000, AppLocalizations.of(context)!.unexpectedError);
             return;
           }
-
-          if (ref.read(currentQuestionIndexProvider) <
-              questionList.length - 1) {
-            ref.read(currentQuestionIndexProvider.notifier).state += 1;
+          if (currQuestionNo % encouragementWindow == 0 ||
+              currQuestionNo == questionList.length) {
+            ref.read(showResultsProvider.notifier).state = true;
           } else {
-            // END SCREEN
+            ref.read(currentQuestionIndexProvider.notifier).state += 1;
           }
-
           break;
         case 400:
           HelperFunctions.showSnackBar(
@@ -44,10 +45,6 @@ class HelperFunctions {
         case 408:
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error408);
-          break;
-        case 409:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error409_signup);
           break;
         case 503:
           HelperFunctions.showSnackBar(
