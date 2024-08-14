@@ -7,6 +7,7 @@ import 'package:math_assessment/src/views/account_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
 import 'package:math_assessment/src/views/child_edit_view.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
+import 'package:math_assessment/src/views/forgot_password_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
 import 'package:math_assessment/src/views/question_view.dart';
@@ -71,6 +72,8 @@ class MyApp extends ConsumerWidget {
               case SampleItemDetailsView.routeName:
                 return const SampleItemDetailsView();
               case SampleItemListView.routeName:
+              case ForgotPasswordView.routeName:
+                return ForgotPasswordView();
               case LoginView.routeName:
                 return LoginView();
               case SignUpView.routeName:
