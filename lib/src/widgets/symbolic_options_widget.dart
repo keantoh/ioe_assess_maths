@@ -8,27 +8,22 @@ import 'package:math_assessment/src/utils/helper_functions.dart';
 class SymbolicOptionsWidget extends ConsumerWidget {
   final SymbolicQuestion currentQuestion;
   final int totalQuestions;
-  final double width;
-  final double height;
   final DateTime sessionStartTime;
   final DateTime startTime;
 
   SymbolicOptionsWidget(
     this.currentQuestion,
     this.totalQuestions,
-    this.width,
-    this.height,
     this.sessionStartTime, {
     super.key,
   }) : startTime = DateTime.now().toUtc();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(children: buildOptionWidgets(context, ref, height));
+    return Row(children: buildOptionWidgets(context, ref));
   }
 
-  List<Widget> buildOptionWidgets(
-      BuildContext context, WidgetRef ref, double height) {
+  List<Widget> buildOptionWidgets(BuildContext context, WidgetRef ref) {
     final options = currentQuestion.options.asMap().entries.toList();
     List<Widget> widgets = [];
 
@@ -39,6 +34,7 @@ class SymbolicOptionsWidget extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           child: LayoutBuilder(
             builder: (context, constraints) {
+              final double height = constraints.maxHeight;
               return InkWell(
                 onTap: () => submitAnswer(context, ref, options[i].key),
                 borderRadius: BorderRadius.circular(12),
@@ -49,7 +45,7 @@ class SymbolicOptionsWidget extends ConsumerWidget {
                   ),
                   child: SizedBox(
                       width: constraints.maxWidth,
-                      height: height * 0.5,
+                      height: height,
                       child: Center(
                         child: Text(options[i].value.toString(),
                             style: Theme.of(context)
@@ -69,10 +65,13 @@ class SymbolicOptionsWidget extends ConsumerWidget {
       widgets.add(optionWidget);
 
       if (i % 2 == 0) {
-        widgets.add(Container(
-          width: 3.0,
-          height: height * 0.5,
-          color: Theme.of(context).colorScheme.secondary,
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: Container(
+            width: 3.0,
+            height: 500,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ));
       }
     }

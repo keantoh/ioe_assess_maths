@@ -8,16 +8,12 @@ import 'package:math_assessment/src/utils/helper_functions.dart';
 class MissingNoOptionsWidget extends ConsumerWidget {
   final MissingNoQuestion currentQuestion;
   final int totalQuestions;
-  final double width;
-  final double height;
   final DateTime sessionStartTime;
   final DateTime startTime;
 
   MissingNoOptionsWidget(
     this.currentQuestion,
     this.totalQuestions,
-    this.width,
-    this.height,
     this.sessionStartTime, {
     super.key,
   }) : startTime = DateTime.now().toUtc();
@@ -28,7 +24,6 @@ class MissingNoOptionsWidget extends ConsumerWidget {
       children: [
         // Equation
         Expanded(
-          flex: 1,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Center(
@@ -41,38 +36,41 @@ class MissingNoOptionsWidget extends ConsumerWidget {
           ),
         ),
         // Separator
-        Container(
-          width: 3.0,
-          height: height * 0.5,
-          color: Theme.of(context).colorScheme.secondary,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: Container(
+            width: 3.0,
+            height: 500,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ),
         // Options
         Expanded(
-          flex: 1,
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              height: height * 0.5,
-              child: Row(
+            child: LayoutBuilder(builder: (context, constraints) {
+              final double height = constraints.maxHeight;
+              return Row(
                 children: [
-                  optionWidget(context, ref, 1),
+                  optionWidget(context, ref, height, 1),
                   Column(
                     children: [
-                      optionWidget(context, ref, 0),
-                      optionWidget(context, ref, 3),
+                      optionWidget(context, ref, height, 0),
+                      optionWidget(context, ref, height, 3),
                     ],
                   ),
-                  optionWidget(context, ref, 2),
+                  optionWidget(context, ref, height, 2),
                 ],
-              ),
-            ),
+              );
+            }),
           ),
         )
       ],
     );
   }
 
-  Widget optionWidget(BuildContext context, WidgetRef ref, int optionIndex) {
+  Widget optionWidget(
+      BuildContext context, WidgetRef ref, double height, int optionIndex) {
     return Expanded(
       child: Align(
         alignment: Alignment.center,
@@ -80,8 +78,8 @@ class MissingNoOptionsWidget extends ConsumerWidget {
           onTap: () => submitAnswer(context, ref, optionIndex),
           borderRadius: BorderRadius.circular(24),
           child: Ink(
-            height: height * 0.2,
-            width: height * 0.2,
+            height: height * 0.4,
+            width: height * 0.4,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
               color: Theme.of(context).colorScheme.surfaceContainer,

@@ -9,27 +9,22 @@ import 'package:math_assessment/src/utils/helper_functions.dart';
 class SubitisingOptionsWidget extends ConsumerWidget {
   final SubitisingQuestion currentQuestion;
   final int totalQuestions;
-  final double width;
-  final double height;
   final DateTime sessionStartTime;
   final DateTime startTime;
 
   SubitisingOptionsWidget(
     this.currentQuestion,
     this.totalQuestions,
-    this.width,
-    this.height,
     this.sessionStartTime, {
     super.key,
   }) : startTime = DateTime.now().toUtc();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(children: buildOptionWidgets(context, ref, height));
+    return Row(children: buildOptionWidgets(context, ref));
   }
 
-  List<Widget> buildOptionWidgets(
-      BuildContext context, WidgetRef ref, double height) {
+  List<Widget> buildOptionWidgets(BuildContext context, WidgetRef ref) {
     final options = currentQuestion.options.asMap().entries.toList();
     List<Widget> widgets = [];
 
@@ -40,6 +35,8 @@ class SubitisingOptionsWidget extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           child: LayoutBuilder(
             builder: (context, constraints) {
+              final double width = constraints.maxWidth;
+              final double height = constraints.maxHeight;
               return InkWell(
                 onTap: () => submitAnswer(context, ref, options[i].key),
                 borderRadius: BorderRadius.circular(12),
@@ -49,13 +46,10 @@ class SubitisingOptionsWidget extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
                   child: SizedBox(
-                      width: constraints.maxWidth,
-                      height: height * 0.5,
+                      width: width,
+                      height: height,
                       child: CustomPaint(
-                        painter: DotsPainter(
-                            options[i].value,
-                            width * 0.45,
-                            height * 0.45,
+                        painter: DotsPainter(options[i].value, width, height,
                             Theme.of(context).colorScheme.primary),
                       )),
                 ),
@@ -68,10 +62,13 @@ class SubitisingOptionsWidget extends ConsumerWidget {
       widgets.add(optionWidget);
 
       if (i % 2 == 0) {
-        widgets.add(Container(
-          width: 3.0,
-          height: height * 0.5,
-          color: Theme.of(context).colorScheme.secondary,
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: Container(
+            width: 3.0,
+            height: 500,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ));
       }
     }
