@@ -190,8 +190,11 @@ class ChangePasswordDialog extends HookConsumerWidget {
                                           }
                                         },
                                         child: Text(
-                                            AppLocalizations.of(context)!
-                                                .changePassword)),
+                                          AppLocalizations.of(context)!
+                                              .changePassword,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
                                   ),
                                 ),
                               ],

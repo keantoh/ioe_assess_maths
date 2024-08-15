@@ -179,8 +179,11 @@ class DeleteAccountDialog extends HookConsumerWidget {
                                                 ),
                                               ),
                                               child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .deleteAccount)),
+                                                AppLocalizations.of(context)!
+                                                    .deleteAccount,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
                                         ),
                                       ),
                                     ],

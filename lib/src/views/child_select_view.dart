@@ -10,11 +10,11 @@ import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/settings/settings_view.dart';
 import 'package:math_assessment/src/views/account_view.dart';
+import 'package:math_assessment/src/views/child_add_view.dart';
 import 'package:math_assessment/src/views/child_edit_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
-import 'package:math_assessment/src/views/child_add_view.dart';
+import 'package:math_assessment/src/views/settings_view.dart';
 import 'package:math_assessment/src/views/user_search_view.dart';
 
 class ChildSelectView extends ConsumerStatefulWidget {
@@ -59,6 +59,7 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
+                  // TITLE AND ICONS
                   Row(
                     children: [
                       Expanded(
@@ -95,11 +96,9 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                       )
                     ],
                   ),
-                  const Spacer(),
                   children == null
                       ? const Center(child: CircularProgressIndicator())
-                      : SizedBox(
-                          height: 150,
+                      : Expanded(
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -107,9 +106,10 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                                   .map((child) => ChildProfile(child: child)),
                               const AddChild(),
                             ],
-                          )),
-                  const Spacer(),
-                  Container(
+                          ),
+                        ),
+                  // BUTTONS
+                  Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Row(
                       children: [
@@ -176,6 +176,7 @@ class ChildProfile extends ConsumerWidget {
     final avatarAnimal = AvatarAnimal.fromId(child.favAnimal);
     final isSelected = ref.watch(selectedChildProvider) == child;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           height: 120,
@@ -204,20 +205,16 @@ class ChildProfile extends ConsumerWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: 30,
-          width: 120,
-          child: Padding(
-              padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
-              child: Center(
-                child: Text(
-                  child.name,
-                  style: TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                      fontWeight: isSelected ? FontWeight.bold : null),
-                ),
-              )),
-        )
+        Padding(
+            padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
+            child: Center(
+              child: Text(
+                child.name,
+                style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: isSelected ? FontWeight.bold : null),
+              ),
+            ))
       ],
     );
   }
@@ -228,32 +225,32 @@ class AddChild extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      height: 120,
-      width: 120,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primaryFixedDim,
-          width: 2.5,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: FilledButton(
-        style: FilledButton.styleFrom(
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          height: 120,
+          width: 120,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primaryFixedDim,
+              width: 2.5,
+            ),
+            borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: Theme.of(context).colorScheme.primaryFixed,
-        ),
-        onPressed: () {
-          Navigator.restorablePushNamed(context, ChildAddView.routeName);
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.primaryFixed,
+            ),
+            onPressed: () {
+              Navigator.restorablePushNamed(context, ChildAddView.routeName);
+            },
+            child: CircleAvatar(
               radius: 32,
               backgroundColor: Theme.of(context).colorScheme.primaryFixedDim,
               foregroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
@@ -262,17 +259,17 @@ class AddChild extends ConsumerWidget {
                 size: 40,
               ),
             ),
-            Padding(
-                padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-                child: Text(
-                  AppLocalizations.of(context)!.addChild,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryFixed,
-                      overflow: TextOverflow.ellipsis),
-                ))
-          ],
+          ),
         ),
-      ),
+        Padding(
+            padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
+            child: Center(
+              child: Text(
+                AppLocalizations.of(context)!.addChild,
+                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              ),
+            ))
+      ],
     );
   }
 }

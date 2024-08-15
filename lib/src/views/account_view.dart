@@ -120,6 +120,8 @@ class AccountView extends HookConsumerWidget {
                               child: Container(
                                 margin: fieldMargin,
                                 child: DropdownButtonFormField(
+                                  isExpanded: true,
+                                  isDense: false,
                                   value: countries.firstWhereOrNull((country) =>
                                       country.countryKeyCode ==
                                       userUpdateDetails.country),
@@ -144,6 +146,15 @@ class AccountView extends HookConsumerWidget {
                                         value: country,
                                         child: Text(country.translation));
                                   }).toList(),
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return countries
+                                        .map<Widget>((CountryKey country) {
+                                      return Text(
+                                        country.translation,
+                                        overflow: TextOverflow.ellipsis,
+                                      );
+                                    }).toList();
+                                  },
                                 ),
                               ),
                             ),
@@ -217,9 +228,7 @@ class AccountView extends HookConsumerWidget {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Expanded(
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 64, vertical: 4),
+                                    child: Center(
                                       child: OutlinedButton(
                                           onPressed: () {
                                             _showChangePasswordDialog(context);
@@ -234,9 +243,7 @@ class AccountView extends HookConsumerWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 64, vertical: 4),
+                                    child: Center(
                                       child: FilledButton(
                                           onPressed: userUpdateNotifier
                                                   .hasChanges
@@ -319,8 +326,11 @@ class AccountView extends HookConsumerWidget {
                                             ),
                                           ),
                                           child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .deleteAccount)),
+                                            AppLocalizations.of(context)!
+                                                .deleteAccount,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
                                     ),
                                   ),
                                 ],

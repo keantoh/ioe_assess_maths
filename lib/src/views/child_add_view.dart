@@ -5,14 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:math_assessment/src/api/child_api.dart';
 import 'package:math_assessment/src/data/models/avatar_animal.dart';
+import 'package:math_assessment/src/data/models/avatar_color.dart';
 import 'package:math_assessment/src/data/models/child_models.dart';
 import 'package:math_assessment/src/data/models/gender.dart';
-import 'package:math_assessment/src/data/models/avatar_color.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
-
-import '../settings/settings_view.dart';
+import 'package:math_assessment/src/views/settings_view.dart';
 
 final isAddingChildProvider = StateProvider<bool>(
   (ref) => false,
@@ -157,6 +156,8 @@ class _ChildAddViewState extends State<ChildAddView> {
                                   Container(
                                     margin: fieldMargin,
                                     child: DropdownButtonFormField(
+                                      isExpanded: true,
+                                      isDense: false,
                                       decoration: InputDecoration(
                                         border: const OutlineInputBorder(),
                                         labelText: AppLocalizations.of(context)!

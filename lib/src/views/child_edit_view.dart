@@ -109,6 +109,8 @@ class ChildEditView extends HookConsumerWidget {
                                   Container(
                                     margin: fieldMargin,
                                     child: DropdownButtonFormField(
+                                      isExpanded: true,
+                                      isDense: false,
                                       decoration: InputDecoration(
                                         border: const OutlineInputBorder(),
                                         labelText: AppLocalizations.of(context)!

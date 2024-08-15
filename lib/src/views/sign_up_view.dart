@@ -10,8 +10,7 @@ import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
-
-import '../settings/settings_view.dart';
+import 'package:math_assessment/src/views/settings_view.dart';
 
 final isSigningUpProvider = StateProvider<bool>(
   (ref) => false,
@@ -223,6 +222,8 @@ class SignUpView extends ConsumerWidget {
                               child: Container(
                                 margin: fieldMargin,
                                 child: DropdownButtonFormField(
+                                  isExpanded: true,
+                                  isDense: false,
                                   decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
                                     labelText:
@@ -241,6 +242,15 @@ class SignUpView extends ConsumerWidget {
                                         value: country,
                                         child: Text(country.translation));
                                   }).toList(),
+                                  selectedItemBuilder: (BuildContext context) {
+                                    return countries
+                                        .map<Widget>((CountryKey country) {
+                                      return Text(
+                                        country.translation,
+                                        overflow: TextOverflow.ellipsis,
+                                      );
+                                    }).toList();
+                                  },
                                 ),
                               ),
                             ),

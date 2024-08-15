@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/data/models/user_models.dart';
 import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/forgot_password_view.dart';
+import 'package:math_assessment/src/views/settings_view.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
-import 'package:math_assessment/src/api/user_api.dart';
-
-import '../settings/settings_view.dart';
 
 final isLoggingInProvider = StateProvider<bool>(
   (ref) => false,
