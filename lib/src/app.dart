@@ -11,13 +11,10 @@ import 'package:math_assessment/src/views/forgot_password_view.dart';
 import 'package:math_assessment/src/views/home_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
 import 'package:math_assessment/src/views/question_view.dart';
+import 'package:math_assessment/src/views/settings_view.dart';
 import 'package:math_assessment/src/views/sign_up_view.dart';
 import 'package:math_assessment/src/views/splash_view.dart';
 import 'package:math_assessment/src/views/user_search_view.dart';
-
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
-import 'settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends ConsumerWidget {
@@ -61,17 +58,14 @@ class MyApp extends ConsumerWidget {
 
       // Define a function to handle named routes in order to support
       // Flutter web url navigation and deep linking.
-      home: SplashView(),
+      home: const SplashView(),
       onGenerateRoute: (RouteSettings routeSettings) {
         return MaterialPageRoute<void>(
           settings: routeSettings,
           builder: (BuildContext context) {
             switch (routeSettings.name) {
               case SettingsView.routeName:
-                return const SettingsView();
-              case SampleItemDetailsView.routeName:
-                return const SampleItemDetailsView();
-              case SampleItemListView.routeName:
+                return SettingsView();
               case ForgotPasswordView.routeName:
                 return ForgotPasswordView();
               case LoginView.routeName:
@@ -83,17 +77,17 @@ class MyApp extends ConsumerWidget {
               case ChildSelectView.routeName:
                 return const ChildSelectView();
               case ChildAddView.routeName:
-                return ChildAddView();
+                return const ChildAddView();
               case ChildEditView.routeName:
                 return ChildEditView();
               case AccountView.routeName:
                 return AccountView();
               case UserSearchView.routeName:
-                return UserSearchView();
+                return const UserSearchView();
               case QuestionView.routeName:
-                return QuestionView();
+                return const QuestionView();
               default:
-                return const SampleItemListView();
+                return LoginView();
             }
           },
         );
