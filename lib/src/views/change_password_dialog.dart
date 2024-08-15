@@ -24,7 +24,7 @@ class ChangePasswordDialog extends HookConsumerWidget {
 
     Future<void> handleChangePasswordConfirm(BuildContext dialogContext) async {
       ref.read(isChangingProvider.notifier).state = true;
-      final userPasswordUpdate = UserPasswordUpdate(
+      final userPasswordChange = UserPasswordChange(
           password: currentPasswordController.text,
           newPassword: newPasswordController.text);
       final userId = ref.read(userStateProvider)?.userId;
@@ -33,7 +33,7 @@ class ChangePasswordDialog extends HookConsumerWidget {
             AppLocalizations.of(dialogContext)!.userIdNull);
         return;
       }
-      final result = await changeUserPassword(userId, userPasswordUpdate);
+      final result = await changeUserPassword(userId, userPasswordChange);
       final status = result['status'];
       ref.read(isChangingProvider.notifier).state = false;
       if (dialogContext.mounted) {

@@ -68,17 +68,35 @@ class UserUpdate {
       };
 }
 
-class UserPasswordUpdate {
+class UserPasswordChange {
   final String password;
   final String newPassword;
 
-  UserPasswordUpdate({
+  UserPasswordChange({
     required this.password,
     required this.newPassword,
   });
 
   Map<String, dynamic> toJson() => {
         'password': password,
+        'newPassword': newPassword,
+      };
+}
+
+class UserPasswordUpdate {
+  final String email;
+  final String token;
+  final String newPassword;
+
+  UserPasswordUpdate({
+    required this.email,
+    required this.token,
+    required this.newPassword,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'email': email,
+        'token': token,
         'newPassword': newPassword,
       };
 }
