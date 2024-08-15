@@ -162,8 +162,72 @@ Future<Map<String, dynamic>> updateUserDetails(
 }
 
 Future<Map<String, dynamic>> changeUserPassword(
-    String userId, UserPasswordUpdate user) async {
+    String userId, UserPasswordChange user) async {
   final String apiUrl = 'http://localhost:8000/change_user_password/$userId';
+
+  try {
+    final response = await http
+        .put(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(user.toJson()),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    return {
+      'status': response.statusCode,
+      'message': responseBody,
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
+
+Future<Map<String, dynamic>> sendPasswordToken(String email) async {
+  final String apiUrl = 'http://localhost:8000/send_password_token';
+
+  try {
+    final response = await http
+        .put(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({'email': email}),
+        )
+        .timeout(const Duration(seconds: 10));
+    final responseBody = json.decode(response.body);
+
+    return {
+      'status': response.statusCode,
+      'message': responseBody,
+    };
+  } on TimeoutException catch (_) {
+    return {
+      'status': 408,
+      'message': 'Request timed out. Please try again.',
+    };
+  } on Exception catch (e) {
+    return {
+      'status': 500,
+      'message': 'An error occurred: $e',
+    };
+  }
+}
+
+Future<Map<String, dynamic>> updateUserPassword(UserPasswordUpdate user) async {
+  final String apiUrl = 'http://localhost:8000/update_user_password';
 
   try {
     final response = await http

@@ -6,7 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/data/models/user_models.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 
 final isUpdatingProvider = StateProvider<bool>(
@@ -20,19 +19,6 @@ class ForgotPasswordView extends HookConsumerWidget {
   final _emailFormKey = GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
   final fieldMargin = const EdgeInsets.symmetric(horizontal: 20, vertical: 4);
-
-  void _sendResetToken(BuildContext context) {
-    if (_emailFormKey.currentState!.validate()) {
-      // send token
-    }
-  }
-
-  void _updatePassword(BuildContext context) {
-    if (_emailFormKey.currentState!.validate() &&
-        _formKey.currentState!.validate()) {
-      // update pw
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,8 +88,8 @@ class ForgotPasswordView extends HookConsumerWidget {
                                     ? const Center(
                                         child: CircularProgressIndicator())
                                     : FilledButton(
-                                        onPressed: () =>
-                                            _sendResetToken(context),
+                                        onPressed: () => _sendResetToken(
+                                            context, ref, emailController.text),
                                         child: Container(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 20),
@@ -207,7 +193,12 @@ class ForgotPasswordView extends HookConsumerWidget {
                                         child: CircularProgressIndicator())
                                     : FilledButton(
                                         onPressed: () {
-                                          _updatePassword(context);
+                                          final user = UserPasswordUpdate(
+                                              email: emailController.text,
+                                              token: tokenController.text,
+                                              newPassword:
+                                                  newPasswordController.text);
+                                          _updatePassword(context, ref, user);
                                         },
                                         child: Text(
                                             AppLocalizations.of(context)!
@@ -245,48 +236,86 @@ class ForgotPasswordView extends HookConsumerWidget {
     );
   }
 
-  Future<void> submitUpdate(
-      BuildContext context, WidgetRef ref, UserUpdate newDetails) async {
-    final userId = ref.read(userStateProvider)?.userId;
-    if (userId == null) {
-      HelperFunctions.showSnackBar(
-          context, 2000, AppLocalizations.of(context)!.userIdNull);
-      return;
+  Future<void> _sendResetToken(
+      BuildContext context, WidgetRef ref, String email) async {
+    if (_emailFormKey.currentState!.validate()) {
+      ref.read(isUpdatingProvider.notifier).state = true;
+      final result = await sendPasswordToken(email);
+      final status = result['status'];
+
+      ref.read(isUpdatingProvider.notifier).state = false;
+      if (context.mounted) {
+        switch (status) {
+          case 200:
+            HelperFunctions.showSnackBar(context, 2000,
+                AppLocalizations.of(context)!.passwordTokenSuccess);
+            break;
+          case 400:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error400);
+            break;
+          case 408:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error408);
+            break;
+          case 409:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error409_signup);
+            break;
+          case 503:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error503);
+            break;
+          default:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error500);
+            break;
+        }
+      }
     }
-    ref.read(isUpdatingProvider.notifier).state = true;
+  }
 
-    final result = await updateUserDetails(userId, newDetails);
-    final status = result['status'];
+  Future<void> _updatePassword(
+      BuildContext context, WidgetRef ref, UserPasswordUpdate user) async {
+    if (_emailFormKey.currentState!.validate() &&
+        _formKey.currentState!.validate()) {
+      ref.read(isUpdatingProvider.notifier).state = true;
+      final result = await updateUserPassword(user);
+      final status = result['status'];
 
-    ref.read(isUpdatingProvider.notifier).state = false;
-    if (context.mounted) {
-      switch (status) {
-        case 200:
-          HelperFunctions.showSnackBar(context, 2000,
-              AppLocalizations.of(context)!.updateDetailsSuccess);
-          ref.read(userStateProvider.notifier).updateUserDetails(newDetails);
-
-          break;
-        case 400:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error400);
-          break;
-        case 408:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error408);
-          break;
-        case 409:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error409_signup);
-          break;
-        case 503:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error503);
-          break;
-        default:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error500);
-          break;
+      ref.read(isUpdatingProvider.notifier).state = false;
+      if (context.mounted) {
+        switch (status) {
+          case 200:
+            HelperFunctions.showSnackBar(context, 2000,
+                AppLocalizations.of(context)!.changedPasswordSuccess);
+            Navigator.of(context).pop();
+            break;
+          case 400:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error400);
+            break;
+          case 401:
+            HelperFunctions.showSnackBar(context, 2000,
+                AppLocalizations.of(context)!.error401_updatePassword);
+            break;
+          case 408:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error408);
+            break;
+          case 409:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error409_signup);
+            break;
+          case 503:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error503);
+            break;
+          default:
+            HelperFunctions.showSnackBar(
+                context, 2000, AppLocalizations.of(context)!.error500);
+            break;
+        }
       }
     }
   }
