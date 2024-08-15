@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/data/models/question.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/widgets/classification_options_widget.dart';
 import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
 import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
 import 'package:math_assessment/src/widgets/single_digit_ops_options_widget.dart';
@@ -128,18 +129,8 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                               ),
                             ],
                           ),
-                          if (showResults) const Spacer(),
                           showResults
-                              ? Text(
-                                  textAlign: TextAlign.center,
-                                  AppLocalizations.of(context)!
-                                      .encouragementTitle(ref
-                                              .read(selectedChildProvider)
-                                              ?.name ??
-                                          ''),
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
-                                )
+                              ? const SizedBox.shrink()
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -156,73 +147,33 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                                               .onSurface),
                                       iconSize: 32,
                                     ),
-                                    Text(
-                                      currentQuestion
-                                          .getQuestionInstruction(context),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall,
+                                    Flexible(
+                                      child: Text(
+                                        currentQuestion
+                                            .getQuestionInstruction(context),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                   ],
                                 ),
-                          if (showResults)
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                currentQuestionIndex == questions.length - 1
-                                    ? AppLocalizations.of(context)!
-                                        .completionMessage(completedQuestions)
-                                    : AppLocalizations.of(context)!
-                                        .encouragementMessage(
-                                            completedQuestions),
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                            ),
-                          const Spacer(),
-                          if (showResults)
-                            currentQuestionIndex == questions.length - 1
-                                ? FilledButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    style: FilledButton.styleFrom(
-                                        textStyle:
-                                            const TextStyle(fontSize: 16)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.ok,
-                                      ),
-                                    ))
-                                : FilledButton(
-                                    onPressed: () {
-                                      ref
-                                          .read(showResultsProvider.notifier)
-                                          .state = false;
-                                      ref
-                                          .read(currentQuestionIndexProvider
-                                              .notifier)
-                                          .state += 1;
-                                    },
-                                    style: FilledButton.styleFrom(
-                                        textStyle:
-                                            const TextStyle(fontSize: 16)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.keepGoing,
-                                      ),
-                                    ))
-                          else
-                            buildQuestionOptions(
-                                currentQuestion,
-                                questions.length,
-                                width,
-                                height,
-                                sessionStartTime),
-                          const Spacer(),
+                          showResults
+                              ? Expanded(
+                                  child: encouragementScreen(
+                                      currentQuestionIndex,
+                                      questions.length - 1,
+                                      completedQuestions),
+                                )
+                              : Expanded(
+                                  child: buildQuestionOptions(
+                                      currentQuestion,
+                                      questions.length,
+                                      width,
+                                      height,
+                                      sessionStartTime)),
                           progressStars(width, questions.length)
                         ],
                       );
@@ -266,23 +217,79 @@ class QuestionViewState extends ConsumerState<QuestionView> {
     );
   }
 
+  Widget encouragementScreen(
+      int currentQuestionIndex, int lastQuestionIndex, int completedQuestions) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          textAlign: TextAlign.center,
+          AppLocalizations.of(context)!
+              .encouragementTitle(ref.read(selectedChildProvider)?.name ?? ''),
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(
+            textAlign: TextAlign.center,
+            currentQuestionIndex == lastQuestionIndex
+                ? AppLocalizations.of(context)!
+                    .completionMessage(completedQuestions)
+                : AppLocalizations.of(context)!
+                    .encouragementMessage(completedQuestions),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ),
+        currentQuestionIndex == lastQuestionIndex
+            ? FilledButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: FilledButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    AppLocalizations.of(context)!.ok,
+                  ),
+                ))
+            : FilledButton(
+                onPressed: () {
+                  ref.read(showResultsProvider.notifier).state = false;
+                  ref.read(currentQuestionIndexProvider.notifier).state += 1;
+                },
+                style: FilledButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    AppLocalizations.of(context)!.keepGoing,
+                  ),
+                ))
+      ],
+    );
+  }
+
   Widget buildQuestionOptions(Question currentQuestion, int totalQuestions,
       double screenWidth, double screenHeight, DateTime sessionStartTime) {
     if (currentQuestion is NonSymbolicQuestion) {
-      return NonSymbolicOptionsWidget(currentQuestion, totalQuestions,
-          screenWidth, screenHeight, sessionStartTime);
+      return NonSymbolicOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is SymbolicQuestion) {
-      return SymbolicOptionsWidget(currentQuestion, totalQuestions, screenWidth,
-          screenHeight, sessionStartTime);
+      return SymbolicOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
+    } else if (currentQuestion is ClassificationQuestion) {
+      return ClassificationOptionsWidget(currentQuestion, totalQuestions,
+          screenWidth, screenHeight, sessionStartTime);
     } else if (currentQuestion is SubitisingQuestion) {
-      return SubitisingOptionsWidget(currentQuestion, totalQuestions,
-          screenWidth, screenHeight, sessionStartTime);
+      return SubitisingOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is MissingNoQuestion) {
-      return MissingNoOptionsWidget(currentQuestion, totalQuestions,
-          screenWidth, screenHeight, sessionStartTime);
+      return MissingNoOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is SingleDigitOpsQuestion) {
-      return SingleDigitsOpsOptionsWidget(currentQuestion, totalQuestions,
-          screenWidth, screenHeight, sessionStartTime);
+      return SingleDigitsOpsOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
     }
     // Add more cases for other question types here
     return Center(
