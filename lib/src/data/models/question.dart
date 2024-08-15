@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:math_assessment/src/data/models/dot_paint.dart';
+import 'package:math_assessment/src/data/models/dot_paint_option.dart';
+import 'package:math_assessment/src/data/models/image_paint_option.dart';
 
 abstract class Question {
   final int id;
@@ -22,6 +23,13 @@ abstract class Question {
         );
       case 2:
         return SymbolicQuestion(
+          json['id'],
+          json['category'],
+          json['correct_option'],
+          json['options'] as List<dynamic>,
+        );
+      case 3:
+        return ClassificationQuestion(
           json['id'],
           json['category'],
           json['correct_option'],
@@ -77,6 +85,7 @@ abstract class Question {
       case 9:
       case 10:
         return AppLocalizations.of(context)!.question6;
+      case 11:
       case 21:
         return AppLocalizations.of(context)!.question21;
       case 22:
@@ -131,7 +140,7 @@ abstract class Question {
 }
 
 class NonSymbolicQuestion extends Question {
-  List<List<DotPaint>> options = [];
+  List<List<DotPaintOption>> options = [];
 
   NonSymbolicQuestion(
       super.id, super.category, super.correctOption, List<dynamic> options) {
@@ -144,7 +153,7 @@ class NonSymbolicQuestion extends Question {
       if (optionList is List<dynamic>) {
         return optionList.map((dot) {
           if (dot is Map<String, dynamic>) {
-            return DotPaint.fromJson(dot);
+            return DotPaintOption.fromJson(dot);
           } else {
             throw const FormatException('Invalid dot format');
           }
@@ -176,8 +185,28 @@ class SymbolicQuestion extends Question {
   }
 }
 
+class ClassificationQuestion extends Question {
+  List<ImagePaintOption> options = [];
+
+  ClassificationQuestion(
+      super.id, super.category, super.correctOption, List<dynamic> options) {
+    parseOptions(options);
+  }
+
+  @override
+  void parseOptions(List<dynamic> options) {
+    this.options = options.map((option) {
+      try {
+        return ImagePaintOption.fromJson(option);
+      } catch (e) {
+        throw FormatException('Error parsing option: $option');
+      }
+    }).toList();
+  }
+}
+
 class SubitisingQuestion extends Question {
-  List<List<DotPaint>> options = [];
+  List<List<DotPaintOption>> options = [];
 
   SubitisingQuestion(
       super.id, super.category, super.correctOption, List<dynamic> options) {
@@ -190,7 +219,7 @@ class SubitisingQuestion extends Question {
       if (optionList is List<dynamic>) {
         return optionList.map((dot) {
           if (dot is Map<String, dynamic>) {
-            return DotPaint.fromJson(dot);
+            return DotPaintOption.fromJson(dot);
           } else {
             throw const FormatException('Invalid dot format');
           }
