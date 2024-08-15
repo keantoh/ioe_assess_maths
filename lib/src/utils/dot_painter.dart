@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:math_assessment/src/data/models/dot_paint.dart';
+import 'package:math_assessment/src/data/models/dot_paint_option.dart';
 
 class DotsPainter extends CustomPainter {
-  final List<DotPaint> dots;
+  final List<DotPaintOption> dots;
   final double canvasWidth;
   final double canvasHeight;
   final Color color;
@@ -15,7 +15,7 @@ class DotsPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    for (DotPaint dot in dots) {
+    for (DotPaintOption dot in dots) {
       canvas.drawCircle(Offset(dot.x * canvasWidth, dot.y * canvasHeight),
           dot.radius * canvasHeight, paint);
     }
