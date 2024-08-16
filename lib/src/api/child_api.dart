@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:math_assessment/src/data/models/child_models.dart';
+import 'package:math_assessment/src/models/child.dart';
 
 Future<Map<String, dynamic>> addChild(ChildCreate child) async {
   final String apiUrl = 'http://localhost:8000/child';

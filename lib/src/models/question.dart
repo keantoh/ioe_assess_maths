@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:math_assessment/src/data/models/dot_paint_option.dart';
-import 'package:math_assessment/src/data/models/image_paint_option.dart';
+import 'package:math_assessment/src/models/dot_paint_option.dart';
+import 'package:math_assessment/src/models/image_paint_option.dart';
 
 abstract class Question {
   final int id;

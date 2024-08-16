@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/api/child_api.dart';
-import 'package:math_assessment/src/data/models/child_models.dart';
+import 'package:math_assessment/src/models/child.dart';
 
 class ChildrenStateNotifier extends StateNotifier<List<Child>?> {
   ChildrenStateNotifier() : super(null);

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/api/user_api.dart';
-import 'package:math_assessment/src/data/models/user_models.dart';
+import 'package:math_assessment/src/models/user.dart';
 
 class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
   UserSearchNotifier()

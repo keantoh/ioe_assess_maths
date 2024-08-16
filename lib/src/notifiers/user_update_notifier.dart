@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:math_assessment/src/data/models/user_models.dart';
+import 'package:math_assessment/src/models/user.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 
 class UserUpdateNotifier extends StateNotifier<UserUpdate> {

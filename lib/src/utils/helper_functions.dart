@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/api/result_api.dart';
-import 'package:math_assessment/src/data/models/result_models.dart';
+import 'package:math_assessment/src/models/result.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/views/question_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

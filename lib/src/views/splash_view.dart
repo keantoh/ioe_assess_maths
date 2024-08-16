@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/api/user_api.dart';
-import 'package:math_assessment/src/data/models/user_models.dart';
+import 'package:math_assessment/src/models/user.dart';
 import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';

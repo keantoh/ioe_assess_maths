@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/data/models/theme_settings.dart';
+import 'package:math_assessment/src/models/theme_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final themeNotifierProvider =

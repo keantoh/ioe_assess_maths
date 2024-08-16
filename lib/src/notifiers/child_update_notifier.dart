@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:math_assessment/src/data/models/child_models.dart';
+import 'package:math_assessment/src/models/child.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 
 class ChildUpdateNotifier extends StateNotifier<Child> {

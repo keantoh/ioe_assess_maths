@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/data/models/question.dart';
+import 'package:math_assessment/src/models/question.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/widgets/classification_options_widget.dart';
 import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
