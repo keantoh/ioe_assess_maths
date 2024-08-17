@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/login_view.dart';
@@ -32,16 +30,17 @@ class DeleteAccountDialog extends HookConsumerWidget {
       }
       final userAccountDelete =
           UserAccountDelete(userId: userId, password: passwordController.text);
-      final result = await deleteUserAccount(userAccountDelete);
-      final status = result['status'];
+
+      await ref
+          .read(userStateProvider.notifier)
+          .deleteUserAccount(userAccountDelete);
+      final responseCode = ref.read(userStateResponseCodeProvider);
+
       ref.read(isDeletingProvider.notifier).state = false;
       if (dialogContext.mounted) {
-        switch (status) {
+        switch (responseCode) {
           case 200:
             Navigator.of(dialogContext).pop();
-            ref.read(userStateProvider.notifier).logout();
-            final tokenManager = ref.read(tokenManagerProvider);
-            tokenManager.deleteToken();
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => LoginView()),
                 ModalRoute.withName('/'));

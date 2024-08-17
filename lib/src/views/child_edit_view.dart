@@ -4,14 +4,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:math_assessment/src/api/child_api.dart';
 import 'package:math_assessment/src/models/avatar_animal.dart';
 import 'package:math_assessment/src/models/avatar_color.dart';
 import 'package:math_assessment/src/models/child.dart';
 import 'package:math_assessment/src/models/gender.dart';
 import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 
@@ -77,7 +75,6 @@ class ChildEditView extends HookConsumerWidget {
                           children: [
                             Expanded(
                               child: Column(
-                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   // NAME
                                   Container(
@@ -136,6 +133,16 @@ class ChildEditView extends HookConsumerWidget {
                                             child: Text(
                                                 gender.getGenderName(context)));
                                       }).toList(),
+                                      selectedItemBuilder:
+                                          (BuildContext context) {
+                                        return Gender.values
+                                            .map<Widget>((Gender gender) {
+                                          return Text(
+                                            gender.getGenderName(context),
+                                            overflow: TextOverflow.ellipsis,
+                                          );
+                                        }).toList();
+                                      },
                                     ),
                                   ),
                                   // DOB
@@ -190,63 +197,69 @@ class ChildEditView extends HookConsumerWidget {
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: OutlinedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          final color = ColorSeed.fromId(ref
-                                                  .read(selectedChildProvider)!
-                                                  .favColour)
-                                              .color;
-                                          ref
-                                              .read(themeNotifierProvider
-                                                  .notifier)
-                                              .updateThemeColor(color);
-                                        },
-                                        child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 28),
-                                            child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .back))),
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 4),
+                                      child: OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            final color = ColorSeed.fromId(ref
+                                                    .read(childrenStateProvider)
+                                                    .selectedChild!
+                                                    .favColour)
+                                                .color;
+                                            ref
+                                                .read(themeNotifierProvider
+                                                    .notifier)
+                                                .updateThemeColor(color);
+                                          },
+                                          child: Text(
+                                            AppLocalizations.of(context)!.back,
+                                            textAlign: TextAlign.center,
+                                          )),
+                                    ),
                                   ),
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: FilledButton(
-                                        onPressed: () => _showDeleteChildDialog(
-                                            context, ref, childUpdateDetails),
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              WidgetStatePropertyAll(
-                                            Theme.of(context).colorScheme.error,
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 4),
+                                      child: FilledButton(
+                                          onPressed: () =>
+                                              _showDeleteChildDialog(context,
+                                                  ref, childUpdateDetails),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStatePropertyAll(
+                                              Theme.of(context)
+                                                  .colorScheme
+                                                  .error,
+                                            ),
                                           ),
-                                        ),
-                                        child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 28),
-                                            child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .deleteChild))),
+                                          child: Text(
+                                            AppLocalizations.of(context)!
+                                                .deleteChild,
+                                            textAlign: TextAlign.center,
+                                          )),
+                                    ),
                                   ),
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: FilledButton(
-                                        onPressed:
-                                            childUpdateNotifier.hasChanges
-                                                ? () {
-                                                    handleUpdate(context, ref);
-                                                  }
-                                                : null,
-                                        child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 28),
-                                            child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .editChild))),
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 4),
+                                      child: FilledButton(
+                                          onPressed: childUpdateNotifier
+                                                  .hasChanges
+                                              ? () {
+                                                  handleUpdate(context, ref);
+                                                }
+                                              : null,
+                                          child: Text(
+                                            AppLocalizations.of(context)!
+                                                .editChild,
+                                            textAlign: TextAlign.center,
+                                          )),
+                                    ),
                                   )
                                 ],
                               ),
@@ -305,15 +318,16 @@ class ChildEditView extends HookConsumerWidget {
   Future<void> submitUpdate(WidgetRef ref, BuildContext context) async {
     ref.read(isEditingChildProvider.notifier).state = true;
     final updatedChild = ref.read(childUpdateProvider);
-    final result = await updateChild(updatedChild.childId, updatedChild);
-    final status = result['status'];
+
+    await ref.read(childrenStateProvider.notifier).updateChild(updatedChild);
+
+    final responseCode = ref.read(childrenResponseCodeProvider);
 
     ref.read(isEditingChildProvider.notifier).state = false;
     if (context.mounted) {
-      switch (status) {
+      switch (responseCode) {
         case 200:
           ref.read(childrenStateProvider.notifier).updateChild(updatedChild);
-          ref.read(selectedChildProvider.notifier).state = updatedChild;
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.childUpdateSuccess);
           Navigator.pop(context);
@@ -346,15 +360,15 @@ class ChildEditView extends HookConsumerWidget {
     ref.read(isEditingChildProvider.notifier).state = true;
     final childId = ref.read(childUpdateProvider).childId;
 
-    final result = await deleteChild(childId);
-    final status = result['status'];
+    await ref.read(childrenStateProvider.notifier).removeChild(childId);
+
+    final responseCode = ref.read(childrenResponseCodeProvider);
 
     ref.read(isEditingChildProvider.notifier).state = false;
     if (context.mounted) {
-      switch (status) {
+      switch (responseCode) {
         case 200:
           ref.read(childrenStateProvider.notifier).removeChild(childId);
-          ref.read(selectedChildProvider.notifier).state = null;
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.childDeleteSuccess);
           Navigator.pop(context);

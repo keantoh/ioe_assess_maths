@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/api/user_api.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
 import 'package:math_assessment/src/views/login_view.dart';
@@ -23,20 +20,12 @@ class SplashViewState extends ConsumerState<SplashView> {
   }
 
   Future<void> _checkToken() async {
-    final token = await ref.read(tokenStateProvider.future);
-    if (token == null) {
-      _navigateToLogin();
+    final isValidToken =
+        await ref.read(userStateProvider.notifier).checkAndValidateToken();
+    if (isValidToken && mounted) {
+      Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
     } else {
-      final result = await validateToken(token);
-      final status = result['status'];
-      if (status == 200 && mounted) {
-        ref
-            .read(userStateProvider.notifier)
-            .setUserLoginState(UserLoginState.fromJson(result['response']));
-        Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
-      } else {
-        _navigateToLogin();
-      }
+      _navigateToLogin();
     }
   }
 

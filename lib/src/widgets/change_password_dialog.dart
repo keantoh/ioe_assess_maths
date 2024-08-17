@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/user.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
@@ -33,11 +32,15 @@ class ChangePasswordDialog extends HookConsumerWidget {
             AppLocalizations.of(dialogContext)!.userIdNull);
         return;
       }
-      final result = await changeUserPassword(userId, userPasswordChange);
-      final status = result['status'];
+
+      await ref
+          .read(userStateProvider.notifier)
+          .changeUserPassword(userId, userPasswordChange);
+      final responseCode = ref.read(userStateResponseCodeProvider);
+
       ref.read(isChangingProvider.notifier).state = false;
       if (dialogContext.mounted) {
-        switch (status) {
+        switch (responseCode) {
           case 200:
             Navigator.of(dialogContext).pop();
             HelperFunctions.showSnackBar(context, 2000,

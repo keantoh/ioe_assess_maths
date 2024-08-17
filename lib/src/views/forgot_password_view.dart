@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/user.dart';
+import 'package:math_assessment/src/notifiers/reset_password_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 
 final isUpdatingProvider = StateProvider<bool>(
@@ -240,12 +240,13 @@ class ForgotPasswordView extends HookConsumerWidget {
       BuildContext context, WidgetRef ref, String email) async {
     if (_emailFormKey.currentState!.validate()) {
       ref.read(isUpdatingProvider.notifier).state = true;
-      final result = await sendPasswordToken(email);
-      final status = result['status'];
+
+      await ref.read(resetPasswordProvider.notifier).sendPasswordToken(email);
+      final responseCode = ref.read(resetPasswordResponseCodeProvider);
 
       ref.read(isUpdatingProvider.notifier).state = false;
       if (context.mounted) {
-        switch (status) {
+        switch (responseCode) {
           case 200:
             HelperFunctions.showSnackBar(context, 2000,
                 AppLocalizations.of(context)!.passwordTokenSuccess);
@@ -280,12 +281,13 @@ class ForgotPasswordView extends HookConsumerWidget {
     if (_emailFormKey.currentState!.validate() &&
         _formKey.currentState!.validate()) {
       ref.read(isUpdatingProvider.notifier).state = true;
-      final result = await updateUserPassword(user);
-      final status = result['status'];
+
+      await ref.read(resetPasswordProvider.notifier).updateUserPassword(user);
+      final responseCode = ref.read(resetPasswordResponseCodeProvider);
 
       ref.read(isUpdatingProvider.notifier).state = false;
       if (context.mounted) {
-        switch (status) {
+        switch (responseCode) {
           case 200:
             HelperFunctions.showSnackBar(context, 2000,
                 AppLocalizations.of(context)!.changedPasswordSuccess);

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:math_assessment/src/api/child_api.dart';
 import 'package:math_assessment/src/models/avatar_animal.dart';
 import 'package:math_assessment/src/models/avatar_color.dart';
 import 'package:math_assessment/src/models/child.dart';
@@ -49,53 +48,6 @@ class _ChildAddViewState extends State<ChildAddView> {
     final nameController = TextEditingController();
     final dobController = TextEditingController();
     final localeName = AppLocalizations.of(context)?.localeName ?? 'en';
-
-    Future<void> submitForm(WidgetRef ref) async {
-      ref.read(isAddingChildProvider.notifier).state = true;
-      var newChild = ChildCreate(
-          parentId: ref.read(userStateProvider)!.userId,
-          name: nameController.text,
-          gender: selectedGender!.name,
-          dob: selectedDob!,
-          favColour: ref.read(colorProvider.notifier).state.id,
-          favAnimal: ref.read(animalProvider.notifier).state.id);
-
-      final result = await addChild(newChild);
-      final status = result['status'];
-
-      ref.read(isAddingChildProvider.notifier).state = false;
-      if (context.mounted) {
-        switch (status) {
-          case 201:
-            final newChild = Child.fromJson(result['response']);
-            ref.read(childrenStateProvider.notifier).addChild(newChild);
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.childAddSuccess);
-            Navigator.pop(context);
-            break;
-          case 400:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error400);
-            break;
-          case 404:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error404_login);
-            break;
-          case 408:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error408);
-            break;
-          case 503:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error503);
-            break;
-          default:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error500);
-            break;
-        }
-      }
-    }
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -257,7 +209,13 @@ class _ChildAddViewState extends State<ChildAddView> {
                                           onPressed: () {
                                             if (_formKey.currentState!
                                                 .validate()) {
-                                              submitForm(ref);
+                                              submitForm(
+                                                  ref,
+                                                  nameController,
+                                                  selectedGender,
+                                                  selectedDob,
+                                                  localeName,
+                                                  context);
                                             }
                                           },
                                           child: Container(
@@ -281,6 +239,58 @@ class _ChildAddViewState extends State<ChildAddView> {
         }),
       ),
     );
+  }
+
+  Future<void> submitForm(
+      WidgetRef ref,
+      TextEditingController nameController,
+      Gender? selectedGender,
+      DateTime? selectedDob,
+      String localeName,
+      BuildContext context) async {
+    ref.read(isAddingChildProvider.notifier).state = true;
+    var newChild = ChildCreate(
+        parentId: ref.read(userStateProvider)!.userId,
+        name: nameController.text,
+        gender: selectedGender!.name,
+        dob: selectedDob!,
+        favColour: ref.read(colorProvider.notifier).state.id,
+        favAnimal: ref.read(animalProvider.notifier).state.id);
+
+    await ref.read(childrenStateProvider.notifier).addChild(newChild);
+
+    final responseCode = ref.read(childrenResponseCodeProvider);
+    ref.read(isAddingChildProvider.notifier).state = false;
+
+    if (context.mounted) {
+      switch (responseCode) {
+        case 201:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.childAddSuccess);
+          Navigator.pop(context);
+          break;
+        case 400:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 404:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error404_login);
+          break;
+        case 408:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error408);
+          break;
+        case 503:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error503);
+          break;
+        default:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error500);
+          break;
+      }
+    }
   }
 }
 

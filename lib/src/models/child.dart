@@ -65,6 +65,23 @@ class Child {
   }
 }
 
+class ChildState {
+  final List<Child> children;
+  final Child? selectedChild;
+
+  ChildState({required this.children, this.selectedChild});
+
+  ChildState copyWith(
+      {List<Child>? children, bool? resetSelectedChild, Child? selectedChild}) {
+    return ChildState(
+      children: children ?? this.children,
+      selectedChild: resetSelectedChild == true
+          ? null
+          : selectedChild ?? this.selectedChild,
+    );
+  }
+}
+
 class ChildCreate {
   final String parentId;
   final String name;

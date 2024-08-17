@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/models/question.dart';
 import 'package:math_assessment/src/models/result.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
+import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
 import 'package:math_assessment/src/utils/dot_painter.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
 
 class SubitisingOptionsWidget extends ConsumerWidget {
   final SubitisingQuestion currentQuestion;
@@ -78,7 +78,8 @@ class SubitisingOptionsWidget extends ConsumerWidget {
 
   Future<void> submitAnswer(
       BuildContext context, WidgetRef ref, int selectedAnswer) async {
-    final selectedChild = ref.read(selectedChildProvider);
+    final selectedChild = ref.read(childrenStateProvider).selectedChild;
+
     if (selectedChild == null) return;
 
     final newResult = ResultCreate(
@@ -90,6 +91,6 @@ class SubitisingOptionsWidget extends ConsumerWidget {
       timeTaken: DateTime.now().toUtc().difference(startTime).inMilliseconds,
     );
 
-    HelperFunctions.submitResult(context, ref, newResult);
+    ref.read(questionStateProvider.notifier).addResult(context, newResult);
   }
 }

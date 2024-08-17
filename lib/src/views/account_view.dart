@@ -5,17 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/country_key.dart';
 import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_update_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
-import 'package:math_assessment/src/views/change_password_dialog.dart';
-import 'package:math_assessment/src/views/delete_account_dialog.dart';
 import 'package:math_assessment/src/views/login_view.dart';
+import 'package:math_assessment/src/widgets/change_password_dialog.dart';
+import 'package:math_assessment/src/widgets/delete_account_dialog.dart';
 
 final isUpdatingProvider = StateProvider<bool>(
   (ref) => false,
@@ -238,8 +236,10 @@ class AccountView extends HookConsumerWidget {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20),
                                               child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .changePassword))),
+                                                AppLocalizations.of(context)!
+                                                    .changePassword,
+                                                textAlign: TextAlign.center,
+                                              ))),
                                     ),
                                   ),
                                   Expanded(
@@ -256,8 +256,10 @@ class AccountView extends HookConsumerWidget {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20),
                                               child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .saveChanges))),
+                                                AppLocalizations.of(context)!
+                                                    .saveChanges,
+                                                textAlign: TextAlign.center,
+                                              ))),
                                     ),
                                   ),
                                 ],
@@ -277,8 +279,9 @@ class AccountView extends HookConsumerWidget {
                                             Navigator.pop(context);
                                           },
                                           child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .back)),
+                                            AppLocalizations.of(context)!.back,
+                                            textAlign: TextAlign.center,
+                                          )),
                                     ),
                                   ),
                                   Expanded(
@@ -288,16 +291,13 @@ class AccountView extends HookConsumerWidget {
                                       child: FilledButton(
                                           onPressed: () {
                                             ref
-                                                .read(selectedChildProvider
+                                                .read(childrenStateProvider
                                                     .notifier)
-                                                .state = null;
+                                                .clearChildren();
                                             ref
                                                 .read(
                                                     userStateProvider.notifier)
                                                 .logout();
-                                            final tokenManager =
-                                                ref.read(tokenManagerProvider);
-                                            tokenManager.deleteToken();
                                             Navigator.of(context)
                                                 .pushAndRemoveUntil(
                                                     MaterialPageRoute(
@@ -306,8 +306,10 @@ class AccountView extends HookConsumerWidget {
                                                     ModalRoute.withName('/'));
                                           },
                                           child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .logOut)),
+                                            AppLocalizations.of(context)!
+                                                .logOut,
+                                            textAlign: TextAlign.center,
+                                          )),
                                     ),
                                   ),
                                   Expanded(
@@ -328,8 +330,7 @@ class AccountView extends HookConsumerWidget {
                                           child: Text(
                                             AppLocalizations.of(context)!
                                                 .deleteAccount,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
                                           )),
                                     ),
                                   ),
@@ -348,7 +349,7 @@ class AccountView extends HookConsumerWidget {
   }
 
   Future<void> submitUpdate(
-      BuildContext context, WidgetRef ref, UserUpdate newDetails) async {
+      BuildContext context, WidgetRef ref, UserUpdate userUpdate) async {
     final userId = ref.read(userStateProvider)?.userId;
     if (userId == null) {
       HelperFunctions.showSnackBar(
@@ -357,17 +358,17 @@ class AccountView extends HookConsumerWidget {
     }
     ref.read(isUpdatingProvider.notifier).state = true;
 
-    final result = await updateUserDetails(userId, newDetails);
-    final status = result['status'];
+    await ref
+        .read(userStateProvider.notifier)
+        .updateUserDetails(userId, userUpdate);
+    final responseCode = ref.read(userStateResponseCodeProvider);
 
     ref.read(isUpdatingProvider.notifier).state = false;
     if (context.mounted) {
-      switch (status) {
+      switch (responseCode) {
         case 200:
           HelperFunctions.showSnackBar(context, 2000,
               AppLocalizations.of(context)!.updateDetailsSuccess);
-          ref.read(userStateProvider.notifier).updateUserDetails(newDetails);
-
           break;
         case 400:
           HelperFunctions.showSnackBar(

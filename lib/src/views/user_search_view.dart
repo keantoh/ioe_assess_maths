@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/user.dart';
 import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
@@ -18,7 +17,7 @@ class UserSearchView extends HookConsumerWidget {
   static const routeName = '/usersearch';
 
   Future<void> handleSearch(BuildContext context, WidgetRef ref) async {
-    ref.read(userSearchProvider.notifier).search();
+    ref.read(userSearchProvider.notifier).searchUsers();
   }
 
   @override
@@ -26,81 +25,83 @@ class UserSearchView extends HookConsumerWidget {
     final userSearchState = ref.watch(userSearchProvider);
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  AppLocalizations.of(context)!.userSearch,
-                  style: Theme.of(context).textTheme.headlineMedium,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    AppLocalizations.of(context)!.userSearch,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
                 ),
-              ),
-              ref.watch(isDeletingProvider)
-                  ? Container(
-                      margin: const EdgeInsets.symmetric(vertical: 36),
-                      child: const LinearProgressIndicator())
-                  : Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: OutlinedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child:
-                                    Text(AppLocalizations.of(context)!.back)),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: TextField(
-                              onChanged: (value) {
-                                ref
-                                    .read(userSearchProvider.notifier)
-                                    .setSearchQuery(value);
-                              },
-                              decoration: InputDecoration(
-                                  hintText: AppLocalizations.of(context)!
-                                      .userSearchBy,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(12),
-                                  suffixIcon: IconButton(
-                                      onPressed: userSearchState
-                                              .searchQuery.isEmpty
-                                          ? null
-                                          : () => handleSearch(context, ref),
-                                      icon: const Icon(Icons.search))),
+                ref.watch(isDeletingProvider)
+                    ? Container(
+                        margin: const EdgeInsets.symmetric(vertical: 36),
+                        child: const LinearProgressIndicator())
+                    : Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child:
+                                      Text(AppLocalizations.of(context)!.back)),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-              userSearchState.isSearching
-                  ? const Padding(
-                      padding: EdgeInsets.all(40),
-                      child: Center(child: CircularProgressIndicator()))
-                  : userSearchState.responseCode != 200
-                      ? Padding(
-                          padding: const EdgeInsets.all(40),
-                          child: Center(
-                              child: Text(
-                                  _getResponseMessage(
-                                      userSearchState.responseCode, context),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall)))
-                      : const UserTable()
-            ],
+                          Expanded(
+                            flex: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: TextField(
+                                onChanged: (value) {
+                                  ref
+                                      .read(userSearchProvider.notifier)
+                                      .setSearchQuery(value);
+                                },
+                                decoration: InputDecoration(
+                                    hintText: AppLocalizations.of(context)!
+                                        .userSearchBy,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    contentPadding: const EdgeInsets.all(12),
+                                    suffixIcon: IconButton(
+                                        onPressed: userSearchState
+                                                .searchQuery.isEmpty
+                                            ? null
+                                            : () => handleSearch(context, ref),
+                                        icon: const Icon(Icons.search))),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                userSearchState.isSearching
+                    ? const Padding(
+                        padding: EdgeInsets.all(40),
+                        child: Center(child: CircularProgressIndicator()))
+                    : userSearchState.responseCode != 200
+                        ? Padding(
+                            padding: const EdgeInsets.all(40),
+                            child: Center(
+                                child: Text(
+                              _getResponseMessage(
+                                  userSearchState.responseCode, context),
+                              style: Theme.of(context).textTheme.headlineSmall,
+                              textAlign: TextAlign.center,
+                            )))
+                        : const UserTable()
+              ],
+            ),
           ),
         ),
       ),
@@ -287,14 +288,14 @@ class UserTable extends HookConsumerWidget {
   Future<void> submitDelete(
       WidgetRef ref, BuildContext context, String userId) async {
     ref.read(isDeletingProvider.notifier).state = true;
-    final result = await deleteUser(userId);
-    final status = result['status'];
+
+    await ref.read(userSearchProvider.notifier).deleteUser(userId);
+    final responseCode = ref.read(userSearchProvider).responseCode;
 
     ref.read(isDeletingProvider.notifier).state = false;
     if (context.mounted) {
-      switch (status) {
+      switch (responseCode) {
         case 200:
-          ref.read(userSearchProvider.notifier).deleteUser(userId);
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.deleteUserSuccess);
           break;

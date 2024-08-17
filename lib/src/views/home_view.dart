@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/models/avatar_animal.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
+import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
 import 'package:math_assessment/src/views/question_view.dart';
 
 class HomeView extends ConsumerWidget {
@@ -13,7 +14,7 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedChild = ref.read(selectedChildProvider);
+    final selectedChild = ref.read(childrenStateProvider).selectedChild;
     if (selectedChild == null) {
       Future.microtask(() {
         Navigator.of(context).pop();
@@ -74,13 +75,8 @@ class HomeView extends ConsumerWidget {
                       child: FilledButton(
                           onPressed: () {
                             ref
-                                .read(currentQuestionIndexProvider.notifier)
-                                .state = 0;
-                            ref
-                                .read(completedQuestionsProvider.notifier)
-                                .state = 0;
-                            ref.read(showResultsProvider.notifier).state =
-                                false;
+                                .read(questionStateProvider.notifier)
+                                .resetQuestionIndex();
                             Navigator.restorablePushNamed(
                                 context, QuestionView.routeName);
                           },

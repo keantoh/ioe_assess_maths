@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
@@ -21,55 +19,12 @@ class LoginView extends StatelessWidget {
 
   static const routeName = '/login';
   final _formKey = GlobalKey<FormState>();
-  final fieldMargin = const EdgeInsets.symmetric(horizontal: 32, vertical: 8);
+  final fieldMargin = const EdgeInsets.symmetric(horizontal: 20, vertical: 4);
 
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-
-    Future<void> submitForm(WidgetRef ref) async {
-      ref.read(isLoggingInProvider.notifier).state = true;
-      var newUser = UserLogin(
-          email: emailController.text, password: passwordController.text);
-      final result = await loginUser(newUser);
-      final status = result['status'];
-
-      ref.read(isLoggingInProvider.notifier).state = false;
-      if (context.mounted) {
-        switch (status) {
-          case 200:
-            ref
-                .read(userStateProvider.notifier)
-                .setUserLoginState(UserLoginState.fromJson(result['response']));
-            Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
-            final tokenManager = ref.read(tokenManagerProvider);
-            await tokenManager.saveToken(result['response']['token']);
-            break;
-          case 400:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error400);
-            break;
-          case 404:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error404_login);
-            break;
-          case 408:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error408);
-            break;
-          case 503:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error503);
-            break;
-          default:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error500);
-            break;
-        }
-      }
-    }
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.settings),
@@ -84,7 +39,8 @@ class LoginView extends StatelessWidget {
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: IntrinsicHeight(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -155,43 +111,43 @@ class LoginView extends StatelessWidget {
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 60, vertical: 12),
-                                      child:
-                                          Consumer(builder: (context, ref, _) {
-                                        return OutlinedButton(
-                                            onPressed: () {
-                                              Navigator.restorablePushNamed(
-                                                  context,
-                                                  SignUpView.routeName);
-                                            },
-                                            child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 40),
-                                                child: Text(AppLocalizations.of(
-                                                        context)!
-                                                    .signUp)));
-                                      }),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 60, vertical: 12),
-                                      child: FilledButton(
-                                          onPressed: () {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              submitForm(ref);
-                                            }
-                                          },
-                                          child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 40),
+                                    Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 60, vertical: 8),
+                                        child: Consumer(
+                                            builder: (context, ref, _) {
+                                          return OutlinedButton(
+                                              onPressed: () {
+                                                Navigator.restorablePushNamed(
+                                                    context,
+                                                    SignUpView.routeName);
+                                              },
                                               child: Text(
                                                   AppLocalizations.of(context)!
-                                                      .logIn))),
+                                                      .signUp));
+                                        }),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 60, vertical: 8),
+                                        child: FilledButton(
+                                            onPressed: () {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                submitForm(
+                                                    context,
+                                                    ref,
+                                                    emailController,
+                                                    passwordController);
+                                              }
+                                            },
+                                            child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .logIn)),
+                                      ),
                                     )
                                   ],
                                 );
@@ -209,5 +165,47 @@ class LoginView extends StatelessWidget {
         }),
       ),
     );
+  }
+
+  Future<void> submitForm(
+      BuildContext context,
+      WidgetRef ref,
+      TextEditingController emailController,
+      TextEditingController passwordController) async {
+    ref.read(isLoggingInProvider.notifier).state = true;
+    var user = UserLogin(
+        email: emailController.text, password: passwordController.text);
+
+    await ref.read(userStateProvider.notifier).loginUser(user);
+    final responseCode = ref.read(userStateResponseCodeProvider);
+
+    ref.read(isLoggingInProvider.notifier).state = false;
+    if (context.mounted) {
+      switch (responseCode) {
+        case 200:
+          Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
+          break;
+        case 400:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 404:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error404_login);
+          break;
+        case 408:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error408);
+          break;
+        case 503:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error503);
+          break;
+        default:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error500);
+          break;
+      }
+    }
   }
 }

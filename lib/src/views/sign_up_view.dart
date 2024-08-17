@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/country_key.dart';
 import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 import 'package:math_assessment/src/views/child_select_view.dart';
@@ -31,55 +29,6 @@ class SignUpView extends ConsumerWidget {
     final passwordController = TextEditingController();
     final firstNameController = TextEditingController();
     final lastNameController = TextEditingController();
-
-    void submitForm() async {
-      ref.read(isSigningUpProvider.notifier).state = true;
-      var newUser = UserCreate(
-          email: emailController.text,
-          password: passwordController.text,
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
-          country: selectedCountry!.countryKeyCode,
-          isAdmin: false);
-      final result = await signUpUser(newUser);
-      final status = result['status'];
-
-      ref.read(isSigningUpProvider.notifier).state = false;
-      if (context.mounted) {
-        switch (status) {
-          case 201:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.signUpSuccess);
-            ref
-                .read(userStateProvider.notifier)
-                .setUserLoginState(UserLoginState.fromJson(result['response']));
-            Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
-            final tokenManager = ref.read(tokenManagerProvider);
-            await tokenManager.saveToken(result['response']['token']);
-            break;
-          case 400:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error400);
-            break;
-          case 408:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error408);
-            break;
-          case 409:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error409_signup);
-            break;
-          case 503:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error503);
-            break;
-          default:
-            HelperFunctions.showSnackBar(
-                context, 2000, AppLocalizations.of(context)!.error500);
-            break;
-        }
-      }
-    }
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -290,41 +239,44 @@ class SignUpView extends ConsumerWidget {
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 60),
-                                      child:
-                                          Consumer(builder: (context, ref, _) {
-                                        return OutlinedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 40),
-                                                child: Text(AppLocalizations.of(
-                                                        context)!
-                                                    .logIn)));
-                                      }),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 60),
-                                      child: FilledButton(
-                                          onPressed: () {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              submitForm();
-                                            }
-                                          },
-                                          child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 40),
+                                    Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 12, left: 60, right: 60),
+                                        child: Consumer(
+                                            builder: (context, ref, _) {
+                                          return OutlinedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
                                               child: Text(
                                                   AppLocalizations.of(context)!
-                                                      .signUp))),
+                                                      .logIn));
+                                        }),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 12, left: 60, right: 60),
+                                        child: FilledButton(
+                                            onPressed: () {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                submitForm(
+                                                    context,
+                                                    ref,
+                                                    emailController,
+                                                    passwordController,
+                                                    firstNameController,
+                                                    lastNameController,
+                                                    selectedCountry);
+                                              }
+                                            },
+                                            child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .signUp)),
+                                      ),
                                     )
                                   ],
                                 );
@@ -339,5 +291,57 @@ class SignUpView extends ConsumerWidget {
         }),
       ),
     );
+  }
+
+  void submitForm(
+      BuildContext context,
+      WidgetRef ref,
+      TextEditingController emailController,
+      TextEditingController passwordController,
+      TextEditingController firstNameController,
+      TextEditingController lastNameController,
+      CountryKey? selectedCountry) async {
+    ref.read(isSigningUpProvider.notifier).state = true;
+    var newUser = UserCreate(
+        email: emailController.text,
+        password: passwordController.text,
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        country: selectedCountry!.countryKeyCode,
+        isAdmin: false);
+
+    await ref.read(userStateProvider.notifier).signUpUser(newUser);
+    final responseCode = ref.read(userStateResponseCodeProvider);
+
+    ref.read(isSigningUpProvider.notifier).state = false;
+    if (context.mounted) {
+      switch (responseCode) {
+        case 201:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.signUpSuccess);
+          Navigator.pushReplacementNamed(context, ChildSelectView.routeName);
+          break;
+        case 400:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 408:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error408);
+          break;
+        case 409:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error409_signup);
+          break;
+        case 503:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error503);
+          break;
+        default:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error500);
+          break;
+      }
+    }
   }
 }

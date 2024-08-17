@@ -37,13 +37,20 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
 
   @override
   Widget build(BuildContext context) {
-    final children = ref.watch(childrenStateProvider);
-    ref.listen<Child?>(selectedChildProvider, (previousChild, currentChild) {
+    final children = ref.watch(childrenStateProvider).children;
+    final userState = ref.watch(userStateProvider);
+    ref.listen<ChildState>(childrenStateProvider,
+        (previousState, currentState) {
+      final currentChild = currentState.selectedChild;
       final newColor = currentChild == null
           ? Colors.blue
           : ColorSeed.fromId(currentChild.favColour).color;
       ref.read(themeNotifierProvider.notifier).updateThemeColor(newColor);
     });
+
+    if (userState == null) {
+      return const CircularProgressIndicator();
+    }
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -97,7 +104,8 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                     ],
                   ),
                   children == null
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Expanded(
+                          child: Center(child: CircularProgressIndicator()))
                       : Expanded(
                           child: ListView(
                             scrollDirection: Axis.horizontal,
@@ -116,14 +124,17 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                         Expanded(
                           child: Center(
                             child: OutlinedButton(
-                                onPressed: ref.watch(selectedChildProvider) ==
+                                onPressed: ref
+                                            .watch(childrenStateProvider)
+                                            .selectedChild ==
                                         null
                                     ? null
                                     : () {
                                         ref
                                             .read(childUpdateProvider.notifier)
                                             .syncWithSelectedChild(ref
-                                                .read(selectedChildProvider)!);
+                                                .read(childrenStateProvider)
+                                                .selectedChild!);
                                         Navigator.restorablePushNamed(
                                             context, ChildEditView.routeName);
                                       },
@@ -138,13 +149,15 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                         Expanded(
                           child: Center(
                             child: FilledButton(
-                                onPressed:
-                                    ref.watch(selectedChildProvider) == null
-                                        ? null
-                                        : () {
-                                            Navigator.restorablePushNamed(
-                                                context, HomeView.routeName);
-                                          },
+                                onPressed: ref
+                                            .watch(childrenStateProvider)
+                                            .selectedChild ==
+                                        null
+                                    ? null
+                                    : () {
+                                        Navigator.restorablePushNamed(
+                                            context, HomeView.routeName);
+                                      },
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 36),
@@ -174,7 +187,7 @@ class ChildProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorSeed = ColorSeed.fromId(child.favColour);
     final avatarAnimal = AvatarAnimal.fromId(child.favAnimal);
-    final isSelected = ref.watch(selectedChildProvider) == child;
+    final isSelected = ref.watch(childrenStateProvider).selectedChild == child;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -197,7 +210,9 @@ class ChildProfile extends ConsumerWidget {
                 ),
                 backgroundColor: colorSeed.color),
             onPressed: () {
-              ref.read(selectedChildProvider.notifier).state = child;
+              ref
+                  .read(childrenStateProvider.notifier)
+                  .selectChild(child.childId);
             },
             child: CircleAvatar(
               radius: isSelected ? 48 : 32,

@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:math_assessment/src/models/child.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/providers.dart';
 
 class ChildUpdateNotifier extends StateNotifier<Child> {
@@ -77,7 +78,7 @@ class ChildUpdateNotifier extends StateNotifier<Child> {
 
 final childUpdateProvider = StateNotifierProvider<ChildUpdateNotifier, Child>(
   (ref) {
-    final childState = ref.watch(selectedChildProvider);
+    final childState = ref.watch(childrenStateProvider).selectedChild;
     final initialDetails = childState != null
         ? Child(
             childId: childState.childId,

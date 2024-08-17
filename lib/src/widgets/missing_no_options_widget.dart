@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/models/question.dart';
 import 'package:math_assessment/src/models/result.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
+import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
 
 class MissingNoOptionsWidget extends ConsumerWidget {
   final MissingNoQuestion currentQuestion;
@@ -24,14 +24,15 @@ class MissingNoOptionsWidget extends ConsumerWidget {
       children: [
         // Equation
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Center(
-              child: Text(currentQuestion.equation,
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(color: Theme.of(context).colorScheme.primary)),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Center(
+                child: Text(currentQuestion.equation,
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
+              ),
             ),
           ),
         ),
@@ -101,7 +102,7 @@ class MissingNoOptionsWidget extends ConsumerWidget {
 
   Future<void> submitAnswer(
       BuildContext context, WidgetRef ref, int selectedAnswer) async {
-    final selectedChild = ref.read(selectedChildProvider);
+    final selectedChild = ref.read(childrenStateProvider).selectedChild;
     if (selectedChild == null) return;
 
     final newResult = ResultCreate(
@@ -112,6 +113,6 @@ class MissingNoOptionsWidget extends ConsumerWidget {
       selectedAnswer: selectedAnswer,
       timeTaken: DateTime.now().toUtc().difference(startTime).inMilliseconds,
     );
-    HelperFunctions.submitResult(context, ref, newResult);
+    ref.read(questionStateProvider.notifier).addResult(context, newResult);
   }
 }

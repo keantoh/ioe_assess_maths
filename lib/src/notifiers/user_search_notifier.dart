@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/api/user_api.dart';
 import 'package:math_assessment/src/models/user.dart';
+import 'package:math_assessment/src/services/user_service.dart';
 
 class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
-  UserSearchNotifier()
+  final UserService _userService;
+  final Ref ref;
+  UserSearchNotifier(this._userService, this.ref)
       : super(
             UserSearchResponse(isSearching: false, searchQuery: '', users: []));
 
@@ -25,14 +27,15 @@ class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
     );
   }
 
-  void search() async {
+  Future<void> searchUsers() async {
     state = UserSearchResponse(
       isSearching: true,
       searchQuery: state.searchQuery,
       users: state.users,
     );
     final List<UserSearch> retrievedUsers = [];
-    final result = await searchUsers(state.searchQuery);
+    final result = await _userService.searchUsersService(state.searchQuery);
+
     if (result['status'] == 200 && result['message'] is List) {
       final List<dynamic> usersList = result['message'];
       retrievedUsers.addAll(usersList.map((user) {
@@ -48,11 +51,13 @@ class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
     );
   }
 
-  void deleteUser(String userId) {
+  Future<void> deleteUser(String userId) async {
+    final result = await _userService.deleteUserService(userId);
+    final responseCode = result['status'];
     state = UserSearchResponse(
       isSearching: state.isSearching,
       searchQuery: state.searchQuery,
-      responseCode: state.responseCode,
+      responseCode: responseCode,
       users: state.users.where((user) => user.userId != userId).toList(),
     );
   }
@@ -60,7 +65,10 @@ class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
 
 final userSearchProvider =
     StateNotifierProvider<UserSearchNotifier, UserSearchResponse>(
-  (ref) => UserSearchNotifier(),
+  (ref) {
+    final userService = ref.watch(userServiceProvider);
+    return UserSearchNotifier(userService, ref);
+  },
 );
 
 class UserSearchResponse {

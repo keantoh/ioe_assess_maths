@@ -1,27 +1,18 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/models/question.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
+import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
+import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
 import 'package:math_assessment/src/widgets/classification_options_widget.dart';
 import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
 import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
 import 'package:math_assessment/src/widgets/single_digit_ops_options_widget.dart';
 import 'package:math_assessment/src/widgets/subitising_options_widget.dart';
 import 'package:math_assessment/src/widgets/symbolic_options_widget.dart';
-
-final showResultsProvider = StateProvider<bool>(
-  (ref) => false,
-);
-
-final completedQuestionsProvider = StateProvider<int>(
-  (ref) => 0,
-);
 
 class QuestionView extends ConsumerStatefulWidget {
   const QuestionView({super.key});
@@ -30,17 +21,6 @@ class QuestionView extends ConsumerStatefulWidget {
   @override
   QuestionViewState createState() => QuestionViewState();
 }
-
-final questionListProvider = FutureProvider<List<Question>>((ref) async {
-  final jsonString = await rootBundle.loadString('assets/question_data.json');
-  final jsonData = json.decode(jsonString);
-
-  List<Question> questions = (jsonData['questions'] as List)
-      .map((item) => Question.fromJson(item))
-      .toList();
-
-  return questions;
-});
 
 class QuestionViewState extends ConsumerState<QuestionView> {
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -63,6 +43,9 @@ class QuestionViewState extends ConsumerState<QuestionView> {
   void initState() {
     super.initState();
     sessionStartTime = DateTime.now().toUtc();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(questionStateProvider.notifier).getQuestions();
+    });
   }
 
   @override
@@ -73,123 +56,129 @@ class QuestionViewState extends ConsumerState<QuestionView> {
 
   @override
   Widget build(BuildContext context) {
-    final questionsAsyncValue = ref.watch(questionListProvider);
-    final currentQuestionIndex = ref.watch(currentQuestionIndexProvider);
-    final completedQuestions = ref.read(completedQuestionsProvider);
-    final showResults = ref.watch(showResultsProvider);
+    final questionState = ref.watch(questionStateProvider);
+    final completedQuestions = questionState.currentQuestionIndex +
+        (questionState.showEncouragement ? 1 : 0);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final double width = constraints.maxWidth;
-              final double height = constraints.maxHeight;
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final double width = constraints.maxWidth;
+                final double height = constraints.maxHeight;
 
-              return questionsAsyncValue.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) => Center(
-                      child: Text(
-                          AppLocalizations.of(context)!.errorLoadingQuestions)),
-                  data: (questions) {
-                    if (questions.isEmpty) {
-                      return Center(
-                          child: Text(AppLocalizations.of(context)!
-                              .errorLoadingQuestions));
-                    } else {
-                      final currentQuestion = questions[currentQuestionIndex];
-                      if (!showResults) {
-                        _playAudio(AppLocalizations.of(context)!.localeName,
-                            currentQuestion.id);
-                      }
-                      return Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: LinearProgressIndicator(
-                                  minHeight: 12,
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainer,
-                                  value: completedQuestions / questions.length,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                icon: Icon(Icons.close,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface),
-                                iconSize: 32,
-                              ),
-                            ],
-                          ),
-                          showResults
-                              ? const SizedBox.shrink()
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                return questionState.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : questionState.questions.isEmpty
+                        ? Center(
+                            child: Text(AppLocalizations.of(context)!
+                                .errorLoadingQuestions))
+                        : Consumer(builder: (context, ref, _) {
+                            final currentQuestion = questionState
+                                .questions[questionState.currentQuestionIndex];
+                            final totalQuestions =
+                                questionState.questions.length;
+                            if (!questionState.showEncouragement) {
+                              _playAudio(
+                                  AppLocalizations.of(context)!.localeName,
+                                  currentQuestion.id);
+                            }
+                            return Column(
+                              children: [
+                                Row(
                                   children: [
+                                    Expanded(
+                                      child: LinearProgressIndicator(
+                                        minHeight: 12,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainer,
+                                        value: completedQuestions /
+                                            questionState.questions.length,
+                                      ),
+                                    ),
                                     IconButton(
                                       onPressed: () {
-                                        _playAudio(
-                                            AppLocalizations.of(context)!
-                                                .localeName,
-                                            currentQuestion.id);
+                                        Navigator.of(context).pop();
                                       },
-                                      icon: Icon(Icons.volume_up,
+                                      icon: Icon(Icons.close,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface),
                                       iconSize: 32,
                                     ),
-                                    Flexible(
-                                      child: Text(
-                                        currentQuestion
-                                            .getQuestionInstruction(context),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineSmall,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
                                   ],
                                 ),
-                          showResults
-                              ? Expanded(
-                                  child: encouragementScreen(
-                                      currentQuestionIndex,
-                                      questions.length - 1,
-                                      completedQuestions),
-                                )
-                              : Expanded(
-                                  child: buildQuestionOptions(
-                                      currentQuestion,
-                                      questions.length,
-                                      width,
-                                      height,
-                                      sessionStartTime)),
-                          progressStars(width, questions.length)
-                        ],
-                      );
-                    }
-                  });
-            },
+                                questionState.showEncouragement
+                                    ? const SizedBox.shrink()
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              _playAudio(
+                                                  AppLocalizations.of(context)!
+                                                      .localeName,
+                                                  currentQuestion.id);
+                                            },
+                                            icon: Icon(Icons.volume_up,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface),
+                                            iconSize: 32,
+                                          ),
+                                          Flexible(
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Text(
+                                                currentQuestion
+                                                    .getQuestionInstruction(
+                                                        context),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineSmall,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                questionState.showEncouragement
+                                    ? Expanded(
+                                        child: encouragementScreen(
+                                            questionState.currentQuestionIndex,
+                                            totalQuestions - 1,
+                                            completedQuestions),
+                                      )
+                                    : Expanded(
+                                        child: buildQuestionOptions(
+                                            currentQuestion,
+                                            totalQuestions,
+                                            width,
+                                            height,
+                                            sessionStartTime)),
+                                progressStars(
+                                    width, completedQuestions, totalQuestions)
+                              ],
+                            );
+                          });
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget progressStars(width, totalQuestions) {
+  Widget progressStars(width, numStars, totalQuestions) {
     final double sectionWidth = width / totalQuestions;
     final double starSize = min(sectionWidth, 16);
-    final numStars = ref.read(completedQuestionsProvider);
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Row(
@@ -219,54 +208,55 @@ class QuestionViewState extends ConsumerState<QuestionView> {
 
   Widget encouragementScreen(
       int currentQuestionIndex, int lastQuestionIndex, int completedQuestions) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          textAlign: TextAlign.center,
-          AppLocalizations.of(context)!
-              .encouragementTitle(ref.read(selectedChildProvider)?.name ?? ''),
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
             textAlign: TextAlign.center,
-            currentQuestionIndex == lastQuestionIndex
-                ? AppLocalizations.of(context)!
-                    .completionMessage(completedQuestions)
-                : AppLocalizations.of(context)!
-                    .encouragementMessage(completedQuestions),
-            style: Theme.of(context).textTheme.headlineSmall,
+            AppLocalizations.of(context)!.encouragementTitle(
+                ref.read(childrenStateProvider).selectedChild?.name ?? ''),
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
-        ),
-        currentQuestionIndex == lastQuestionIndex
-            ? FilledButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: FilledButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    AppLocalizations.of(context)!.ok,
-                  ),
-                ))
-            : FilledButton(
-                onPressed: () {
-                  ref.read(showResultsProvider.notifier).state = false;
-                  ref.read(currentQuestionIndexProvider.notifier).state += 1;
-                },
-                style: FilledButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    AppLocalizations.of(context)!.keepGoing,
-                  ),
-                ))
-      ],
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              textAlign: TextAlign.center,
+              currentQuestionIndex == lastQuestionIndex
+                  ? AppLocalizations.of(context)!
+                      .completionMessage(completedQuestions)
+                  : AppLocalizations.of(context)!
+                      .encouragementMessage(completedQuestions),
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
+          currentQuestionIndex == lastQuestionIndex
+              ? FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: FilledButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 16)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      AppLocalizations.of(context)!.ok,
+                    ),
+                  ))
+              : FilledButton(
+                  onPressed: () {
+                    ref.read(questionStateProvider.notifier).nextQuestion();
+                  },
+                  style: FilledButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 16)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      AppLocalizations.of(context)!.keepGoing,
+                    ),
+                  ))
+        ],
+      ),
     );
   }
 

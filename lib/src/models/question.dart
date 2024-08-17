@@ -139,6 +139,31 @@ abstract class Question {
   }
 }
 
+class QuestionState {
+  final List<Question> questions;
+  final int currentQuestionIndex;
+  final bool isLoading;
+  final bool showEncouragement;
+
+  QuestionState(
+      {required this.questions,
+      required this.currentQuestionIndex,
+      required this.isLoading,
+      required this.showEncouragement});
+
+  QuestionState copyWith(
+      {List<Question>? questions,
+      int? currentQuestionIndex,
+      bool? isLoading,
+      bool? showEncouragement}) {
+    return QuestionState(
+        questions: questions ?? this.questions,
+        currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
+        isLoading: isLoading ?? this.isLoading,
+        showEncouragement: showEncouragement ?? this.showEncouragement);
+  }
+}
+
 class NonSymbolicQuestion extends Question {
   List<List<DotPaintOption>> options = [];
 
