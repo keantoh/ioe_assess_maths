@@ -209,53 +209,55 @@ class QuestionViewState extends ConsumerState<QuestionView> {
   Widget encouragementScreen(
       int currentQuestionIndex, int lastQuestionIndex, int completedQuestions) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            textAlign: TextAlign.center,
-            AppLocalizations.of(context)!.encouragementTitle(
-                ref.read(childrenStateProvider).selectedChild?.name ?? ''),
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Text(
               textAlign: TextAlign.center,
-              currentQuestionIndex == lastQuestionIndex
-                  ? AppLocalizations.of(context)!
-                      .completionMessage(completedQuestions)
-                  : AppLocalizations.of(context)!
-                      .encouragementMessage(completedQuestions),
-              style: Theme.of(context).textTheme.headlineSmall,
+              AppLocalizations.of(context)!.encouragementTitle(
+                  ref.read(childrenStateProvider).selectedChild?.name ?? ''),
+              style: Theme.of(context).textTheme.headlineLarge,
             ),
-          ),
-          currentQuestionIndex == lastQuestionIndex
-              ? FilledButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: FilledButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 16)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      AppLocalizations.of(context)!.ok,
-                    ),
-                  ))
-              : FilledButton(
-                  onPressed: () {
-                    ref.read(questionStateProvider.notifier).nextQuestion();
-                  },
-                  style: FilledButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 16)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      AppLocalizations.of(context)!.keepGoing,
-                    ),
-                  ))
-        ],
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                textAlign: TextAlign.center,
+                currentQuestionIndex == lastQuestionIndex
+                    ? AppLocalizations.of(context)!
+                        .completionMessage(completedQuestions)
+                    : AppLocalizations.of(context)!
+                        .encouragementMessage(completedQuestions),
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            currentQuestionIndex == lastQuestionIndex
+                ? FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: FilledButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        AppLocalizations.of(context)!.ok,
+                      ),
+                    ))
+                : FilledButton(
+                    onPressed: () {
+                      ref.read(questionStateProvider.notifier).nextQuestion();
+                    },
+                    style: FilledButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        AppLocalizations.of(context)!.keepGoing,
+                      ),
+                    ))
+          ],
+        ),
       ),
     );
   }

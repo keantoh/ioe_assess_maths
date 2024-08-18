@@ -68,17 +68,22 @@ class Child {
 class ChildState {
   final List<Child> children;
   final Child? selectedChild;
+  final bool isFetching;
 
-  ChildState({required this.children, this.selectedChild});
+  ChildState(
+      {required this.children, this.selectedChild, required this.isFetching});
 
   ChildState copyWith(
-      {List<Child>? children, bool? resetSelectedChild, Child? selectedChild}) {
+      {List<Child>? children,
+      bool? resetSelectedChild,
+      Child? selectedChild,
+      bool? isFetching}) {
     return ChildState(
-      children: children ?? this.children,
-      selectedChild: resetSelectedChild == true
-          ? null
-          : selectedChild ?? this.selectedChild,
-    );
+        children: children ?? this.children,
+        selectedChild: resetSelectedChild == true
+            ? null
+            : selectedChild ?? this.selectedChild,
+        isFetching: isFetching ?? this.isFetching);
   }
 }
 

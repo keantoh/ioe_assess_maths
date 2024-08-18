@@ -134,115 +134,123 @@ class UserTable extends HookConsumerWidget {
     final localeName = AppLocalizations.of(context)?.localeName ?? 'en';
     final users = ref.watch(userSearchProvider).users;
 
-    return Expanded(
-      child: LayoutBuilder(builder: (context, constraints) {
-        const colSpacing = 8.0;
-        const numOfCols = 5;
-        final availableWidth =
-            constraints.maxWidth - colSpacing * numOfCols * 2;
-        final largeWidth = availableWidth * 0.25;
-        final smallWidth = availableWidth * 0.15;
-        final tinyWidth = availableWidth * 0.05;
+    return LayoutBuilder(builder: (context, constraints) {
+      const colSpacing = 8.0;
+      const numOfCols = 5;
+      final availableWidth = constraints.maxWidth - colSpacing * numOfCols * 2;
+      final largeWidth = availableWidth * 0.25;
+      final smallWidth = availableWidth * 0.15;
+      final tinyWidth = availableWidth * 0.05;
 
-        return SingleChildScrollView(
-          child: DataTable(
-            columnSpacing: colSpacing,
-            columns: [
-              DataColumn(
-                  label: SizedBox(
-                      width: largeWidth,
-                      child: Text(AppLocalizations.of(context)!.email))),
-              DataColumn(
-                  label: SizedBox(
-                      width: largeWidth,
-                      child: Text(AppLocalizations.of(context)!.firstName))),
-              DataColumn(
-                  label: SizedBox(
-                      width: largeWidth,
-                      child: Text(AppLocalizations.of(context)!.lastName))),
-              DataColumn(
-                  label: SizedBox(
-                      width: smallWidth,
-                      child: Text(AppLocalizations.of(context)!.dateJoined))),
-              DataColumn(
-                  label: SizedBox(width: tinyWidth, child: const Text(''))),
-            ],
-            rows: users.map((user) {
-              return DataRow(cells: [
-                DataCell(
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: largeWidth),
+      return SingleChildScrollView(
+        child: DataTable(
+          columnSpacing: colSpacing,
+          columns: [
+            DataColumn(
+                label: SizedBox(
+                    width: largeWidth,
                     child: Text(
-                      user.email,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+                      AppLocalizations.of(context)!.email,
+                      softWrap: true,
+                    ))),
+            DataColumn(
+                label: SizedBox(
+                    width: largeWidth,
+                    child: Text(
+                      AppLocalizations.of(context)!.firstName,
+                      softWrap: true,
+                    ))),
+            DataColumn(
+                label: SizedBox(
+                    width: largeWidth,
+                    child: Text(
+                      AppLocalizations.of(context)!.lastName,
+                      softWrap: true,
+                    ))),
+            DataColumn(
+                label: SizedBox(
+                    width: smallWidth,
+                    child: Text(
+                      AppLocalizations.of(context)!.dateJoined,
+                      softWrap: true,
+                    ))),
+            DataColumn(
+                label: SizedBox(width: tinyWidth, child: const Text(''))),
+          ],
+          rows: users.map((user) {
+            return DataRow(cells: [
+              DataCell(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: largeWidth),
+                  child: Text(
+                    user.email,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
-                DataCell(
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: largeWidth),
-                    child: Text(
-                      user.firstName,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+              ),
+              DataCell(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: largeWidth),
+                  child: Text(
+                    user.firstName,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
-                DataCell(
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: largeWidth),
-                    child: Text(
-                      user.lastName,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+              ),
+              DataCell(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: largeWidth),
+                  child: Text(
+                    user.lastName,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
-                DataCell(
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: smallWidth),
-                    child: Text(
-                      DateFormat.yMd(localeName).format(user.createdAt),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
+              ),
+              DataCell(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: smallWidth),
+                  child: Text(
+                    DateFormat.yMd(localeName).format(user.createdAt),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
-                DataCell(
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: tinyWidth),
-                    child: PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert),
-                      onSelected: (String value) {
-                        if (value == 'Delete') {
-                          if (ref.read(userStateProvider)?.userId ==
-                              user.userId) {
-                            HelperFunctions.showSnackBar(context, 2000,
-                                AppLocalizations.of(context)!.deleteOwnAccount);
-                          } else {
-                            _showDeleteUserDialog(context, ref, user);
-                          }
+              ),
+              DataCell(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: tinyWidth),
+                  child: PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (String value) {
+                      if (value == 'Delete') {
+                        if (ref.read(userStateProvider)?.userId ==
+                            user.userId) {
+                          HelperFunctions.showSnackBar(context, 2000,
+                              AppLocalizations.of(context)!.deleteOwnAccount);
+                        } else {
+                          _showDeleteUserDialog(context, ref, user);
                         }
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem<String>(
-                            value: 'Delete',
-                            child:
-                                Text(AppLocalizations.of(context)!.deleteUser),
-                          ),
-                        ];
-                      },
-                    ),
+                      }
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'Delete',
+                          child: Text(AppLocalizations.of(context)!.deleteUser),
+                        ),
+                      ];
+                    },
                   ),
                 ),
-              ]);
-            }).toList(),
-          ),
-        );
-      }),
-    );
+              ),
+            ]);
+          }).toList(),
+        ),
+      );
+    });
   }
 
   void _showDeleteUserDialog(

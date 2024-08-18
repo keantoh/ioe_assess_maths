@@ -36,8 +36,8 @@ class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
     final List<UserSearch> retrievedUsers = [];
     final result = await _userService.searchUsersService(state.searchQuery);
 
-    if (result['status'] == 200 && result['message'] is List) {
-      final List<dynamic> usersList = result['message'];
+    if (result['status'] == 200 && result['response'] is List) {
+      final List<dynamic> usersList = result['response'];
       retrievedUsers.addAll(usersList.map((user) {
         return UserSearch.fromJson(user);
       }).toList());

@@ -6,7 +6,6 @@ import 'package:math_assessment/src/models/avatar_color.dart';
 import 'package:math_assessment/src/models/child.dart';
 import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/providers.dart';
 import 'package:math_assessment/src/notifiers/theme_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
@@ -27,13 +26,13 @@ class ChildSelectView extends ConsumerStatefulWidget {
 }
 
 class ChildSelectViewState extends ConsumerState<ChildSelectView> {
-  @override
-  void initState() {
-    super.initState();
-    ref
-        .read(childrenStateProvider.notifier)
-        .fetchChildren(ref.read(userStateProvider)?.userId);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   ref
+  //       .read(childrenStateProvider.notifier)
+  //       .fetchChildren(ref.read(userStateProvider)?.userId);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +102,7 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                       )
                     ],
                   ),
-                  children == null
+                  ref.watch(childrenStateProvider).isFetching
                       ? const Expanded(
                           child: Center(child: CircularProgressIndicator()))
                       : Expanded(
