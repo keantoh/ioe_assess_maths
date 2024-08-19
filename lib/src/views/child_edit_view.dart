@@ -10,7 +10,7 @@ import 'package:math_assessment/src/models/child.dart';
 import 'package:math_assessment/src/models/gender.dart';
 import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/theme_notifier.dart';
+import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
 import 'package:math_assessment/src/utils/helper_functions.dart';
 
 final isEditingChildProvider = StateProvider<bool>(

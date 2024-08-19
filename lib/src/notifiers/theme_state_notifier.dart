@@ -4,9 +4,9 @@ import 'package:math_assessment/src/models/theme_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final themeNotifierProvider =
-    StateNotifierProvider<ThemeNotifier, ThemeSettings>(
+    StateNotifierProvider<ThemeStateNotifier, ThemeSettings>(
   (ref) {
-    return ThemeNotifier(ThemeSettings(
+    return ThemeStateNotifier(ThemeSettings(
       themeMode: ThemeMode.system,
       themeColor: Colors.blue,
       fontScale: 1.0,
@@ -14,8 +14,8 @@ final themeNotifierProvider =
   },
 );
 
-class ThemeNotifier extends StateNotifier<ThemeSettings> {
-  ThemeNotifier(super.state);
+class ThemeStateNotifier extends StateNotifier<ThemeSettings> {
+  ThemeStateNotifier(super.state);
 
   static const String _themeModeKey = 'themeMode';
   static const String _themeColorKey = 'themeColor';

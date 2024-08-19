@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/notifiers/theme_notifier.dart';
+import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
 import 'package:math_assessment/src/views/account_view.dart';
 import 'package:math_assessment/src/views/child_add_view.dart';
 import 'package:math_assessment/src/views/child_edit_view.dart';

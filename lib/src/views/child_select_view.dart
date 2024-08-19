@@ -6,7 +6,7 @@ import 'package:math_assessment/src/models/avatar_color.dart';
 import 'package:math_assessment/src/models/child.dart';
 import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
 import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/theme_notifier.dart';
+import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
 import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
 import 'package:math_assessment/src/views/account_view.dart';
@@ -26,17 +26,9 @@ class ChildSelectView extends ConsumerStatefulWidget {
 }
 
 class ChildSelectViewState extends ConsumerState<ChildSelectView> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   ref
-  //       .read(childrenStateProvider.notifier)
-  //       .fetchChildren(ref.read(userStateProvider)?.userId);
-  // }
-
   @override
   Widget build(BuildContext context) {
-    final children = ref.watch(childrenStateProvider).children;
+    final childrenList = ref.watch(childrenStateProvider).children;
     final userState = ref.watch(userStateProvider);
     ref.listen<ChildState>(childrenStateProvider,
         (previousState, currentState) {
@@ -109,7 +101,7 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
-                              ...children
+                              ...childrenList
                                   .map((child) => ChildProfile(child: child)),
                               const AddChild(),
                             ],

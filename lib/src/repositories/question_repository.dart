@@ -1,35 +1,25 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:math_assessment/src/models/question.dart';
+import 'package:math_assessment/src/services/question_service.dart';
 
 class QuestionRepository {
   final List<Question> _questions = [];
-  final questionDataPath = 'assets/question_data.json';
+  final QuestionService _questionService;
+
+  QuestionRepository(this._questionService);
 
   List<Question> get questions => List.unmodifiable(_questions);
 
   Future<List<Question>> getAllQuestions() async {
-    try {
-      final jsonString = await rootBundle.loadString(questionDataPath);
-      final jsonData = json.decode(jsonString);
-
-      List<Question> questions = (jsonData['questions'] as List)
-          .map((item) => Question.fromJson(item))
-          .toList();
-
-      _questions.clear();
-      _questions.addAll(questions);
-      return questions;
-    } catch (e) {
-      // Load empty list
-      _questions.clear();
-      return questions;
-    }
+    final results = await _questionService.getAllQuestions();
+    _questions.clear();
+    _questions.addAll(results);
+    return results;
   }
 }
 
 final questionRepositoryProvider = Provider<QuestionRepository>((ref) {
-  return QuestionRepository();
+  final questionService = ref.watch(questionServiceProvider);
+
+  return QuestionRepository(questionService);
 });
