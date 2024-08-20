@@ -18,9 +18,11 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
       this._questionRepository, this._questionService, this.ref)
       : super(QuestionState(
             questions: [],
+            selectedOptions: [],
             currentQuestionIndex: -1,
             isLoading: false,
-            showEncouragement: false));
+            showEncouragement: false,
+            playAudio: false));
 
   int? get responseCode => _responseCode;
 
@@ -30,7 +32,20 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
     state = state.copyWith(
         isLoading: false,
         questions: _questionRepository.questions,
-        currentQuestionIndex: 0);
+        currentQuestionIndex: 0,
+        playAudio: true);
+  }
+
+  void addToSelectedOption(int option) {
+    if (!state.selectedOptions.contains(option)) {
+      final List<int> updatedSelectedOptions = List.from(state.selectedOptions)
+        ..add(option);
+      state = state.copyWith(selectedOptions: updatedSelectedOptions);
+    }
+  }
+
+  void clearSelectedOptions() {
+    state = state.copyWith(selectedOptions: []);
   }
 
   Future<void> addResult(BuildContext context, ResultCreate newResult) async {
@@ -68,18 +83,23 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
     if (state.showEncouragement) {
       state = state.copyWith(
           currentQuestionIndex: state.currentQuestionIndex + 1,
-          showEncouragement: false);
+          selectedOptions: [],
+          showEncouragement: false,
+          playAudio: true);
     } else if ((state.currentQuestionIndex + 1) % encouragementWindow == 0 ||
         state.currentQuestionIndex == state.questions.length - 1) {
       state = state.copyWith(showEncouragement: true);
     } else {
-      state =
-          state.copyWith(currentQuestionIndex: state.currentQuestionIndex + 1);
+      state = state.copyWith(
+          currentQuestionIndex: state.currentQuestionIndex + 1,
+          selectedOptions: [],
+          playAudio: true);
     }
   }
 
   void resetQuestionIndex() {
-    state = state.copyWith(currentQuestionIndex: 0, showEncouragement: false);
+    state = state.copyWith(
+        currentQuestionIndex: 0, selectedOptions: [], showEncouragement: false);
   }
 }
 

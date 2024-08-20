@@ -12,7 +12,6 @@ class QuestionService {
 
   Future<List<Question>> getAllQuestions() async {
     const questionDataPath = 'assets/question_data.json';
-    final List<Question> questions = [];
     try {
       final jsonString = await rootBundle.loadString(questionDataPath);
       final jsonData = json.decode(jsonString);
@@ -20,12 +19,10 @@ class QuestionService {
       List<Question> questions = (jsonData['questions'] as List)
           .map((item) => Question.fromJson(item))
           .toList();
-
-      questions.addAll(questions);
       return questions;
     } catch (e) {
       // Load empty list
-      return questions;
+      return [];
     }
   }
 

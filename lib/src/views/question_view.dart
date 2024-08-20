@@ -82,7 +82,7 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                                 .questions[questionState.currentQuestionIndex];
                             final totalQuestions =
                                 questionState.questions.length;
-                            if (!questionState.showEncouragement) {
+                            if (questionState.playAudio) {
                               _playAudio(
                                   AppLocalizations.of(context)!.localeName,
                                   currentQuestion.id);
@@ -271,8 +271,8 @@ class QuestionViewState extends ConsumerState<QuestionView> {
       return SymbolicOptionsWidget(
           currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is ClassificationQuestion) {
-      return ClassificationOptionsWidget(currentQuestion, totalQuestions,
-          screenWidth, screenHeight, sessionStartTime);
+      return ClassificationOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is SubitisingQuestion) {
       return SubitisingOptionsWidget(
           currentQuestion, totalQuestions, sessionStartTime);

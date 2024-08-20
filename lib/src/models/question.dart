@@ -32,7 +32,9 @@ abstract class Question {
         return ClassificationQuestion(
           json['id'],
           json['category'],
-          json['correct_option'],
+          (json['options'] as List<dynamic>)
+              .where((option) => option['isCorrect'] == true)
+              .length,
           json['options'] as List<dynamic>,
         );
       case 5:
@@ -86,6 +88,15 @@ abstract class Question {
       case 10:
         return AppLocalizations.of(context)!.question6;
       case 11:
+        return AppLocalizations.of(context)!.question11;
+      case 12:
+        return AppLocalizations.of(context)!.question12;
+      case 13:
+        return AppLocalizations.of(context)!.question13;
+      case 14:
+        return AppLocalizations.of(context)!.question14;
+      case 15:
+        return AppLocalizations.of(context)!.question15;
       case 21:
         return AppLocalizations.of(context)!.question21;
       case 22:
@@ -141,26 +152,34 @@ abstract class Question {
 
 class QuestionState {
   final List<Question> questions;
+  final List<int> selectedOptions;
   final int currentQuestionIndex;
   final bool isLoading;
   final bool showEncouragement;
+  final bool playAudio;
 
   QuestionState(
       {required this.questions,
+      required this.selectedOptions,
       required this.currentQuestionIndex,
       required this.isLoading,
-      required this.showEncouragement});
+      required this.showEncouragement,
+      required this.playAudio});
 
   QuestionState copyWith(
       {List<Question>? questions,
+      List<int>? selectedOptions,
       int? currentQuestionIndex,
       bool? isLoading,
-      bool? showEncouragement}) {
+      bool? showEncouragement,
+      bool? playAudio}) {
     return QuestionState(
         questions: questions ?? this.questions,
+        selectedOptions: selectedOptions ?? this.selectedOptions,
         currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
         isLoading: isLoading ?? this.isLoading,
-        showEncouragement: showEncouragement ?? this.showEncouragement);
+        showEncouragement: showEncouragement ?? this.showEncouragement,
+        playAudio: playAudio ?? false);
   }
 }
 
