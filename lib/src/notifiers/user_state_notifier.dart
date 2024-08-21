@@ -12,8 +12,12 @@ class UserStateNotifier extends StateNotifier<UserLoginState?> {
   int? _responseCode;
 
   UserStateNotifier(
-      this._userService, this._userRepository, this._tokenManager, this.ref)
-      : super(null);
+    this._userService,
+    this._userRepository,
+    this._tokenManager,
+    this.ref, {
+    UserLoginState? initialState,
+  }) : super(initialState);
 
   int? get responseCode => _responseCode;
 
