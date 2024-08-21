@@ -38,15 +38,15 @@ abstract class Question {
           json['options'] as List<dynamic>,
         );
       case 5:
-        // CURRENTLY SAME AS NONSYMBOLIC QUESTION
-        return SubitisingQuestion(
+        // SubitisingQuestion uses NonsymbolicQuestion
+        return NonSymbolicQuestion(
           json['id'],
           json['category'],
           json['correct_option'],
           json['options'] as List<dynamic>,
         );
       case 6:
-        // Recognition same as SymbolicQuestion layout
+        // RecognitionQuestion uses SymbolicQuestion
         return SymbolicQuestion(
           json['id'],
           json['category'],
@@ -188,6 +188,9 @@ class NonSymbolicQuestion extends Question {
 
   NonSymbolicQuestion(
       super.id, super.category, super.correctOption, List<dynamic> options) {
+    if (options.length < 2) {
+      throw const FormatException('At least two options must be provided');
+    }
     parseOptions(options);
   }
 
@@ -214,6 +217,9 @@ class SymbolicQuestion extends Question {
 
   SymbolicQuestion(
       super.id, super.category, super.correctOption, List<dynamic> options) {
+    if (options.length < 2) {
+      throw const FormatException('At least two options must be provided');
+    }
     parseOptions(options);
   }
 
@@ -234,42 +240,24 @@ class ClassificationQuestion extends Question {
 
   ClassificationQuestion(
       super.id, super.category, super.correctOption, List<dynamic> options) {
+    if (options.isEmpty) {
+      throw const FormatException('At least one valid option must be provided');
+    }
     parseOptions(options);
   }
 
   @override
   void parseOptions(List<dynamic> options) {
     this.options = options.map((option) {
-      try {
-        return ImagePaintOption.fromJson(option);
-      } catch (e) {
-        throw FormatException('Error parsing option: $option');
-      }
-    }).toList();
-  }
-}
-
-class SubitisingQuestion extends Question {
-  List<List<DotPaintOption>> options = [];
-
-  SubitisingQuestion(
-      super.id, super.category, super.correctOption, List<dynamic> options) {
-    parseOptions(options);
-  }
-
-  @override
-  void parseOptions(List<dynamic> options) {
-    this.options = options.map((optionList) {
-      if (optionList is List<dynamic>) {
-        return optionList.map((dot) {
-          if (dot is Map<String, dynamic>) {
-            return DotPaintOption.fromJson(dot);
-          } else {
-            throw const FormatException('Invalid dot format');
-          }
-        }).toList();
+      if (option is Map<String, dynamic>) {
+        try {
+          return ImagePaintOption.fromJson(option);
+        } catch (e) {
+          throw FormatException('Error parsing option: $option');
+        }
       } else {
-        throw const FormatException('Invalid option list format');
+        throw const FormatException(
+            'Invalid option format: expected Map<String, dynamic>');
       }
     }).toList();
   }
@@ -281,6 +269,10 @@ class MissingNoQuestion extends Question {
 
   MissingNoQuestion(super.id, super.category, super.correctOption,
       List<dynamic> options, this.equation) {
+    if (options.length != 4) {
+      throw const FormatException(
+          'Exactly four valid options must be provided');
+    }
     parseOptions(options);
   }
 
@@ -302,6 +294,9 @@ class SingleDigitOpsQuestion extends Question {
 
   SingleDigitOpsQuestion(super.id, super.category, super.correctOption,
       List<dynamic> options, this.equation) {
+    if (options.length < 2) {
+      throw const FormatException('At least two options must be provided');
+    }
     parseOptions(options);
   }
 
