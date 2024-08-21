@@ -194,6 +194,7 @@ class ChildProfile extends ConsumerWidget {
                       width: 3.0)
                   : null),
           child: FilledButton(
+            key: ValueKey(child.childId),
             style: FilledButton.styleFrom(
                 padding: EdgeInsets.zero,
                 shape: RoundedRectangleBorder(

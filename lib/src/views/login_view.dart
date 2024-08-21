@@ -56,6 +56,7 @@ class LoginView extends StatelessWidget {
                         Container(
                           margin: fieldMargin,
                           child: TextFormField(
+                            key: const Key('log_in_email_field'),
                             controller: emailController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
@@ -76,6 +77,7 @@ class LoginView extends StatelessWidget {
                         Container(
                           margin: fieldMargin,
                           child: TextFormField(
+                            key: const Key('log_in_password_field'),
                             controller: passwordController,
                             obscureText: true,
                             decoration: InputDecoration(
@@ -134,6 +136,8 @@ class LoginView extends StatelessWidget {
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 60, vertical: 8),
                                         child: FilledButton(
+                                            key: const Key(
+                                                'log_in_log_in_button'),
                                             onPressed: () {
                                               if (_formKey.currentState!
                                                   .validate()) {
