@@ -13,6 +13,17 @@ class ImagePaintOption {
       required this.isCorrect});
 
   factory ImagePaintOption.fromJson(Map<String, dynamic> json) {
+    if (json['x'] == null ||
+        json['x'] is! double ||
+        json['y'] == null ||
+        json['y'] is! double ||
+        json['height'] == null ||
+        json['height'] is! double ||
+        json['image'] == null) {
+      throw const FormatException(
+          'Invalid or missing "someProperty" in ImagePaintOption');
+    }
+
     return ImagePaintOption(
         x: json['x'].toDouble(),
         y: json['y'].toDouble(),
