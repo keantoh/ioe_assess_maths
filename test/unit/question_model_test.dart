@@ -255,6 +255,41 @@ void main() {
       );
     });
 
+    test('should throw FormatException for invalid option image', () {
+      final Map<String, dynamic> json = {
+        "id": 11,
+        "category": 3,
+        "options": [
+          {
+            "x": 0.1,
+            "y": 0.1,
+            "height": 0.3,
+            "image": "fish",
+            "isCorrect": true
+          },
+          {
+            "x": 0.1,
+            "y": 0.1,
+            "height": 0.3,
+            "image": "tyrannosaurus",
+            "isCorrect": true
+          },
+        ]
+      };
+
+      expect(
+        () => ClassificationQuestion(
+          json['id'],
+          json['category'],
+          (json['options'] as List<dynamic>)
+              .where((option) => option['isCorrect'] == true)
+              .length,
+          json['options'] as List<dynamic>,
+        ),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
     test('should throw FormatException when no options are provided', () {
       final Map<String, dynamic> json = {
         'id': 1,
@@ -272,6 +307,70 @@ void main() {
               .length,
           json['options'] as List<dynamic>,
         ),
+        throwsA(isA<FormatException>()),
+      );
+    });
+  });
+
+  // CAT 4: PATTERNING
+  group('Patterning Subclass', () {
+    test('should parse options correctly', () {
+      final Map<String, dynamic> json = {
+        "id": 16,
+        "category": 4,
+        "matchingImage": "finger_2",
+        "options": ["finger_4", "finger_5", "finger_1", "finger_2"],
+        "correct_option": 3
+      };
+
+      final question = PatterningQuestion(
+          json['id'],
+          json['category'],
+          json['correct_option'],
+          json['options'] as List<dynamic>,
+          json['matchingImage']);
+
+      expect(question.options.length, 4);
+      expect(question.options[0], "assets/images/question_finger_4.png");
+      expect(question.options[1], "assets/images/question_finger_5.png");
+    });
+
+    test('should throw FormatException for invalid option image', () {
+      final Map<String, dynamic> json = {
+        "id": 16,
+        "category": 4,
+        "matchingImage": "finger_2",
+        "options": ["finger_100", "finger_5", "finger_1", "finger_2"],
+        "correct_option": 3
+      };
+
+      expect(
+        () => PatterningQuestion(
+            json['id'],
+            json['category'],
+            json['correct_option'],
+            json['options'] as List<dynamic>,
+            json['matchingImage']),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('should throw FormatException when no options are provided', () {
+      final Map<String, dynamic> json = {
+        "id": 16,
+        "category": 4,
+        "matchingImage": "finger_2",
+        "options": [],
+        "correct_option": 3
+      };
+
+      expect(
+        () => PatterningQuestion(
+            json['id'],
+            json['category'],
+            json['correct_option'],
+            json['options'] as List<dynamic>,
+            json['matchingImage']),
         throwsA(isA<FormatException>()),
       );
     });
