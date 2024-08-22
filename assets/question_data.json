@@ -642,6 +642,51 @@
       ]
     },
     {
+      "id": 16,
+      "category": 4,
+      "matchingImage": "finger_2",
+      "options": [
+        "finger_4", "finger_5", "finger_1", "finger_2"
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 17,
+      "category": 4,
+      "matchingImage": "cake_4",
+      "options": [
+        "cake_2l", "cake_3", "cake_2r", "cake_4"
+      ],
+      "correct_option": 3
+    },
+    {
+      "id": 18,
+      "category": 4,
+      "matchingImage": "ladybird_6",
+      "options": [
+        "ladybird_5", "ladybird_2", "ladybird_6", "ladybird_4"
+      ],
+      "correct_option": 2
+    },
+    {
+      "id": 19,
+      "category": 4,
+      "matchingImage": "dice_5",
+      "options": [
+        "dice_4", "dice_5", "dice_3", "dice_1"
+      ],
+      "correct_option": 1
+    },
+    {
+      "id": 20,
+      "category": 4,
+      "matchingImage": "candle_holder",
+      "options": [
+        "candle_4", "candle_1", "candle_2", "candle_3"
+      ],
+      "correct_option": 3
+    },
+    {
       "id": 21,
       "category": 5,
       "options": [

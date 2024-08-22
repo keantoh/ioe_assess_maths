@@ -10,6 +10,7 @@ import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
 import 'package:math_assessment/src/widgets/classification_options_widget.dart';
 import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
 import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
+import 'package:math_assessment/src/widgets/patterning_options_widget.dart';
 import 'package:math_assessment/src/widgets/single_digit_ops_options_widget.dart';
 import 'package:math_assessment/src/widgets/symbolic_options_widget.dart';
 
@@ -271,6 +272,9 @@ class QuestionViewState extends ConsumerState<QuestionView> {
           currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is ClassificationQuestion) {
       return ClassificationOptionsWidget(
+          currentQuestion, totalQuestions, sessionStartTime);
+    } else if (currentQuestion is PatterningQuestion) {
+      return PatterningOptionsWidget(
           currentQuestion, totalQuestions, sessionStartTime);
     } else if (currentQuestion is MissingNoQuestion) {
       return MissingNoOptionsWidget(
