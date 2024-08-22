@@ -28,11 +28,12 @@ class SingleDigitsOpsOptionsWidget extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Center(
-              child: Text(currentQuestion.equation,
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(color: Theme.of(context).colorScheme.primary)),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(currentQuestion.equation,
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
+              ),
             ),
           ),
         ),
@@ -78,9 +79,10 @@ class SingleDigitsOpsOptionsWidget extends ConsumerWidget {
             width: height * 0.5,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: Theme.of(context).colorScheme.surfaceContainer,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
             ),
-            child: Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
               child: Text(
                 currentQuestion.options[optionIndex].toString(),
                 style: Theme.of(context)

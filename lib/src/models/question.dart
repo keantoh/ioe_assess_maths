@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:math_assessment/src/models/dot_paint_option.dart';
 import 'package:math_assessment/src/models/image_paint_option.dart';
+import 'package:math_assessment/src/config.dart';
 
 abstract class Question {
   final int id;
@@ -37,6 +38,13 @@ abstract class Question {
               .length,
           json['options'] as List<dynamic>,
         );
+      case 4:
+        return PatterningQuestion(
+            json['id'],
+            json['category'],
+            json['correct_option'],
+            json['options'] as List<dynamic>,
+            json['matchingImage']);
       case 5:
         // SubitisingQuestion uses NonsymbolicQuestion
         return NonSymbolicQuestion(
@@ -97,6 +105,16 @@ abstract class Question {
         return AppLocalizations.of(context)!.question14;
       case 15:
         return AppLocalizations.of(context)!.question15;
+      case 16:
+        return AppLocalizations.of(context)!.question16;
+      case 17:
+        return AppLocalizations.of(context)!.question17;
+      case 18:
+        return AppLocalizations.of(context)!.question18;
+      case 19:
+        return AppLocalizations.of(context)!.question19;
+      case 20:
+        return AppLocalizations.of(context)!.question20;
       case 21:
         return AppLocalizations.of(context)!.question21;
       case 22:
@@ -259,6 +277,56 @@ class ClassificationQuestion extends Question {
         throw const FormatException(
             'Invalid option format: expected Map<String, dynamic>');
       }
+    }).toList();
+  }
+}
+
+class PatterningQuestion extends Question {
+  String? matchingImagePath;
+  List<String> options = [];
+  Map<String, String> imagePaths = {
+    'finger_1': '${Config.imagePathPrefix}question_finger_1.png',
+    'finger_2': '${Config.imagePathPrefix}question_finger_2.png',
+    'finger_4': '${Config.imagePathPrefix}question_finger_4.png',
+    'finger_5': '${Config.imagePathPrefix}question_finger_5.png',
+    'cake_2l': '${Config.imagePathPrefix}question_cake_2l.png',
+    'cake_2r': '${Config.imagePathPrefix}question_cake_2r.png',
+    'cake_3': '${Config.imagePathPrefix}question_cake_3.png',
+    'cake_4': '${Config.imagePathPrefix}question_cake_4.png',
+    'ladybird_2': '${Config.imagePathPrefix}question_ladybird_2.png',
+    'ladybird_4': '${Config.imagePathPrefix}question_ladybird_4.png',
+    'ladybird_5': '${Config.imagePathPrefix}question_ladybird_5.png',
+    'ladybird_6': '${Config.imagePathPrefix}question_ladybird_6.png',
+    'dice_1': '${Config.imagePathPrefix}question_dice_1.png',
+    'dice_3': '${Config.imagePathPrefix}question_dice_3.png',
+    'dice_4': '${Config.imagePathPrefix}question_dice_4.png',
+    'dice_5': '${Config.imagePathPrefix}question_dice_5.png',
+    'candle_holder': '${Config.imagePathPrefix}question_candle_holder.png',
+    'candle_1': '${Config.imagePathPrefix}question_candle_1.png',
+    'candle_2': '${Config.imagePathPrefix}question_candle_2.png',
+    'candle_3': '${Config.imagePathPrefix}question_candle_3.png',
+    'candle_4': '${Config.imagePathPrefix}question_candle_4.png',
+  };
+
+  PatterningQuestion(super.id, super.category, super.correctOption,
+      List<dynamic> options, String matchingImage) {
+    if (options.length < 2) {
+      throw const FormatException('At least two options must be provided');
+    }
+    matchingImagePath = imagePaths[matchingImage] ??
+        (throw FormatException(
+            'Error: No image path found for option: $matchingImage'));
+    parseOptions(options);
+  }
+
+  @override
+  void parseOptions(List<dynamic> options) {
+    this.options = options.map((option) {
+      String? imagePath = imagePaths[option];
+      if (imagePath == null) {
+        throw FormatException('Error: No image path found for option: $option');
+      }
+      return imagePath;
     }).toList();
   }
 }

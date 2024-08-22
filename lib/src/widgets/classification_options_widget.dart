@@ -50,8 +50,9 @@ class ClassificationOptionsWidget extends ConsumerWidget {
                                   width: 4.0,
                                 )
                               : null,
-                          color:
-                              Theme.of(context).colorScheme.surfaceContainer),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHigh),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Image.asset(

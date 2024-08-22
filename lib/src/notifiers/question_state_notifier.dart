@@ -11,7 +11,7 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
   final QuestionRepository _questionRepository;
   final QuestionService _questionService;
   final Ref ref;
-  final encouragementWindow = 10;
+  final int encouragementWindow = 10;
   int? _responseCode;
 
   QuestionStateNotifier(
@@ -25,6 +25,8 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
             playAudio: false));
 
   int? get responseCode => _responseCode;
+
+  int get getEncouragementWindow => encouragementWindow;
 
   Future<void> getQuestions() async {
     state = state.copyWith(isLoading: true);

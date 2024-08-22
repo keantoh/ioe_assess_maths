@@ -16,7 +16,7 @@ class ChildrenStateNotifier extends StateNotifier<ChildState> {
 
   int? get responseCode => _responseCode;
 
-  void fetchChildren(userId) async {
+  Future<void> fetchChildren(userId) async {
     if (userId != null) {
       state = state.copyWith(isFetching: true);
       final result = await _childRepository.getAllChildren(userId);

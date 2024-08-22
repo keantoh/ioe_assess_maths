@@ -10,11 +10,10 @@ class QuestionRepository {
 
   List<Question> get questions => List.unmodifiable(_questions);
 
-  Future<List<Question>> getAllQuestions() async {
+  Future<void> getAllQuestions() async {
     final results = await _questionService.getAllQuestions();
     _questions.clear();
     _questions.addAll(results);
-    return results;
   }
 }
 

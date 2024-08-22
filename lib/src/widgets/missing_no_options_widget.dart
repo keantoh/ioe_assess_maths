@@ -24,11 +24,11 @@ class MissingNoOptionsWidget extends ConsumerWidget {
       children: [
         // Equation
         Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Center(
+          child: Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
                 child: Text(currentQuestion.equation,
                     style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         color: Theme.of(context).colorScheme.primary)),
@@ -48,7 +48,7 @@ class MissingNoOptionsWidget extends ConsumerWidget {
         // Options
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(0),
             child: LayoutBuilder(builder: (context, constraints) {
               final double height = constraints.maxHeight;
               return Row(
@@ -83,9 +83,10 @@ class MissingNoOptionsWidget extends ConsumerWidget {
             width: height * 0.4,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: Theme.of(context).colorScheme.surfaceContainer,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
             ),
-            child: Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
               child: Text(
                 currentQuestion.options[optionIndex].toString(),
                 style: Theme.of(context)

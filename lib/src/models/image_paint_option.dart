@@ -1,3 +1,5 @@
+import 'package:math_assessment/src/config.dart';
+
 class ImagePaintOption {
   final double x;
   final double y;
@@ -34,20 +36,19 @@ class ImagePaintOption {
 }
 
 enum QuestionImage {
-  unknown('unknown', 'assets/images/avatar_dog.jpeg'),
-  fish('fish', 'assets/images/question_fish.png'),
-  dog('dog', 'assets/images/question_dog.png'),
-  book('book', 'assets/images/question_book.png'),
-  ball('ball', 'assets/images/question_ball.png'),
-  tree('tree', 'assets/images/question_tree.png'),
-  plant('plant', 'assets/images/question_plant.png'),
-  cat('cat', 'assets/images/question_cat.png'),
-  goldfish('goldfish', 'assets/images/question_goldfish.png'),
-  camel('camel', 'assets/images/question_camel.png'),
-  deer('deer', 'assets/images/question_deer.png'),
-  toucan('toucan', 'assets/images/question_toucan.png'),
-  octopus('octopus', 'assets/images/question_octopus.png'),
-  flower('flower', 'assets/images/question_flower.png');
+  fish('fish', '${Config.imagePathPrefix}question_fish.png'),
+  dog('dog', '${Config.imagePathPrefix}question_dog.png'),
+  book('book', '${Config.imagePathPrefix}question_book.png'),
+  ball('ball', '${Config.imagePathPrefix}question_ball.png'),
+  tree('tree', '${Config.imagePathPrefix}question_tree.png'),
+  plant('plant', '${Config.imagePathPrefix}question_plant.png'),
+  cat('cat', '${Config.imagePathPrefix}question_cat.png'),
+  goldfish('goldfish', '${Config.imagePathPrefix}question_goldfish.png'),
+  camel('camel', '${Config.imagePathPrefix}question_camel.png'),
+  deer('deer', '${Config.imagePathPrefix}question_deer.png'),
+  toucan('toucan', '${Config.imagePathPrefix}question_toucan.png'),
+  octopus('octopus', '${Config.imagePathPrefix}question_octopus.png'),
+  flower('flower', '${Config.imagePathPrefix}question_flower.png');
 
   final String name;
   final String imagePath;
@@ -55,7 +56,7 @@ enum QuestionImage {
   const QuestionImage(this.name, this.imagePath);
 
   static QuestionImage fromName(String name) {
-    return QuestionImage.values
-        .firstWhere((image) => image.name == name, orElse: () => unknown);
+    return QuestionImage.values.firstWhere((image) => image.name == name,
+        orElse: () => throw FormatException('Image with name $name not found'));
   }
 }

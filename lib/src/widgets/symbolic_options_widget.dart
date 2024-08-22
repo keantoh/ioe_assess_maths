@@ -41,7 +41,7 @@ class SymbolicOptionsWidget extends ConsumerWidget {
                 child: Ink(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.0),
-                    color: Theme.of(context).colorScheme.surfaceContainer,
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
                   ),
                   child: SizedBox(
                       width: constraints.maxWidth,
