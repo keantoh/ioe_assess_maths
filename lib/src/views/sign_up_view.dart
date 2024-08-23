@@ -64,6 +64,7 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                key: const Key('sign_up_first_name_field'),
                                 controller: firstNameController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
@@ -86,6 +87,7 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                key: const Key('sign_up_email_field'),
                                 controller: emailController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
@@ -117,6 +119,7 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                key: const Key('sign_up_last_name_field'),
                                 controller: lastNameController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
@@ -139,6 +142,7 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                key: const Key('sign_up_password_field'),
                                 controller: passwordController,
                                 obscureText: true,
                                 decoration: InputDecoration(
@@ -171,6 +175,7 @@ class SignUpView extends ConsumerWidget {
                               child: Container(
                                 margin: fieldMargin,
                                 child: DropdownButtonFormField(
+                                  key: const Key('sign_up_country_field'),
                                   isExpanded: true,
                                   isDense: false,
                                   decoration: InputDecoration(
@@ -207,6 +212,8 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                key:
+                                    const Key('sign_up_confirm_password_field'),
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
