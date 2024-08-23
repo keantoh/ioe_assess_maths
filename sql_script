@@ -1,0 +1,95 @@
+-- Insert values into Colour table
+SET IDENTITY_INSERT dbo.Colour ON;
+
+INSERT INTO dbo.Colour (colour_id, colour_name)
+VALUES (1, 'Blue'),
+       (2, 'Teal'),
+       (3, 'Green'),
+       (4, 'Red'),
+       (5, 'Pink'),
+       (6, 'Purple');
+
+SET IDENTITY_INSERT dbo.Colour OFF;
+
+
+-- Insert values into Animal table
+SET IDENTITY_INSERT dbo.Animal ON;
+
+INSERT INTO dbo.Animal (animal_id, animal_name)
+VALUES (1, 'Dog'),
+       (2, 'Cat'),
+       (3, 'Bird'),
+       (4, 'Elephant'),
+       (5, 'Lion'),
+       (6, 'Panda'),
+       (7, 'Rabbit');
+
+SET IDENTITY_INSERT dbo.Animal OFF;
+
+-- Insert values into QuestionCategory table
+SET IDENTITY_INSERT dbo.QuestionCategory ON;
+
+INSERT INTO dbo.QuestionCategory (category_id, category_name)
+VALUES (1, 'Non-symbolic magnitude'),
+       (2, 'Symbolic magnitude'),
+       (3, 'Classification of sets'),
+       (4, 'Numerical patterns'),
+       (5, 'Subitising and counting'),
+       (6, 'Number recognition'),
+       (7, 'Missing number'),
+       (8, 'Addition'),
+       (9, 'Subtraction');
+
+SET IDENTITY_INSERT dbo.QuestionCategory OFF;
+
+-- Insert values into Question table
+SET IDENTITY_INSERT dbo.Question ON;
+
+INSERT INTO dbo.Question (question_id, category_id, difficulty_level, text)
+VALUES (1, 1, 1, 'Tap the side that has more'),
+       (2, 1, 1, 'Tap the side that has more'),
+       (3, 1, 1, 'Tap the side that has more'),
+       (4, 1, 1, 'Tap the side that has more'),
+       (5, 1, 1, 'Tap the side that has more'),
+       (6, 2, 1, 'Tap the side that is more'),
+       (7, 2, 1, 'Tap the side that is more'),
+       (8, 2, 1, 'Tap the side that is more'),
+       (9, 2, 1, 'Tap the side that is more'),
+       (10, 2, 1, 'Tap the side that is more'),
+       (11, 3, 1, 'Tap all the fish'),
+       (12, 3, 1, 'Tap all the books'),
+       (13, 3, 1, 'Tap all the big trees'),
+       (14, 3, 1, 'Tap all things that have 4 legs'),
+       (15, 3, 1, 'Tap all living things'),
+       (16, 4, 1, 'This hand has two fingers. Tap the hand that matches.'),
+       (17, 4, 1, 'This cake has four candles. Tap the cake that matches.'),
+       (18, 4, 1, 'This ladybird has 6 dots. Tap the ladybird that matches.'),
+       (19, 4, 1, 'This dice has 5 dots. Tap the dice that matches.'),
+       (20, 4, 1, 'Tap how many candles are needed to fill the candle holder'),
+       (21, 5, 1, 'Tap the side that has two dots'),
+       (22, 5, 1, 'Tap the side that has four dots'),
+       (23, 5, 1, 'Tap the side that has three dots'),
+       (24, 5, 1, 'Tap the side that has five dots'),
+       (25, 5, 1, 'Tap the side that has six dots'),
+       (26, 6, 1, 'Tap the number 2'),
+       (27, 6, 1, 'Tap the number 5'),
+       (28, 6, 1, 'Tap the number 6'),
+       (29, 6, 1, 'Tap the number 9'),
+       (30, 6, 1, 'Tap the number 12'),
+       (31, 7, 1, 'Tap the number that comes next. 1, 2, 3...'),
+       (32, 7, 1, 'Tap the missing number'),
+       (33, 7, 1, 'Tap the missing number'),
+       (34, 7, 1, 'Tap the missing number'),
+       (35, 7, 1, 'Tap the missing number'),
+       (36, 8, 1, 'Tap the number that is one more than 2'),
+       (37, 8, 1, 'Tap the number that is one more than 4'),
+       (38, 8, 1, '1 add 2 equals... Tap the number'),
+       (39, 8, 1, '2 add 3 equals... Tap the number'),
+       (40, 8, 1, '4 add 5 equals... Tap the number'),
+       (41, 9, 1, 'Tap the number that is one less than 3'),
+       (42, 9, 1, 'Tap the number that is one less than 5'),
+       (43, 9, 1, '2 take away 1 equals... Tap the number'),
+       (44, 9, 1, '4 take away 2 equals... Tap the number'),
+       (45, 9, 1, '7 take away 2 equals... Tap the number');
+
+SET IDENTITY_INSERT dbo.Question OFF;
