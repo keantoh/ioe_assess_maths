@@ -327,7 +327,6 @@ class ChildEditView extends HookConsumerWidget {
     if (context.mounted) {
       switch (responseCode) {
         case 200:
-          ref.read(childrenStateProvider.notifier).updateChild(updatedChild);
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.childUpdateSuccess);
           Navigator.pop(context);
@@ -368,7 +367,6 @@ class ChildEditView extends HookConsumerWidget {
     if (context.mounted) {
       switch (responseCode) {
         case 200:
-          ref.read(childrenStateProvider.notifier).removeChild(childId);
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.childDeleteSuccess);
           Navigator.pop(context);
