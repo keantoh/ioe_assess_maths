@@ -1,4 +1,4 @@
-package com.example.math_assessment
+package uk.ac.ucl.ASSESSMaths
 
 import io.flutter.embedding.android.FlutterActivity
 
