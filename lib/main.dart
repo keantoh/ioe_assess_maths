@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/theme_settings.dart';
-import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
+import 'package:assess_math/src/models/theme_settings.dart';
+import 'package:assess_math/src/notifiers/theme_state_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/app.dart';

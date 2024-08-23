@@ -3,16 +3,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/repositories/child_repository.dart';
-import 'package:math_assessment/src/repositories/user_repository.dart';
-import 'package:math_assessment/src/services/user_service.dart';
-import 'package:math_assessment/src/views/child_select_view.dart';
-import 'package:math_assessment/src/views/login_view.dart';
-import 'package:math_assessment/src/views/sign_up_view.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/notifiers/token_state_provider.dart';
+import 'package:assess_math/src/notifiers/user_state_notifier.dart';
+import 'package:assess_math/src/repositories/child_repository.dart';
+import 'package:assess_math/src/repositories/user_repository.dart';
+import 'package:assess_math/src/services/user_service.dart';
+import 'package:assess_math/src/views/child_select_view.dart';
+import 'package:assess_math/src/views/login_view.dart';
+import 'package:assess_math/src/views/sign_up_view.dart';
 import 'package:mocktail/mocktail.dart';
 
 void main() {

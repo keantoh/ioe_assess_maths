@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/question.dart';
-import 'package:math_assessment/src/models/result.dart';
-import 'package:math_assessment/src/repositories/question_repository.dart';
-import 'package:math_assessment/src/services/question_service.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
+import 'package:assess_math/src/models/question.dart';
+import 'package:assess_math/src/models/result.dart';
+import 'package:assess_math/src/repositories/question_repository.dart';
+import 'package:assess_math/src/services/question_service.dart';
+import 'package:assess_math/src/utils/helper_functions.dart';
 
 class QuestionStateNotifier extends StateNotifier<QuestionState> {
   final QuestionRepository _questionRepository;

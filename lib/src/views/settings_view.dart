@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
+import 'package:assess_math/src/notifiers/theme_state_notifier.dart';
 
 final isSigningUpProvider = StateProvider<bool>(
   (ref) => false,

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/services/user_service.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/services/user_service.dart';
 
 class ResetPasswordNotifier extends StateNotifier<List<Child>?> {
   final UserService _userService;

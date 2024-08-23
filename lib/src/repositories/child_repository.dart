@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/services/child_service.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/services/child_service.dart';
 
 class ChildRepository {
   final ChildService _childService;

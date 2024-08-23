@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/services/user_service.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/services/user_service.dart';
 
 class UserRepository {
   final UserService _userService;

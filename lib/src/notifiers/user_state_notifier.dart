@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/token_state_provider.dart';
-import 'package:math_assessment/src/repositories/user_repository.dart';
-import 'package:math_assessment/src/services/user_service.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/notifiers/token_state_provider.dart';
+import 'package:assess_math/src/repositories/user_repository.dart';
+import 'package:assess_math/src/services/user_service.dart';
 
 class UserStateNotifier extends StateNotifier<UserLoginState?> {
   final UserService _userService;

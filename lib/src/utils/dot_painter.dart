@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:math_assessment/src/models/dot_paint_option.dart';
+import 'package:assess_math/src/models/dot_paint_option.dart';
 
 class DotsPainter extends CustomPainter {
   final List<DotPaintOption> dots;

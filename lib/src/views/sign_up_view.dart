@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/country_key.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
-import 'package:math_assessment/src/views/child_select_view.dart';
-import 'package:math_assessment/src/views/settings_view.dart';
+import 'package:assess_math/src/models/country_key.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/notifiers/user_state_notifier.dart';
+import 'package:assess_math/src/utils/helper_functions.dart';
+import 'package:assess_math/src/views/child_select_view.dart';
+import 'package:assess_math/src/views/settings_view.dart';
 
 final isSigningUpProvider = StateProvider<bool>(
   (ref) => false,

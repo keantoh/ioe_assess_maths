@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/views/child_select_view.dart';
-import 'package:math_assessment/src/views/login_view.dart';
+import 'package:assess_math/src/notifiers/user_state_notifier.dart';
+import 'package:assess_math/src/views/child_select_view.dart';
+import 'package:assess_math/src/views/login_view.dart';
 
 class SplashView extends ConsumerStatefulWidget {
   static const routeName = '/';

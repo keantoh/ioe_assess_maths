@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/question.dart';
-import 'package:math_assessment/src/services/question_service.dart';
+import 'package:assess_math/src/models/question.dart';
+import 'package:assess_math/src/services/question_service.dart';
 
 class QuestionRepository {
   final List<Question> _questions = [];

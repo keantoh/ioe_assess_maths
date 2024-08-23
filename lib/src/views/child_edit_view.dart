@@ -4,14 +4,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:math_assessment/src/models/avatar_animal.dart';
-import 'package:math_assessment/src/models/avatar_color.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/models/gender.dart';
-import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
+import 'package:assess_math/src/models/avatar_animal.dart';
+import 'package:assess_math/src/models/avatar_color.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/models/gender.dart';
+import 'package:assess_math/src/notifiers/child_update_notifier.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/notifiers/theme_state_notifier.dart';
+import 'package:assess_math/src/utils/helper_functions.dart';
 
 final isEditingChildProvider = StateProvider<bool>(
   (ref) => false,

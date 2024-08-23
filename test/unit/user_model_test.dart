@@ -1,4 +1,4 @@
-import 'package:math_assessment/src/models/user.dart';
+import 'package:assess_math/src/models/user.dart';
 import 'package:test/test.dart';
 
 void main() {

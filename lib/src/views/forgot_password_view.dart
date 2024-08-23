@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/reset_password_notifier.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/notifiers/reset_password_notifier.dart';
+import 'package:assess_math/src/utils/helper_functions.dart';
 
 final isUpdatingProvider = StateProvider<bool>(
   (ref) => false,

@@ -4,15 +4,15 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/question.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
-import 'package:math_assessment/src/widgets/classification_options_widget.dart';
-import 'package:math_assessment/src/widgets/missing_no_options_widget.dart';
-import 'package:math_assessment/src/widgets/non_symbolic_options_widget.dart';
-import 'package:math_assessment/src/widgets/patterning_options_widget.dart';
-import 'package:math_assessment/src/widgets/single_digit_ops_options_widget.dart';
-import 'package:math_assessment/src/widgets/symbolic_options_widget.dart';
+import 'package:assess_math/src/models/question.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/notifiers/question_state_notifier.dart';
+import 'package:assess_math/src/widgets/classification_options_widget.dart';
+import 'package:assess_math/src/widgets/missing_no_options_widget.dart';
+import 'package:assess_math/src/widgets/non_symbolic_options_widget.dart';
+import 'package:assess_math/src/widgets/patterning_options_widget.dart';
+import 'package:assess_math/src/widgets/single_digit_ops_options_widget.dart';
+import 'package:assess_math/src/widgets/symbolic_options_widget.dart';
 
 class QuestionView extends ConsumerStatefulWidget {
   const QuestionView({super.key});

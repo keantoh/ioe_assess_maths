@@ -1,4 +1,4 @@
-import 'package:math_assessment/src/config.dart';
+import 'package:assess_math/src/config.dart';
 
 class ImagePaintOption {
   final double x;

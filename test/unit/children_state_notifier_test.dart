@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/repositories/child_repository.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/repositories/child_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

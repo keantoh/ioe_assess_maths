@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/avatar_animal.dart';
-import 'package:math_assessment/src/models/avatar_color.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/notifiers/child_update_notifier.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/views/account_view.dart';
-import 'package:math_assessment/src/views/child_add_view.dart';
-import 'package:math_assessment/src/views/child_edit_view.dart';
-import 'package:math_assessment/src/views/home_view.dart';
-import 'package:math_assessment/src/views/settings_view.dart';
-import 'package:math_assessment/src/views/user_search_view.dart';
+import 'package:assess_math/src/models/avatar_animal.dart';
+import 'package:assess_math/src/models/avatar_color.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/notifiers/child_update_notifier.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/notifiers/theme_state_notifier.dart';
+import 'package:assess_math/src/notifiers/user_search_notifier.dart';
+import 'package:assess_math/src/notifiers/user_state_notifier.dart';
+import 'package:assess_math/src/views/account_view.dart';
+import 'package:assess_math/src/views/child_add_view.dart';
+import 'package:assess_math/src/views/child_edit_view.dart';
+import 'package:assess_math/src/views/home_view.dart';
+import 'package:assess_math/src/views/settings_view.dart';
+import 'package:assess_math/src/views/user_search_view.dart';
 
 class ChildSelectView extends ConsumerStatefulWidget {
   const ChildSelectView({super.key});

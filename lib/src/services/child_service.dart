@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/config.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/utils/http_request.dart';
+import 'package:assess_math/src/config.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/utils/http_request.dart';
 
 class ChildService {
   final String baseUrl = Config.apiUrl;

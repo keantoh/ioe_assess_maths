@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/notifiers/theme_state_notifier.dart';
-import 'package:math_assessment/src/views/account_view.dart';
-import 'package:math_assessment/src/views/child_add_view.dart';
-import 'package:math_assessment/src/views/child_edit_view.dart';
-import 'package:math_assessment/src/views/child_select_view.dart';
-import 'package:math_assessment/src/views/forgot_password_view.dart';
-import 'package:math_assessment/src/views/home_view.dart';
-import 'package:math_assessment/src/views/login_view.dart';
-import 'package:math_assessment/src/views/question_view.dart';
-import 'package:math_assessment/src/views/settings_view.dart';
-import 'package:math_assessment/src/views/sign_up_view.dart';
-import 'package:math_assessment/src/views/splash_view.dart';
-import 'package:math_assessment/src/views/user_search_view.dart';
+import 'package:assess_math/src/notifiers/theme_state_notifier.dart';
+import 'package:assess_math/src/views/account_view.dart';
+import 'package:assess_math/src/views/child_add_view.dart';
+import 'package:assess_math/src/views/child_edit_view.dart';
+import 'package:assess_math/src/views/child_select_view.dart';
+import 'package:assess_math/src/views/forgot_password_view.dart';
+import 'package:assess_math/src/views/home_view.dart';
+import 'package:assess_math/src/views/login_view.dart';
+import 'package:assess_math/src/views/question_view.dart';
+import 'package:assess_math/src/views/settings_view.dart';
+import 'package:assess_math/src/views/sign_up_view.dart';
+import 'package:assess_math/src/views/splash_view.dart';
+import 'package:assess_math/src/views/user_search_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends ConsumerWidget {

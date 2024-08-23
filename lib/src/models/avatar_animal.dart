@@ -1,4 +1,4 @@
-import 'package:math_assessment/src/config.dart';
+import 'package:assess_math/src/config.dart';
 
 enum AvatarAnimal {
   dog(1, '${Config.imagePathPrefix}avatar_dog.jpeg'),

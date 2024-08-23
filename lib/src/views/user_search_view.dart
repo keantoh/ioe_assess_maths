@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:math_assessment/src/models/user.dart';
-import 'package:math_assessment/src/notifiers/user_search_notifier.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/utils/helper_functions.dart';
+import 'package:assess_math/src/models/user.dart';
+import 'package:assess_math/src/notifiers/user_search_notifier.dart';
+import 'package:assess_math/src/notifiers/user_state_notifier.dart';
+import 'package:assess_math/src/utils/helper_functions.dart';
 
 final isDeletingProvider = StateProvider<bool>(
   (ref) => false,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/avatar_animal.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
-import 'package:math_assessment/src/views/question_view.dart';
+import 'package:assess_math/src/models/avatar_animal.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/notifiers/question_state_notifier.dart';
+import 'package:assess_math/src/views/question_view.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});

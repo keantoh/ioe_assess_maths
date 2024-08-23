@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/child.dart';
-import 'package:math_assessment/src/notifiers/user_state_notifier.dart';
-import 'package:math_assessment/src/repositories/child_repository.dart';
+import 'package:assess_math/src/models/child.dart';
+import 'package:assess_math/src/notifiers/user_state_notifier.dart';
+import 'package:assess_math/src/repositories/child_repository.dart';
 
 class ChildrenStateNotifier extends StateNotifier<ChildState> {
   final ChildRepository _childRepository;

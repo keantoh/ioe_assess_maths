@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/question.dart';
-import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
-import 'package:math_assessment/src/repositories/question_repository.dart';
-import 'package:math_assessment/src/services/question_service.dart';
+import 'package:assess_math/src/models/question.dart';
+import 'package:assess_math/src/notifiers/question_state_notifier.dart';
+import 'package:assess_math/src/repositories/question_repository.dart';
+import 'package:assess_math/src/services/question_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:math_assessment/src/views/child_add_view.dart';
+import 'package:assess_math/src/views/child_add_view.dart';
 
 void main() {
   testWidgets('Form validation: empty fields', (WidgetTester tester) async {

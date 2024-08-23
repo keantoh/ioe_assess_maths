@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:math_assessment/src/models/question.dart';
-import 'package:math_assessment/src/models/result.dart';
-import 'package:math_assessment/src/notifiers/children_state_notifier.dart';
-import 'package:math_assessment/src/notifiers/question_state_notifier.dart';
+import 'package:assess_math/src/models/question.dart';
+import 'package:assess_math/src/models/result.dart';
+import 'package:assess_math/src/notifiers/children_state_notifier.dart';
+import 'package:assess_math/src/notifiers/question_state_notifier.dart';
 
 class SingleDigitsOpsOptionsWidget extends ConsumerWidget {
   final SingleDigitOpsQuestion currentQuestion;
