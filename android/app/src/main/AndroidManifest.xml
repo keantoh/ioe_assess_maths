@@ -1,11 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="assess_maths"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="landscapec"
+            android:screenOrientation="landscape"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

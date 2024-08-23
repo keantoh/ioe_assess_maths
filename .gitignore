@@ -32,6 +32,11 @@ migrate_working_dir/
 /build/
 pubspec.lock
 
+# Environment files
+.env
+.env.development
+.env.production
+
 # Symbolication related
 app.*.symbols
 
