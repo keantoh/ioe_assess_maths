@@ -140,6 +140,7 @@ class ChildSelectViewState extends ConsumerState<ChildSelectView> {
                         Expanded(
                           child: Center(
                             child: FilledButton(
+                                key: const Key('select_child_next_button'),
                                 onPressed: ref
                                             .watch(childrenStateProvider)
                                             .selectedChild ==
@@ -247,6 +248,7 @@ class AddChild extends ConsumerWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           child: FilledButton(
+            key: const Key('select_child_add_child_button'),
             style: FilledButton.styleFrom(
               padding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(

@@ -38,6 +38,7 @@ class NonSymbolicOptionsWidget extends ConsumerWidget {
               final double width = constraints.maxWidth;
               final double height = constraints.maxHeight;
               return InkWell(
+                key: ValueKey(i),
                 onTap: () => submitAnswer(context, ref, options[i].key),
                 borderRadius: BorderRadius.circular(12),
                 child: Ink(

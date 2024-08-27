@@ -8,9 +8,10 @@ class ChildrenStateNotifier extends StateNotifier<ChildState> {
   final Ref ref;
   int? _responseCode;
 
-  ChildrenStateNotifier(this._childRepository, this.ref, userId)
-      : super(
-            ChildState(children: [], selectedChild: null, isFetching: false)) {
+  ChildrenStateNotifier(this._childRepository, this.ref, userId,
+      {Child? selectedChild})
+      : super(ChildState(
+            children: [], selectedChild: selectedChild, isFetching: false)) {
     fetchChildren(userId);
   }
 

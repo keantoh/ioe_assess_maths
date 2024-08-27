@@ -20,8 +20,8 @@ void main() {
     registerFallbackValue(UserLoginFake());
     registerFallbackValue(UserCreateFake());
   });
-  // (LoginView -> SignUpView -> SelectChildView)
-  testWidgets('Parent signs up successfully', (WidgetTester tester) async {
+  testWidgets('Parent signs up and logs in successfully',
+      (WidgetTester tester) async {
     final mockUserService = MockUserService();
     final mockUserRepository = MockUserRepository();
     final mockTokenManager = MockTokenManager();

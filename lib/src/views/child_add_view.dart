@@ -85,6 +85,7 @@ class _ChildAddViewState extends State<ChildAddView> {
                                   Container(
                                     margin: fieldMargin,
                                     child: TextFormField(
+                                      key: const Key('add_child_name_field'),
                                       textCapitalization:
                                           TextCapitalization.words,
                                       controller: nameController,
@@ -108,6 +109,7 @@ class _ChildAddViewState extends State<ChildAddView> {
                                   Container(
                                     margin: fieldMargin,
                                     child: DropdownButtonFormField(
+                                      key: const Key('add_child_gender_field'),
                                       isExpanded: true,
                                       isDense: false,
                                       decoration: InputDecoration(
@@ -135,6 +137,7 @@ class _ChildAddViewState extends State<ChildAddView> {
                                   Container(
                                     margin: fieldMargin,
                                     child: TextFormField(
+                                      key: const Key('add_child_dob_field'),
                                       controller: dobController,
                                       onTap: () async {
                                         FocusScope.of(context)
@@ -206,6 +209,8 @@ class _ChildAddViewState extends State<ChildAddView> {
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 60),
                                       child: FilledButton(
+                                          key: const Key(
+                                              'add_child_add_child_button'),
                                           onPressed: () {
                                             if (_formKey.currentState!
                                                 .validate()) {

@@ -6,6 +6,7 @@ import 'package:assess_math/src/notifiers/user_state_notifier.dart';
 import 'package:assess_math/src/repositories/child_repository.dart';
 import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:assess_math/src/services/user_service.dart';
+import 'package:assess_math/src/views/child_add_view.dart';
 import 'package:assess_math/src/views/child_select_view.dart';
 import 'package:assess_math/src/views/home_view.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,7 @@ void main() {
     registerFallbackValue(UserLoginFake());
     registerFallbackValue(ChildCreateFake());
   });
-  testWidgets('Parent selects a child and proceeds to the next screen',
-      (WidgetTester tester) async {
+  testWidgets('Parent successfully adds a child', (WidgetTester tester) async {
     final mockUserService = MockUserService();
     final mockUserRepository = MockUserRepository();
     final mockTokenManager = MockTokenManager();
@@ -50,22 +50,20 @@ void main() {
               'status': 200,
             });
 
-    when(() => mockChildRepository.children).thenReturn([
-      Child(
-          childId: 1,
-          name: 'Alice',
-          gender: 'female',
-          dob: DateTime(2015, 7, 15),
-          favColour: 1,
-          favAnimal: 2),
-      Child(
-          childId: 2,
-          name: 'Bob',
-          gender: 'male',
-          dob: DateTime(2018, 5, 1),
-          favColour: 3,
-          favAnimal: 1),
-    ]);
+    when(() => mockChildRepository.children).thenReturn([]);
+
+    when(() => mockChildRepository.addChild(any())).thenAnswer((_) async {
+      when(() => mockChildRepository.children).thenAnswer((_) => [
+            Child(
+                childId: 1,
+                name: 'Alice',
+                gender: 'female',
+                dob: DateTime(2015, 7, 1),
+                favColour: 1,
+                favAnimal: 2),
+          ]);
+      return {'status': 201};
+    });
 
     await tester.pumpWidget(
       ProviderScope(
@@ -110,6 +108,11 @@ void main() {
                   builder: (_) => const HomeView(),
                   settings: settings,
                 );
+              } else if (settings.name == ChildAddView.routeName) {
+                return MaterialPageRoute(
+                  builder: (_) => const ChildAddView(),
+                  settings: settings,
+                );
               }
               return null;
             },
@@ -118,34 +121,47 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // SelectChild's widgets rendered and select Bob's profile
+    // SelectChild's widgets rendered and go to ChildAdd screen
     final iconButtonFinder = find.byIcon(Icons.account_circle);
     expect(iconButtonFinder, findsOneWidget);
+    final childAddButtonFinder =
+        find.byKey(const Key('select_child_add_child_button'));
+    expect(childAddButtonFinder, findsOneWidget);
+    await tester.tap(childAddButtonFinder);
+    await tester.pumpAndSettle();
+
+    // Find and fill nameField
+    final nameField = find.byKey(const Key('add_child_name_field'));
+    expect(nameField, findsOneWidget);
+    await tester.enterText(nameField, 'Alice');
+    expect(find.text('Alice'), findsOneWidget);
+
+    // Find and fill genderField
+    final genderField = find.byKey(const Key('add_child_gender_field'));
+    expect(genderField, findsOneWidget);
+    await tester.tap(genderField);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Female'));
+    await tester.pumpAndSettle();
+    expect(find.text('Female'), findsOneWidget);
+
+    // Find and fill dobField
+    final dobField = find.byKey(const Key('add_child_dob_field'));
+    expect(dobField, findsOneWidget);
+    await tester.tap(dobField);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('1'));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    // Tap on AddChild
+    final addChildButton = find.byKey(const Key('add_child_add_child_button'));
+    await tester.tap(addChildButton);
+    await tester.pumpAndSettle();
+
+    // Find Alice's profile
     final aliceChildFinder = find.byKey(const ValueKey(1));
-    final bobChildFinder = find.byKey(const ValueKey(2));
     expect(aliceChildFinder, findsOneWidget);
-    expect(bobChildFinder, findsOneWidget);
-    await tester.tap(bobChildFinder);
-    await tester.pumpAndSettle();
-
-    // Selected child updated as Bob
-    final element = tester.element(find.byType(ChildSelectView));
-    final container = ProviderScope.containerOf(element);
-    final selectedChild = container.read(childrenStateProvider).selectedChild;
-    expect(selectedChild?.name, 'Bob');
-
-    // // Tap on next button to go to HomeView
-    final nextButton = find.byKey(const Key('select_child_next_button'));
-    expect(nextButton, findsOneWidget);
-    await tester.tap(nextButton);
-    await tester.pumpAndSettle();
-
-    // HomeView's widgets rendered
-    expect(find.text('Ready For A Challenge?'), findsOneWidget);
-    final backButtonFinder = find.widgetWithText(OutlinedButton, 'Back');
-    expect(backButtonFinder, findsOneWidget);
-    final startButtonFinder = find.widgetWithText(FilledButton, 'Start');
-    expect(startButtonFinder, findsOneWidget);
   });
 }
 
