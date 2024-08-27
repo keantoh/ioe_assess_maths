@@ -140,10 +140,19 @@ void main() {
     expect(countryField, findsOneWidget);
     await tester.tap(countryField);
     await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Albania'));
+    final specificScrollable = find.byType(Scrollable).last;
+    expect(
+      find.descendant(of: specificScrollable, matching: find.text('Albania')),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.text('United Kingdom'),
+      1000.0,
+      scrollable: specificScrollable,
+    );
+    await tester.tap(find.text('United Kingdom'));
     await tester.pumpAndSettle();
-    expect(find.text('Albania'), findsOneWidget);
+    expect(find.text('United Kingdom'), findsOneWidget);
 
     // Find and tap sign up button
     final signUpButton = find.widgetWithText(FilledButton, 'Sign Up');

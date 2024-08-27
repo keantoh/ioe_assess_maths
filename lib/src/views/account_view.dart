@@ -95,6 +95,8 @@ class AccountView extends HookConsumerWidget {
                               margin: fieldMargin,
                               child: TextFormField(
                                 controller: firstNameController,
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText:
@@ -166,6 +168,8 @@ class AccountView extends HookConsumerWidget {
                               margin: fieldMargin,
                               child: TextFormField(
                                 controller: lastNameController,
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText:

@@ -17,14 +17,6 @@ final isEditingChildProvider = StateProvider<bool>(
   (ref) => false,
 );
 
-final animalProvider = StateProvider<AvatarAnimal>(
-  (ref) => AvatarAnimal.values[0],
-);
-
-final colorProvider = StateProvider<ColorSeed>(
-  (ref) => ColorSeed.values[0],
-);
-
 class ChildEditView extends HookConsumerWidget {
   static const routeName = '/childedit';
   final _formKey = GlobalKey<FormState>();

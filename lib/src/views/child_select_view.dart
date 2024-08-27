@@ -257,6 +257,8 @@ class AddChild extends ConsumerWidget {
               backgroundColor: Theme.of(context).colorScheme.primaryFixed,
             ),
             onPressed: () {
+              ref.read(animalProvider.notifier).state = AvatarAnimal.values[0];
+              ref.read(colorProvider.notifier).state = ColorSeed.values[0];
               Navigator.restorablePushNamed(context, ChildAddView.routeName);
             },
             child: CircleAvatar(

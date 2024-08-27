@@ -82,7 +82,9 @@ class UserStateNotifier extends StateNotifier<UserLoginState?> {
     final result = await _userService.deleteUserAccountService(user);
     _responseCode = result['status'];
     ref.read(userStateResponseCodeProvider.notifier).state = _responseCode;
-    logout();
+    if (_responseCode == 200) {
+      logout();
+    }
   }
 
   Future<void> logout() async {

@@ -57,6 +57,7 @@ class LoginView extends StatelessWidget {
                           margin: fieldMargin,
                           child: TextFormField(
                             key: const Key('log_in_email_field'),
+                            keyboardType: TextInputType.emailAddress,
                             controller: emailController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),

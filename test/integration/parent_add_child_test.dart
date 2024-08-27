@@ -103,12 +103,7 @@ void main() {
             ],
             home: const ChildSelectView(),
             onGenerateRoute: (RouteSettings settings) {
-              if (settings.name == HomeView.routeName) {
-                return MaterialPageRoute(
-                  builder: (_) => const HomeView(),
-                  settings: settings,
-                );
-              } else if (settings.name == ChildAddView.routeName) {
+              if (settings.name == ChildAddView.routeName) {
                 return MaterialPageRoute(
                   builder: (_) => const ChildAddView(),
                   settings: settings,

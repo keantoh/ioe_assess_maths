@@ -132,6 +132,16 @@ class _ChildAddViewState extends State<ChildAddView> {
                                             child: Text(
                                                 gender.getGenderName(context)));
                                       }).toList(),
+                                      selectedItemBuilder:
+                                          (BuildContext context) {
+                                        return Gender.values
+                                            .map<Widget>((Gender gender) {
+                                          return Text(
+                                            gender.getGenderName(context),
+                                            overflow: TextOverflow.ellipsis,
+                                          );
+                                        }).toList();
+                                      },
                                     ),
                                   ),
                                   Container(

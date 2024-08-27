@@ -28,10 +28,6 @@ class QuestionService {
 
   Future<Map<String, dynamic>> addResultService(ResultCreate result) async {
     final url = '$baseUrl/result';
-    return {
-      'status': 201,
-      'response': {},
-    };
     return await makeHttpRequest(url, 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',

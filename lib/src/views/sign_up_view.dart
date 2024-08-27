@@ -64,6 +64,8 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.words,
                                 key: const Key('sign_up_first_name_field'),
                                 controller: firstNameController,
                                 decoration: InputDecoration(
@@ -87,6 +89,7 @@ class SignUpView extends ConsumerWidget {
                                 child: Container(
                               margin: fieldMargin,
                               child: TextFormField(
+                                keyboardType: TextInputType.emailAddress,
                                 key: const Key('sign_up_email_field'),
                                 controller: emailController,
                                 decoration: InputDecoration(
@@ -120,6 +123,8 @@ class SignUpView extends ConsumerWidget {
                               margin: fieldMargin,
                               child: TextFormField(
                                 key: const Key('sign_up_last_name_field'),
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.words,
                                 controller: lastNameController,
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
