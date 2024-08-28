@@ -8,7 +8,6 @@ import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:assess_math/src/services/user_service.dart';
 import 'package:assess_math/src/views/child_add_view.dart';
 import 'package:assess_math/src/views/child_select_view.dart';
-import 'package:assess_math/src/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
