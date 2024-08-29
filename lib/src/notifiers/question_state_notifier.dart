@@ -1,11 +1,9 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assess_math/src/models/question.dart';
 import 'package:assess_math/src/models/result.dart';
 import 'package:assess_math/src/repositories/question_repository.dart';
 import 'package:assess_math/src/services/question_service.dart';
-import 'package:assess_math/src/utils/helper_functions.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class QuestionStateNotifier extends StateNotifier<QuestionState> {
   final QuestionRepository _questionRepository;
@@ -22,7 +20,8 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
             currentQuestionIndex: -1,
             isLoading: false,
             showEncouragement: false,
-            playAudio: false));
+            playAudio: false,
+            isSavingResult: false));
 
   int? get responseCode => _responseCode;
 
@@ -51,33 +50,14 @@ class QuestionStateNotifier extends StateNotifier<QuestionState> {
   }
 
   Future<void> addResult(BuildContext context, ResultCreate newResult) async {
+    ref.read(questionResponseCodeProvider.notifier).state = null;
+    state = state.copyWith(isSavingResult: true);
     final result = await _questionService.addResultService(newResult);
     final responseCode = result['status'];
-
-    if (context.mounted) {
-      switch (responseCode) {
-        case 201:
-          ref.read(questionStateProvider.notifier).nextQuestion();
-          break;
-        case 400:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error400);
-          break;
-        case 408:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error408);
-          break;
-        case 503:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error503);
-          break;
-        default:
-          HelperFunctions.showSnackBar(
-              context, 2000, AppLocalizations.of(context)!.error500);
-          break;
-      }
+    state = state.copyWith(isSavingResult: false);
+    if (responseCode == 201) {
+      ref.read(questionStateProvider.notifier).nextQuestion();
     }
-
     ref.read(questionResponseCodeProvider.notifier).state = responseCode;
   }
 

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:assess_math/src/utils/helper_functions.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -59,6 +60,24 @@ class QuestionViewState extends ConsumerState<QuestionView> {
     final questionState = ref.watch(questionStateProvider);
     final completedQuestions = questionState.currentQuestionIndex +
         (questionState.showEncouragement ? 1 : 0);
+
+    final responseCode = ref.watch(questionResponseCodeProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      switch (responseCode) {
+        case 400:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 408:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error408);
+          break;
+        case 503:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error503);
+          break;
+      }
+    });
 
     return PopScope(
       canPop: false,
@@ -156,13 +175,22 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                                             totalQuestions - 1,
                                             completedQuestions),
                                       )
-                                    : Expanded(
-                                        child: buildQuestionOptions(
-                                            currentQuestion,
-                                            totalQuestions,
-                                            width,
-                                            height,
-                                            sessionStartTime)),
+                                    : questionState.isSavingResult
+                                        ? const Expanded(
+                                            child: Center(
+                                                child: SizedBox(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child:
+                                                        CircularProgressIndicator())),
+                                          )
+                                        : Expanded(
+                                            child: buildQuestionOptions(
+                                                currentQuestion,
+                                                totalQuestions,
+                                                width,
+                                                height,
+                                                sessionStartTime)),
                                 progressStars(
                                     width, completedQuestions, totalQuestions)
                               ],

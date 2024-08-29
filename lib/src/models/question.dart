@@ -175,6 +175,7 @@ class QuestionState {
   final bool isLoading;
   final bool showEncouragement;
   final bool playAudio;
+  final bool isSavingResult;
 
   QuestionState(
       {required this.questions,
@@ -182,7 +183,8 @@ class QuestionState {
       required this.currentQuestionIndex,
       required this.isLoading,
       required this.showEncouragement,
-      required this.playAudio});
+      required this.playAudio,
+      required this.isSavingResult});
 
   QuestionState copyWith(
       {List<Question>? questions,
@@ -190,14 +192,17 @@ class QuestionState {
       int? currentQuestionIndex,
       bool? isLoading,
       bool? showEncouragement,
-      bool? playAudio}) {
+      bool? playAudio,
+      bool? isSavingResult}) {
     return QuestionState(
-        questions: questions ?? this.questions,
-        selectedOptions: selectedOptions ?? this.selectedOptions,
-        currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
-        isLoading: isLoading ?? this.isLoading,
-        showEncouragement: showEncouragement ?? this.showEncouragement,
-        playAudio: playAudio ?? false);
+      questions: questions ?? this.questions,
+      selectedOptions: selectedOptions ?? this.selectedOptions,
+      currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
+      isLoading: isLoading ?? this.isLoading,
+      showEncouragement: showEncouragement ?? this.showEncouragement,
+      playAudio: playAudio ?? false,
+      isSavingResult: isSavingResult ?? this.isSavingResult,
+    );
   }
 }
 
