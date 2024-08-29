@@ -113,6 +113,8 @@ String _getResponseMessage(int? responseCode, BuildContext context) {
   switch (responseCode) {
     case 400:
       return AppLocalizations.of(context)!.error400;
+    case 401:
+      return AppLocalizations.of(context)!.error401;
     case 404:
       return AppLocalizations.of(context)!.error404;
     case 408:
@@ -310,6 +312,10 @@ class UserTable extends HookConsumerWidget {
         case 400:
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 401:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error401);
           break;
         case 404:
           HelperFunctions.showSnackBar(

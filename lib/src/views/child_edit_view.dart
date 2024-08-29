@@ -327,6 +327,10 @@ class ChildEditView extends HookConsumerWidget {
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error400);
           break;
+        case 401:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error401);
+          break;
         case 404:
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error404_child);
@@ -366,6 +370,10 @@ class ChildEditView extends HookConsumerWidget {
         case 400:
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error400);
+          break;
+        case 401:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error401);
           break;
         case 404:
           HelperFunctions.showSnackBar(

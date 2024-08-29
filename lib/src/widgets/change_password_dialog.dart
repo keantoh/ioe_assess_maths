@@ -51,8 +51,8 @@ class ChangePasswordDialog extends HookConsumerWidget {
                 dialogContext, 2000, AppLocalizations.of(context)!.error400);
             break;
           case 401:
-            HelperFunctions.showSnackBar(
-                dialogContext, 2000, AppLocalizations.of(context)!.error401);
+            HelperFunctions.showSnackBar(dialogContext, 2000,
+                AppLocalizations.of(context)!.error401_invalidPassword);
             break;
           case 404:
             HelperFunctions.showSnackBar(

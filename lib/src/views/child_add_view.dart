@@ -288,6 +288,10 @@ class _ChildAddViewState extends State<ChildAddView> {
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error400);
           break;
+        case 401:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error401);
+          break;
         case 404:
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error404_login);

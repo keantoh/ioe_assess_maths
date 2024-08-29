@@ -378,6 +378,10 @@ class AccountView extends HookConsumerWidget {
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error400);
           break;
+        case 401:
+          HelperFunctions.showSnackBar(
+              context, 2000, AppLocalizations.of(context)!.error401);
+          break;
         case 408:
           HelperFunctions.showSnackBar(
               context, 2000, AppLocalizations.of(context)!.error408);
