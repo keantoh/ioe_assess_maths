@@ -62,7 +62,8 @@ class UserStateNotifier extends StateNotifier<UserLoginState?> {
   }
 
   Future<void> updateUserDetails(String userId, UserUpdate user) async {
-    final result = await _userRepository.updateUserDetails(userId, user);
+    final result = await _userRepository.updateUserDetails(
+        userId, user, ref.read(userRepositoryProvider).token);
     final responseCode = result['status'];
 
     if (responseCode == 200) {

@@ -1,3 +1,4 @@
+import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assess_math/src/models/child.dart';
 import 'package:assess_math/src/notifiers/user_state_notifier.dart';
@@ -20,7 +21,8 @@ class ChildrenStateNotifier extends StateNotifier<ChildState> {
   Future<void> fetchChildren(userId) async {
     if (userId != null) {
       state = state.copyWith(isFetching: true);
-      final result = await _childRepository.getAllChildren(userId);
+      final result = await _childRepository.getAllChildren(
+          userId, ref.read(userRepositoryProvider).token);
       final responseCode = result['status'];
 
       if (responseCode == 200) {
@@ -33,7 +35,8 @@ class ChildrenStateNotifier extends StateNotifier<ChildState> {
   }
 
   Future<void> addChild(ChildCreate child) async {
-    final result = await _childRepository.addChild(child);
+    final result = await _childRepository.addChild(
+        child, ref.read(userRepositoryProvider).token);
     final responseCode = result['status'];
 
     if (responseCode == 201) {
@@ -44,7 +47,8 @@ class ChildrenStateNotifier extends StateNotifier<ChildState> {
   }
 
   Future<void> updateChild(Child updatedChild) async {
-    final result = await _childRepository.updateChild(updatedChild);
+    final result = await _childRepository.updateChild(
+        updatedChild, ref.read(userRepositoryProvider).token);
     final responseCode = result['status'];
 
     if (responseCode == 200) {
@@ -55,7 +59,8 @@ class ChildrenStateNotifier extends StateNotifier<ChildState> {
   }
 
   Future<void> removeChild(int childId) async {
-    final result = await _childRepository.removeChild(childId);
+    final result = await _childRepository.removeChild(
+        childId, ref.read(userRepositoryProvider).token);
     final responseCode = result['status'];
 
     if (responseCode == 200) {

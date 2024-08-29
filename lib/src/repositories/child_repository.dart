@@ -10,8 +10,9 @@ class ChildRepository {
 
   List<Child> get children => List.unmodifiable(_children);
 
-  Future<Map<String, dynamic>> getAllChildren(String userId) async {
-    final result = await _childService.fetchChildrenService(userId);
+  Future<Map<String, dynamic>> getAllChildren(
+      String userId, String token) async {
+    final result = await _childService.fetchChildrenService(userId, token);
     if (result['status'] == 200) {
       final List<dynamic> responseBody = result['response'];
       final fetchedChildren =
@@ -22,8 +23,8 @@ class ChildRepository {
     return result;
   }
 
-  Future<Map<String, dynamic>> addChild(ChildCreate child) async {
-    final result = await _childService.addChildService(child);
+  Future<Map<String, dynamic>> addChild(ChildCreate child, String token) async {
+    final result = await _childService.addChildService(child, token);
     if (result['status'] == 201) {
       final newChild = Child.fromJson(result['response']);
       _children.add(newChild);
@@ -31,8 +32,9 @@ class ChildRepository {
     return result;
   }
 
-  Future<Map<String, dynamic>> updateChild(Child updatedChild) async {
-    final result = await _childService.updateChildService(updatedChild);
+  Future<Map<String, dynamic>> updateChild(
+      Child updatedChild, String token) async {
+    final result = await _childService.updateChildService(updatedChild, token);
     if (result['status'] == 200) {
       final index = _children
           .indexWhere((child) => child.childId == updatedChild.childId);
@@ -43,8 +45,8 @@ class ChildRepository {
     return result;
   }
 
-  Future<Map<String, dynamic>> removeChild(int id) async {
-    final result = await _childService.deleteChildService(id);
+  Future<Map<String, dynamic>> removeChild(int id, String token) async {
+    final result = await _childService.deleteChildService(id, token);
     if (result['status'] == 200) {
       _children.removeWhere((child) => child.childId == id);
     }

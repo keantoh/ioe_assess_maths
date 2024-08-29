@@ -34,11 +34,12 @@ class UserService {
   }
 
   Future<Map<String, dynamic>> updateUserDetailsService(
-      String userId, UserUpdate user) async {
+      String userId, UserUpdate user, String token) async {
     final url = '$baseUrl/update_user_details/$userId';
     return await makeHttpRequest(url, 'PUT',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
         },
         body: user.toJson());
   }
@@ -82,19 +83,23 @@ class UserService {
         body: user.toJson());
   }
 
-  Future<Map<String, dynamic>> searchUsersService(String searchQuery) async {
+  Future<Map<String, dynamic>> searchUsersService(
+      String searchQuery, String token) async {
     final url = '$baseUrl/search_users';
     return await makeHttpRequest(url, 'POST', headers: {
       'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
     }, body: {
       'query': searchQuery
     });
   }
 
-  Future<Map<String, dynamic>> deleteUserService(String userId) async {
+  Future<Map<String, dynamic>> deleteUserService(
+      String userId, String token) async {
     final url = '$baseUrl/delete_user';
     return await makeHttpRequest(url, 'POST', headers: {
       'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
     }, body: {
       'userId': userId
     });

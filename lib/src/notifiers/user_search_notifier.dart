@@ -1,3 +1,4 @@
+import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assess_math/src/models/user.dart';
 import 'package:assess_math/src/services/user_service.dart';
@@ -34,7 +35,8 @@ class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
       users: state.users,
     );
     final List<UserSearch> retrievedUsers = [];
-    final result = await _userService.searchUsersService(state.searchQuery);
+    final result = await _userService.searchUsersService(
+        state.searchQuery, ref.read(userRepositoryProvider).token);
 
     if (result['status'] == 200 && result['response'] is List) {
       final List<dynamic> usersList = result['response'];
@@ -52,7 +54,8 @@ class UserSearchNotifier extends StateNotifier<UserSearchResponse> {
   }
 
   Future<void> deleteUser(String userId) async {
-    final result = await _userService.deleteUserService(userId);
+    final result = await _userService.deleteUserService(
+        userId, ref.read(userRepositoryProvider).token);
     final responseCode = result['status'];
     state = UserSearchResponse(
       isSearching: state.isSearching,
