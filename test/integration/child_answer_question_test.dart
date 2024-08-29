@@ -5,6 +5,7 @@ import 'package:assess_math/src/notifiers/children_state_notifier.dart';
 import 'package:assess_math/src/notifiers/question_state_notifier.dart';
 import 'package:assess_math/src/repositories/child_repository.dart';
 import 'package:assess_math/src/repositories/question_repository.dart';
+import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:assess_math/src/services/question_service.dart';
 import 'package:assess_math/src/views/home_view.dart';
 import 'package:assess_math/src/views/question_view.dart';
@@ -22,7 +23,7 @@ void main() {
   testWidgets('Child answers question and response is saved successfully',
       (WidgetTester tester) async {
     final mockChildRepository = MockChildRepository();
-    when(() => mockChildRepository.getAllChildren(any()))
+    when(() => mockChildRepository.getAllChildren(any(), any()))
         .thenAnswer((_) async => {
               'status': 200,
             });
@@ -35,6 +36,9 @@ void main() {
           favAnimal: 1,
           favColour: 1),
     ]);
+    final mockUserRepository = MockUserRepository();
+    when(() => mockUserRepository.token).thenReturn('fake_token');
+
     final mockSelectedChild = Child(
         childId: 3,
         name: 'Charlie',
@@ -143,5 +147,7 @@ class MockQuestionService extends Mock implements QuestionService {}
 class MockQuestionRepository extends Mock implements QuestionRepository {}
 
 class MockChildRepository extends Mock implements ChildRepository {}
+
+class MockUserRepository extends Mock implements UserRepository {}
 
 class ResultCreateFake extends Fake implements ResultCreate {}

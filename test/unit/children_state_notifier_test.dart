@@ -1,3 +1,4 @@
+import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:assess_math/src/models/child.dart';
 import 'package:assess_math/src/notifiers/children_state_notifier.dart';
@@ -7,14 +8,19 @@ import 'package:test/test.dart';
 
 class MockChildRepository extends Mock implements ChildRepository {}
 
+class MockUserRepository extends Mock implements UserRepository {}
+
 void main() {
   late MockChildRepository mockChildRepository;
+  late MockUserRepository mockUserRepository;
   late ProviderContainer container;
 
   setUp(() {
     mockChildRepository = MockChildRepository();
+    mockUserRepository = MockUserRepository();
     container = ProviderContainer(overrides: [
       childRepositoryProvider.overrideWithValue(mockChildRepository),
+      userRepositoryProvider.overrideWithValue(mockUserRepository)
     ]);
   });
 
@@ -26,6 +32,7 @@ void main() {
     test('fetchChildren sets isFetching to true and updates state on success',
         () async {
       const userId = 'test_user_id';
+      const token = 'fake_token';
       final children = [
         Child(
           childId: 1,
@@ -45,9 +52,11 @@ void main() {
         ),
       ];
 
-      when(() => mockChildRepository.getAllChildren(userId))
+      when(() => mockChildRepository.getAllChildren(userId, token))
           .thenAnswer((_) async => {'status': 200});
       when(() => mockChildRepository.children).thenReturn(children);
+
+      when(() => mockUserRepository.token).thenReturn('fake_token');
 
       final notifier = container.read(childrenStateProvider.notifier);
 
@@ -59,9 +68,12 @@ void main() {
 
     test('fetchChildren sets isFetching to false on failure', () async {
       const userId = 'test_user_id';
+      const token = 'fake_token';
 
-      when(() => mockChildRepository.getAllChildren(userId))
+      when(() => mockChildRepository.getAllChildren(userId, token))
           .thenAnswer((_) async => {'status': 500});
+
+      when(() => mockUserRepository.token).thenReturn('fake_token');
 
       final notifier = container.read(childrenStateProvider.notifier);
 
@@ -72,6 +84,7 @@ void main() {
     });
 
     test('addChild updates state on successful addition', () async {
+      const token = 'fake_token';
       final newChild = ChildCreate(
         parentId: 'parent_id',
         name: 'New Child',
@@ -89,10 +102,12 @@ void main() {
         favAnimal: 3,
       );
 
-      when(() => mockChildRepository.addChild(newChild))
+      when(() => mockChildRepository.addChild(newChild, token))
           .thenAnswer((_) async => {'status': 201});
       when(() => mockChildRepository.children).thenReturn(
           [...container.read(childrenStateProvider).children, newChildEntity]);
+
+      when(() => mockUserRepository.token).thenReturn('fake_token');
 
       final notifier = container.read(childrenStateProvider.notifier);
 
@@ -103,6 +118,7 @@ void main() {
     });
 
     test('updateChild updates state on successful update', () async {
+      const token = 'fake_token';
       final updatedChild = Child(
         childId: 1,
         name: 'Updated Child',
@@ -112,9 +128,11 @@ void main() {
         favAnimal: 1,
       );
 
-      when(() => mockChildRepository.updateChild(updatedChild))
+      when(() => mockChildRepository.updateChild(updatedChild, token))
           .thenAnswer((_) async => {'status': 200});
       when(() => mockChildRepository.children).thenReturn([updatedChild]);
+
+      when(() => mockUserRepository.token).thenReturn('fake_token');
 
       final notifier = container.read(childrenStateProvider.notifier);
 
@@ -125,11 +143,14 @@ void main() {
     });
 
     test('removeChild updates state on successful removal', () async {
+      const token = 'fake_token';
       const childIdToRemove = 1;
 
-      when(() => mockChildRepository.removeChild(childIdToRemove))
+      when(() => mockChildRepository.removeChild(childIdToRemove, token))
           .thenAnswer((_) async => {'status': 200});
       when(() => mockChildRepository.children).thenReturn([]);
+
+      when(() => mockUserRepository.token).thenReturn('fake_token');
 
       final notifier = container.read(childrenStateProvider.notifier);
 

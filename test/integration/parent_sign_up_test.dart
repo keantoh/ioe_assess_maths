@@ -27,6 +27,8 @@ void main() {
     final mockTokenManager = MockTokenManager();
     final mockChildRepository = MockChildRepository();
 
+    when(() => mockUserRepository.token).thenReturn('fake_token');
+
     when(() => mockUserRepository.userLoginState).thenReturn(UserLoginState(
         userId: 'testId',
         email: 'test@example.com',
@@ -50,7 +52,7 @@ void main() {
           'status': 200,
         });
 
-    when(() => mockChildRepository.getAllChildren(any()))
+    when(() => mockChildRepository.getAllChildren(any(), any()))
         .thenAnswer((_) async => {
               'status': 200,
             });
