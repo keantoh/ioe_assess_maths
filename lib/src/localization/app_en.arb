@@ -1,5 +1,5 @@
 {
-  "appTitle": "Math Assessment",
+  "appTitle": "ASSESS Maths",
   "emailAddress": "Email Address",
   "password": "Password",
   "forgotPassword": "Forgot Password",
@@ -74,7 +74,7 @@
   "userIdNull": "User ID not found.",
   "unexpectedError": "Unexpected error.",
   "error400": "Client error. Please check your connection.",
-  "error401": "Unauthorised operation.",
+  "error401": "Session expired, please log in again.",
   "error401_invalidPassword": "Invalid password.",
   "error401_updatePassword": "Invalid email/token.",
   "error404": "User not found.",
