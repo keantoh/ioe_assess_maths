@@ -15,6 +15,16 @@ class Child {
     required this.favAnimal,
   });
 
+  Child trimmed() {
+    return Child(
+        childId: childId,
+        name: name.trim(),
+        gender: gender,
+        dob: dob,
+        favColour: favColour,
+        favAnimal: favAnimal);
+  }
+
   bool hasChanges(Child other) {
     return childId != other.childId ||
         name != other.name ||
@@ -103,6 +113,16 @@ class ChildCreate {
     required this.favColour,
     required this.favAnimal,
   });
+
+  ChildCreate trimmed() {
+    return ChildCreate(
+        parentId: parentId,
+        name: name.trim(),
+        gender: gender,
+        dob: dob,
+        favColour: favColour,
+        favAnimal: favAnimal);
+  }
 
   Map<String, dynamic> toJson() {
     return {

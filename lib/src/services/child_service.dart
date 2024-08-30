@@ -20,24 +20,27 @@ class ChildService {
   Future<Map<String, dynamic>> addChildService(
       ChildCreate child, String token) async {
     final url = '$baseUrl/child';
+    final trimmedChild = child.trimmed();
     return await makeHttpRequest(url, 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-        body: child.toJson());
+        body: trimmedChild.toJson());
   }
 
   Future<Map<String, dynamic>> updateChildService(
       Child child, String token) async {
     final userId = child.childId;
     final url = '$baseUrl/update_child/$userId';
+    final trimmedChild = child.trimmed();
+
     return await makeHttpRequest(url, 'PUT',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-        body: child.toJson());
+        body: trimmedChild.toJson());
   }
 
   Future<Map<String, dynamic>> deleteChildService(

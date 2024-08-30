@@ -15,6 +15,16 @@ class UserCreate {
     required this.isAdmin,
   });
 
+  UserCreate trimmed() {
+    return UserCreate(
+        email: email.trim(),
+        password: password,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        country: country,
+        isAdmin: isAdmin);
+  }
+
   Map<String, dynamic> toJson() => {
         'email': email,
         'password': password,
@@ -52,6 +62,15 @@ class UserUpdate {
     required this.lastName,
     required this.country,
   });
+
+  UserUpdate trimmed() {
+    return UserUpdate(
+      email: email.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      country: country,
+    );
+  }
 
   bool hasChanges(UserUpdate other) {
     return email != other.email ||

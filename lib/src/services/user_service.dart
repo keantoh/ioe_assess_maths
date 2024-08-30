@@ -8,11 +8,13 @@ class UserService {
 
   Future<Map<String, dynamic>> signUpUserService(UserCreate user) async {
     final url = '$baseUrl/signup';
+    final trimmedUser = user.trimmed();
+
     return await makeHttpRequest(url, 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: user.toJson());
+        body: trimmedUser.toJson());
   }
 
   Future<Map<String, dynamic>> loginUserService(UserLogin user) async {
@@ -36,12 +38,13 @@ class UserService {
   Future<Map<String, dynamic>> updateUserDetailsService(
       String userId, UserUpdate user, String token) async {
     final url = '$baseUrl/update_user_details/$userId';
+    final trimmedUser = user.trimmed();
     return await makeHttpRequest(url, 'PUT',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-        body: user.toJson());
+        body: trimmedUser.toJson());
   }
 
   Future<Map<String, dynamic>> changeUserPasswordService(
