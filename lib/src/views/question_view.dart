@@ -108,89 +108,24 @@ class QuestionViewState extends ConsumerState<QuestionView> {
                             }
                             return Column(
                               children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: LinearProgressIndicator(
-                                        minHeight: 12,
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .surfaceContainer,
-                                        value: completedQuestions /
-                                            questionState.questions.length,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      icon: Icon(Icons.close,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface),
-                                      iconSize: 32,
-                                    ),
-                                  ],
-                                ),
+                                questionTopBar(
+                                    completedQuestions, totalQuestions),
                                 questionState.showEncouragement
                                     ? const SizedBox.shrink()
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              _playAudio(
-                                                  AppLocalizations.of(context)!
-                                                      .localeName,
-                                                  currentQuestion.id);
-                                            },
-                                            icon: Icon(Icons.volume_up,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface),
-                                            iconSize: 32,
-                                          ),
-                                          Flexible(
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.horizontal,
-                                              child: Text(
-                                                currentQuestion
-                                                    .getQuestionInstruction(
-                                                        context),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headlineSmall,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                questionState.showEncouragement
-                                    ? Expanded(
-                                        child: encouragementScreen(
-                                            questionState.currentQuestionIndex,
-                                            totalQuestions - 1,
-                                            completedQuestions),
-                                      )
-                                    : questionState.isSavingResult
-                                        ? const Expanded(
-                                            child: Center(
-                                                child: SizedBox(
-                                                    width: 100,
-                                                    height: 100,
-                                                    child:
-                                                        CircularProgressIndicator())),
-                                          )
-                                        : Expanded(
-                                            child: buildQuestionOptions(
-                                                currentQuestion,
-                                                totalQuestions,
-                                                width,
-                                                height,
-                                                sessionStartTime)),
+                                    : questionInstruction(() {
+                                        _playAudio(
+                                            AppLocalizations.of(context)!
+                                                .localeName,
+                                            currentQuestion.id);
+                                      }, currentQuestion),
+                                questionBody(
+                                    questionState,
+                                    currentQuestion,
+                                    totalQuestions,
+                                    width,
+                                    height,
+                                    sessionStartTime,
+                                    completedQuestions),
                                 progressStars(
                                     width, completedQuestions, totalQuestions)
                               ],
@@ -202,6 +137,74 @@ class QuestionViewState extends ConsumerState<QuestionView> {
         ),
       ),
     );
+  }
+
+  Widget questionTopBar(completedQuestions, totalQuestions) {
+    return Row(
+      children: [
+        Expanded(
+          child: LinearProgressIndicator(
+            minHeight: 12,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+            value: completedQuestions / totalQuestions,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon:
+              Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface),
+          iconSize: 32,
+        ),
+      ],
+    );
+  }
+
+  Widget questionInstruction(onPlayAudio, currentQuestion) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () => onPlayAudio(),
+          icon: Icon(Icons.volume_up,
+              color: Theme.of(context).colorScheme.onSurface),
+          iconSize: 32,
+        ),
+        Flexible(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              currentQuestion.getQuestionInstruction(context),
+              style: Theme.of(context).textTheme.headlineSmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget questionBody(questionState, currentQuestion, totalQuestions, width,
+      height, sessionStartTime, completedQuestions) {
+    if (questionState.showEncouragement) {
+      return Expanded(
+        child: encouragementScreen(questionState.currentQuestionIndex,
+            totalQuestions - 1, completedQuestions),
+      );
+    } else if (questionState.isSavingResult) {
+      return const Expanded(
+        child: Center(
+            child: SizedBox(
+                width: 100, height: 100, child: CircularProgressIndicator())),
+      );
+    } else {
+      return Expanded(
+        child: buildQuestionOptions(
+            currentQuestion, totalQuestions, width, height, sessionStartTime),
+      );
+    }
   }
 
   Widget progressStars(width, numStars, totalQuestions) {

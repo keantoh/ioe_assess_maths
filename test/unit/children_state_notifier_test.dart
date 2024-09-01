@@ -6,10 +6,6 @@ import 'package:assess_math/src/repositories/child_repository.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockChildRepository extends Mock implements ChildRepository {}
-
-class MockUserRepository extends Mock implements UserRepository {}
-
 void main() {
   late MockChildRepository mockChildRepository;
   late MockUserRepository mockUserRepository;
@@ -222,3 +218,7 @@ void main() {
     });
   });
 }
+
+class MockChildRepository extends Mock implements ChildRepository {}
+
+class MockUserRepository extends Mock implements UserRepository {}

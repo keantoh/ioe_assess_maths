@@ -6,24 +6,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:assess_math/src/views/sign_up_view.dart';
 
 void main() {
+  final providerWidget = ProviderScope(
+    child: MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('es', ''),
+      ],
+      home: SignUpView(),
+    ),
+  );
   testWidgets('Form validation: empty fields', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('es', ''),
-          ],
-          home: SignUpView(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(providerWidget);
 
     final signUpButton = find.widgetWithText(FilledButton, 'Sign Up');
     expect(signUpButton, findsOneWidget);
@@ -35,23 +34,7 @@ void main() {
   });
 
   testWidgets('Form validation: invalid email', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('es', ''),
-          ],
-          home: SignUpView(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(providerWidget);
 
     await tester.enterText(
         find.byKey(const Key('sign_up_email_field')), 'invalid@email');
@@ -68,23 +51,7 @@ void main() {
 
   testWidgets('Form validation: password mismatch',
       (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('es', ''),
-          ],
-          home: SignUpView(),
-        ),
-      ),
-    );
+    await tester.pumpWidget(providerWidget);
 
     await tester.enterText(
         find.byKey(const Key('sign_up_password_field')), 'password123');
@@ -93,7 +60,6 @@ void main() {
         'differentpassword');
     await tester.pump();
 
-    // Tap the sign up button
     final signUpButton = find.widgetWithText(FilledButton, 'Sign Up');
     expect(signUpButton, findsOneWidget);
 

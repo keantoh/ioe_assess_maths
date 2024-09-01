@@ -6,10 +6,6 @@ import 'package:assess_math/src/services/question_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-class MockQuestionRepository extends Mock implements QuestionRepository {}
-
-class MockQuestionService extends Mock implements QuestionService {}
-
 void main() {
   late MockQuestionRepository mockQuestionRepository;
   late MockQuestionService mockQuestionService;
@@ -124,3 +120,7 @@ void main() {
     });
   });
 }
+
+class MockQuestionRepository extends Mock implements QuestionRepository {}
+
+class MockQuestionService extends Mock implements QuestionService {}

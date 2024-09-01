@@ -168,6 +168,7 @@ abstract class Question {
   }
 }
 
+// State class for question state notifier
 class QuestionState {
   final List<Question> questions;
   final List<int> selectedOptions;

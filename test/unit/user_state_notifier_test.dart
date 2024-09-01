@@ -7,12 +7,6 @@ import 'package:assess_math/src/repositories/user_repository.dart';
 import 'package:assess_math/src/services/user_service.dart';
 import 'package:assess_math/src/notifiers/user_state_notifier.dart';
 
-class MockUserService extends Mock implements UserService {}
-
-class MockUserRepository extends Mock implements UserRepository {}
-
-class MockTokenManager extends Mock implements TokenManager {}
-
 void main() {
   late MockUserService mockUserService;
   late MockUserRepository mockUserRepository;
@@ -80,3 +74,9 @@ void main() {
     expect(container.read(userStateResponseCodeProvider), 404);
   });
 }
+
+class MockUserService extends Mock implements UserService {}
+
+class MockUserRepository extends Mock implements UserRepository {}
+
+class MockTokenManager extends Mock implements TokenManager {}
